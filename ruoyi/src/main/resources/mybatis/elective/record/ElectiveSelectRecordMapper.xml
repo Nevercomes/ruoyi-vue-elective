@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.elective.record.mapper.ElectiveSelectRecordMapper">
+    
+    <resultMap type="ElectiveSelectRecord" id="ElectiveSelectRecordResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="studentId"    column="student_id"    />
+        <result property="selectId"    column="select_id"    />
+    </resultMap>
+
+    <sql id="selectElectiveSelectRecordVo">
+        select id, create_by, create_time, update_by, update_time, remark, student_id, select_id from elective_select_record
+    </sql>
+
+    <select id="selectElectiveSelectRecordList" parameterType="ElectiveSelectRecord" resultMap="ElectiveSelectRecordResult">
+        <include refid="selectElectiveSelectRecordVo"/>
+        <where>  
+            <if test="createTime != null "> and create_time = #{createTime}</if>
+            <if test="studentId != null "> and student_id = #{studentId}</if>
+            <if test="selectId != null "> and select_id = #{selectId}</if>
+        </where>
+    </select>
+    
+    <select id="selectElectiveSelectRecordById" parameterType="Long" resultMap="ElectiveSelectRecordResult">
+        <include refid="selectElectiveSelectRecordVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertElectiveSelectRecord" parameterType="ElectiveSelectRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into elective_select_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="studentId != null ">student_id,</if>
+            <if test="selectId != null ">select_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="studentId != null ">#{studentId},</if>
+            <if test="selectId != null ">#{selectId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateElectiveSelectRecord" parameterType="ElectiveSelectRecord">
+        update elective_select_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="studentId != null ">student_id = #{studentId},</if>
+            <if test="selectId != null ">select_id = #{selectId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteElectiveSelectRecordById" parameterType="Long">
+        delete from elective_select_record where id = #{id}
+    </delete>
+
+    <delete id="deleteElectiveSelectRecordByIds" parameterType="String">
+        delete from elective_select_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
