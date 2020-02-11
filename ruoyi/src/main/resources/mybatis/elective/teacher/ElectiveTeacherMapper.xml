@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.elective.teacher.mapper.ElectiveTeacherMapper">
+    
+    <resultMap type="ElectiveTeacher" id="ElectiveTeacherResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="userId"    column="user_id"    />
+        <result property="email"    column="email"    />
+        <result property="phonenumber"    column="phonenumber"    />
+        <result property="sex"    column="sex"    />
+        <result property="avatar"    column="avatar"    />
+    </resultMap>
+
+    <sql id="selectElectiveTeacherVo">
+        select id, create_by, create_time, update_by, update_time, remark, user_id, email, phonenumber, sex, avatar from elective_teacher
+    </sql>
+
+    <select id="selectElectiveTeacherList" parameterType="ElectiveTeacher" resultMap="ElectiveTeacherResult">
+        <include refid="selectElectiveTeacherVo"/>
+        <where>  
+            <if test="email != null  and email != ''"> and email = #{email}</if>
+            <if test="phonenumber != null  and phonenumber != ''"> and phonenumber = #{phonenumber}</if>
+            <if test="sex != null  and sex != ''"> and sex = #{sex}</if>
+        </where>
+    </select>
+    
+    <select id="selectElectiveTeacherById" parameterType="Long" resultMap="ElectiveTeacherResult">
+        <include refid="selectElectiveTeacherVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertElectiveTeacher" parameterType="ElectiveTeacher" useGeneratedKeys="true" keyProperty="id">
+        insert into elective_teacher
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="userId != null ">user_id,</if>
+            <if test="email != null  and email != ''">email,</if>
+            <if test="phonenumber != null  and phonenumber != ''">phonenumber,</if>
+            <if test="sex != null  and sex != ''">sex,</if>
+            <if test="avatar != null  and avatar != ''">avatar,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="userId != null ">#{userId},</if>
+            <if test="email != null  and email != ''">#{email},</if>
+            <if test="phonenumber != null  and phonenumber != ''">#{phonenumber},</if>
+            <if test="sex != null  and sex != ''">#{sex},</if>
+            <if test="avatar != null  and avatar != ''">#{avatar},</if>
+         </trim>
+    </insert>
+
+    <update id="updateElectiveTeacher" parameterType="ElectiveTeacher">
+        update elective_teacher
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="email != null  and email != ''">email = #{email},</if>
+            <if test="phonenumber != null  and phonenumber != ''">phonenumber = #{phonenumber},</if>
+            <if test="sex != null  and sex != ''">sex = #{sex},</if>
+            <if test="avatar != null  and avatar != ''">avatar = #{avatar},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteElectiveTeacherById" parameterType="Long">
+        delete from elective_teacher where id = #{id}
+    </delete>
+
+    <delete id="deleteElectiveTeacherByIds" parameterType="String">
+        delete from elective_teacher where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

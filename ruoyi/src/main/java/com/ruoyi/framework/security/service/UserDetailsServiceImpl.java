@@ -1,5 +1,7 @@
 package com.ruoyi.framework.security.service;
 
+import com.ruoyi.project.system.domain.SysDept;
+import com.ruoyi.project.system.service.ISysDeptService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private SysPermissionService permissionService;
 
+    @Autowired
+    private ISysDeptService deptService;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         SysUser user = userService.selectUserByUserName(username);
@@ -47,6 +52,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     public UserDetails createLoginUser(SysUser user) {
-        return new LoginUser(user, permissionService.getMenuPermission(user));
+        LoginUser loginUser = new LoginUser(user, permissionService.getMenuPermission(user));
+        SysDept dept = user.getDept();
+        // 100L为顶级部门 若衣科技
+        while (!dept.getParentId().equals(100L)) {
+            dept = deptService.selectDeptById(dept.getParentId());
+        }
+        loginUser.setSchoolId(dept.getDeptId());
+        System.err.println(dept.getDeptId());
+        return loginUser;
     }
 }
