@@ -1,9 +1,15 @@
 package com.ruoyi.project.elective.teacher.domain;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.framework.aspectj.lang.annotation.Excel;
 import com.ruoyi.framework.web.domain.BaseEntity;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 /**
  * 教师管理对象 elective_teacher
@@ -11,6 +17,8 @@ import com.ruoyi.framework.web.domain.BaseEntity;
  * @author Sunss
  * @date 2020-02-11
  */
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class ElectiveTeacher extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
@@ -20,10 +28,10 @@ public class ElectiveTeacher extends BaseEntity {
     private Long id;
 
     /**
-     * 关联的用户
+     * 姓名
      */
-    @Excel(name = "关联的用户")
-    private Long userId;
+    @Excel(name = "姓名")
+    private String name;
 
     /**
      * 邮箱
@@ -40,76 +48,40 @@ public class ElectiveTeacher extends BaseEntity {
     /**
      * 性别
      */
-    @Excel(name = "性别")
+    @Excel(name = "性别", readConverterExp = "0=男,1=女,2=未知")
     private String sex;
+
+    /**
+     * 关联的用户
+     */
+    private Long userId;
+
+    @Excel(name = "登录名称")
+    private String userName;
+
+    @Excel(name = "登录密码")
+    private String password;
 
     /**
      * 头像
      */
     private String avatar;
 
-    public void setId(Long id) {
-        this.id = id;
+    @NotBlank(message = "用户账号不能为空")
+    @Size(min = 0, max = 30, message = "用户账号长度不能超过30个字符")
+    public String getUserName() {
+        return userName;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
+    @Email(message = "邮箱格式不正确")
+    @Size(min = 0, max = 50, message = "邮箱长度不能超过50个字符")
     public String getEmail() {
         return email;
     }
 
-    public void setPhonenumber(String phonenumber) {
-        this.phonenumber = phonenumber;
-    }
 
+    @Size(min = 0, max = 11, message = "手机号码长度不能超过11个字符")
     public String getPhonenumber() {
         return phonenumber;
-    }
-
-    public void setSex(String sex) {
-        this.sex = sex;
-    }
-
-    public String getSex() {
-        return sex;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
-                .append("id", getId())
-                .append("createBy", getCreateBy())
-                .append("createTime", getCreateTime())
-                .append("updateBy", getUpdateBy())
-                .append("updateTime", getUpdateTime())
-                .append("remark", getRemark())
-                .append("userId", getUserId())
-                .append("email", getEmail())
-                .append("phonenumber", getPhonenumber())
-                .append("sex", getSex())
-                .append("avatar", getAvatar())
-                .toString();
     }
 }

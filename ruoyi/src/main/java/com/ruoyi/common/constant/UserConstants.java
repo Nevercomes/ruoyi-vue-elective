@@ -36,4 +36,20 @@ public class UserConstants
     /** 校验返回结果码 */
     public final static String UNIQUE = "0";
     public final static String NOT_UNIQUE = "1";
+
+    /**
+     * 教务角色id
+     */
+    public static final Long STAFF_ROLE_ID = 100L;
+
+    /**
+     * 教师角色id
+     */
+    public static final Long TEACHER_ROLE_ID = 101L;
+
+    /**
+     * 学生角色id
+     */
+    public static final Long STUDENT_ROLE_ID = 102L;
+
 }

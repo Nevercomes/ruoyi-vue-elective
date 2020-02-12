@@ -58,4 +58,13 @@ public interface IElectiveTeacherService
      * @return 结果
      */
     public int deleteElectiveTeacherById(Long id);
+
+    /**
+     * 导入教师数据
+     * @param teacherList
+     * @param updateSupport 是否支持更新
+     * @param operName 操作用户
+     * @return
+     */
+    String importTeacher(List<ElectiveTeacher> teacherList, boolean updateSupport, String operName);
 }

@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 查询教师管理列表
 export function listTeacher(query) {
   return request({
-    url: '/teacher/teacher/list',
+    url: '/elective/teacher/list',
     method: 'get',
     params: query
   })
@@ -12,7 +12,7 @@ export function listTeacher(query) {
 // 查询教师管理详细
 export function getTeacher(id) {
   return request({
-    url: '/teacher/teacher/' + id,
+    url: '/elective/teacher/' + id,
     method: 'get'
   })
 }
@@ -20,7 +20,7 @@ export function getTeacher(id) {
 // 新增教师管理
 export function addTeacher(data) {
   return request({
-    url: '/teacher/teacher',
+    url: '/elective/teacher',
     method: 'post',
     data: data
   })
@@ -29,7 +29,7 @@ export function addTeacher(data) {
 // 修改教师管理
 export function updateTeacher(data) {
   return request({
-    url: '/teacher/teacher',
+    url: '/elective/teacher',
     method: 'put',
     data: data
   })
@@ -38,7 +38,7 @@ export function updateTeacher(data) {
 // 删除教师管理
 export function delTeacher(id) {
   return request({
-    url: '/teacher/teacher/' + id,
+    url: '/elective/teacher/' + id,
     method: 'delete'
   })
 }
@@ -46,8 +46,16 @@ export function delTeacher(id) {
 // 导出教师管理
 export function exportTeacher(query) {
   return request({
-    url: '/teacher/teacher/export',
+    url: '/elective/teacher/export',
     method: 'get',
     params: query
+  })
+}
+
+// 下载教师导入模板
+export function importTemplate() {
+  return request({
+    url: '/elective/teacher/importTemplate',
+    method: 'get'
   })
 }

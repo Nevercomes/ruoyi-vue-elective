@@ -28,13 +28,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectElectiveCourseList" parameterType="ElectiveCourse" resultMap="ElectiveCourseResult">
         <include refid="selectElectiveCourseVo"/>
         <where>  
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and create_time between #{params.beginCreateTime} and #{params.endCreateTime}</if>
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="teacherId != null "> and teacher_id = #{teacherId}</if>
             <if test="semester != null  and semester != ''"> and semester = #{semester}</if>
-            <if test="intro != null  and intro != ''"> and intro = #{intro}</if>
-            <if test="objective != null  and objective != ''"> and objective = #{objective}</if>
-            <if test="specialNote != null  and specialNote != ''"> and special_note = #{specialNote}</if>
             <if test="classTime != null  and classTime != ''"> and class_time = #{classTime}</if>
         </where>
     </select>

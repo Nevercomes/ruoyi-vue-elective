@@ -1,60 +1,60 @@
 package com.ruoyi.project.elective.course.service;
 
 import com.ruoyi.project.elective.course.domain.ElectiveCourse;
+
 import java.util.List;
 
 /**
- * courseService接口
- * 
+ * 课程Service接口
+ *
  * @author Sunss
- * @date 2020-02-11
+ * @date 2020-02-12
  */
-public interface IElectiveCourseService 
-{
+public interface IElectiveCourseService {
     /**
-     * 查询course
-     * 
-     * @param id courseID
-     * @return course
+     * 查询课程
+     *
+     * @param id 课程ID
+     * @return 课程
      */
     public ElectiveCourse selectElectiveCourseById(Long id);
 
     /**
-     * 查询course列表
-     * 
-     * @param electiveCourse course
-     * @return course集合
+     * 查询课程列表
+     *
+     * @param electiveCourse 课程
+     * @return 课程集合
      */
     public List<ElectiveCourse> selectElectiveCourseList(ElectiveCourse electiveCourse);
 
     /**
-     * 新增course
-     * 
-     * @param electiveCourse course
+     * 新增课程
+     *
+     * @param electiveCourse 课程
      * @return 结果
      */
     public int insertElectiveCourse(ElectiveCourse electiveCourse);
 
     /**
-     * 修改course
-     * 
-     * @param electiveCourse course
+     * 修改课程
+     *
+     * @param electiveCourse 课程
      * @return 结果
      */
     public int updateElectiveCourse(ElectiveCourse electiveCourse);
 
     /**
-     * 批量删除course
-     * 
-     * @param ids 需要删除的courseID
+     * 批量删除课程
+     *
+     * @param ids 需要删除的课程ID
      * @return 结果
      */
     public int deleteElectiveCourseByIds(Long[] ids);
 
     /**
-     * 删除course信息
-     * 
-     * @param id courseID
+     * 删除课程信息
+     *
+     * @param id 课程ID
      * @return 结果
      */
     public int deleteElectiveCourseById(Long id);
