@@ -36,6 +36,11 @@ public class ElectiveConfigTemplate extends BaseEntity {
      */
     private String status;
 
+    /**
+     * 显示排序
+     */
+    private int sort;
+
 
 
 }

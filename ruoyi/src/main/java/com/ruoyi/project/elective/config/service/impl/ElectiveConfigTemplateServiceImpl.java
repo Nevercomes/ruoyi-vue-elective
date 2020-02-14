@@ -87,4 +87,15 @@ public class ElectiveConfigTemplateServiceImpl implements IElectiveConfigTemplat
     public int deleteElectiveConfigTemplateById(Long id) {
         return electiveConfigTemplateMapper.deleteElectiveConfigTemplateById(id);
     }
+
+    /**
+     * 根据类型获取学校使用中的模板
+     * 若有多个status为1 则按照sort去最前面的一个
+     * @param type
+     * @return
+     */
+    @Override
+    public ElectiveConfigTemplate selectInUseTemplate(String type) {
+        return electiveConfigTemplateMapper.selectInUseTemplate(type);
+    }
 }

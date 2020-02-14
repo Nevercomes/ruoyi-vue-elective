@@ -49,6 +49,7 @@
           <el-switch v-model="scope.row.status" active-value="0" inactive-value="1" @change="handleStatusChange(scope.row)"></el-switch>
         </template>
       </el-table-column>
+      <el-table-column label="排序" align="center" prop="sort" />
       <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -77,6 +78,9 @@
             <el-radio v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictValue">{{dict.dictLabel}}</el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item label="显示排序" prop="sort">
+          <el-input-number v-model="form.sort" controls-position="right" :min="0" />
+        </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
         </el-form-item>
@@ -101,6 +105,7 @@
   } from "@/api/elective/config/template";
 
   export default {
+    name: "Template",
     data() {
       return {
         // 遮罩层
@@ -188,7 +193,8 @@
           remark: undefined,
           name: undefined,
           type: undefined,
-          status: "0"
+          status: "0",
+          sort: 0
         };
         this.resetForm("form");
       },

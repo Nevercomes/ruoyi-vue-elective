@@ -2,7 +2,10 @@ package com.ruoyi.project.elective.config.controller;
 
 import java.util.List;
 
+import com.ruoyi.common.constant.ElectiveDict;
+import com.ruoyi.project.elective.config.domain.ElectiveConfigTemplate;
 import com.ruoyi.project.elective.config.domain.ElectiveConfigValue;
+import com.ruoyi.project.elective.config.service.IElectiveConfigTemplateService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +36,9 @@ public class ElectiveConfigValueController extends BaseController {
     @Autowired
     private IElectiveConfigValueService electiveConfigValueService;
 
+    @Autowired
+    private IElectiveConfigTemplateService electiveConfigTemplateService;
+
     /**
      * 查询模板内容列表
      */
@@ -42,6 +48,32 @@ public class ElectiveConfigValueController extends BaseController {
         startPage();
         List<ElectiveConfigValue> list = electiveConfigValueService.selectElectiveConfigValueList(electiveConfigValue);
         return getDataTable(list);
+    }
+
+    /**
+     * 查询模板内容列表
+     */
+    @PreAuthorize("@ss.hasPermi('config:value:list')")
+    @GetMapping("/list/semester")
+    public AjaxResult listSemester(ElectiveConfigValue electiveConfigValue) {
+        ElectiveConfigTemplate template = electiveConfigTemplateService.selectInUseTemplate(ElectiveDict.CONFIG_TEMPLATE_SEMESTER);
+        electiveConfigValue.setTemplateId(template.getId());
+        startPage();
+        List<ElectiveConfigValue> list = electiveConfigValueService.selectElectiveConfigValueList(electiveConfigValue);
+        return AjaxResult.success(list);
+    }
+
+    /**
+     * 查询模板内容列表
+     */
+    @PreAuthorize("@ss.hasPermi('config:value:list')")
+    @GetMapping("/list/classTime")
+    public AjaxResult listClassTime(ElectiveConfigValue electiveConfigValue) {
+        ElectiveConfigTemplate template = electiveConfigTemplateService.selectInUseTemplate(ElectiveDict.CONFIG_TEMPLATE_CLASSTIME);
+        electiveConfigValue.setTemplateId(template.getId());
+        startPage();
+        List<ElectiveConfigValue> list = electiveConfigValueService.selectElectiveConfigValueList(electiveConfigValue);
+        return AjaxResult.success(list);
     }
 
     /**

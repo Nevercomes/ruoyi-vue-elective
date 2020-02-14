@@ -59,4 +59,11 @@ public interface ElectiveConfigTemplateMapper extends BaseMapper<ElectiveConfigT
      * @return 结果
      */
     public int deleteElectiveConfigTemplateByIds(Long[] ids);
+
+    /**
+     *
+     * @param type
+     * @return
+     */
+    public ElectiveConfigTemplate selectInUseTemplate(String type);
 }

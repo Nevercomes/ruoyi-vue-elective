@@ -14,6 +14,7 @@
         <result property="name" column="name"/>
         <result property="type" column="type"/>
         <result property="status" column="status"/>
+        <result property="sort" column="sort"/>
         <result property="schoolId" column="school_id"/>
     </resultMap>
 
@@ -28,6 +29,7 @@
             name,
             type,
             status,
+            sort,
             school_id
         from elective_config_template
     </sql>
@@ -41,12 +43,22 @@
             <if test="type != null  and type != ''">and type = #{type}</if>
             <if test="status != null  and status != ''">and status = #{status}</if>
             <!--<if test="schoolId != null ">and school_id = #{schoolId}</if>-->
+            order by sort asc
         </where>
     </select>
 
     <select id="selectElectiveConfigTemplateById" parameterType="Long" resultMap="ElectiveConfigTemplateResult">
         <include refid="selectElectiveConfigTemplateVo"/>
         where id = #{id}
+    </select>
+
+    <select id="selectInUseTemplate" parameterType="String" resultMap="ElectiveConfigTemplateResult">
+        <include refid="selectElectiveConfigTemplateVo" />
+        where type = #{type}
+        and (school_id = #{schoolId} or school_id = 0)
+        and status = '0'
+        order by sort asc
+        limit 1
     </select>
 
     <insert id="insertElectiveConfigTemplate" parameterType="ElectiveConfigTemplate" useGeneratedKeys="true"
@@ -61,6 +73,7 @@
             <if test="name != null  and name != ''">name,</if>
             <if test="type != null  and type != ''">type,</if>
             <if test="status != null  and status != ''">status,</if>
+            <if test="sort != null">sort,</if>
             <if test="schoolId != null ">school_id,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -72,6 +85,7 @@
             <if test="name != null  and name != ''">#{name},</if>
             <if test="type != null  and type != ''">#{type},</if>
             <if test="status != null  and status != ''">#{status},</if>
+            <if test="sort != null">#{sort},</if>
             <if test="schoolId != null ">#{schoolId},</if>
         </trim>
     </insert>
@@ -87,6 +101,7 @@
             <if test="name != null  and name != ''">name = #{name},</if>
             <if test="type != null  and type != ''">type = #{type},</if>
             <if test="status != null  and status != ''">status = #{status},</if>
+            <if test="sort != null">sort = #{sort},</if>
             <if test="schoolId != null ">school_id = #{schoolId},</if>
         </trim>
         where id = #{id}

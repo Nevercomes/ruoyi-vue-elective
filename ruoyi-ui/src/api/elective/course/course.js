@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-// 查询course列表
+// 查询课程列表
 export function listCourse(query) {
   return request({
     url: '/elective/course/list',
@@ -9,7 +9,7 @@ export function listCourse(query) {
   })
 }
 
-// 查询course详细
+// 查询课程详细
 export function getCourse(id) {
   return request({
     url: '/elective/course/' + id,
@@ -17,7 +17,7 @@ export function getCourse(id) {
   })
 }
 
-// 新增course
+// 新增课程
 export function addCourse(data) {
   return request({
     url: '/elective/course',
@@ -26,7 +26,7 @@ export function addCourse(data) {
   })
 }
 
-// 修改course
+// 修改课程
 export function updateCourse(data) {
   return request({
     url: '/elective/course',
@@ -35,7 +35,7 @@ export function updateCourse(data) {
   })
 }
 
-// 删除course
+// 删除课程
 export function delCourse(id) {
   return request({
     url: '/elective/course/' + id,
@@ -43,7 +43,7 @@ export function delCourse(id) {
   })
 }
 
-// 导出course
+// 导出课程
 export function exportCourse(query) {
   return request({
     url: '/elective/course/export',

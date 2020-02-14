@@ -162,6 +162,7 @@
   } from "@/api/system/user";
 
   export default {
+    name: "Teacher",
     data() {
       return {
         // 遮罩层

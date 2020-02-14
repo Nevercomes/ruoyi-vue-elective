@@ -3,16 +3,32 @@ import request from '@/utils/request'
 // 查询配置模板下内容的label与value列表
 export function listValue(query) {
   return request({
-    url: '/elective.config/value/list',
+    url: '/elective/config/value/list',
     method: 'get',
     params: query
   })
 }
 
+// 查询当前启用的学期模板的值
+export function listSemester() {
+	return request({
+		url: '/elective/config/value/list/semester',
+		method: 'get'
+	})
+}
+
+// 查询当前启用的上课时间模板下的值
+export function listClassTime() {
+	return request({
+		url: '/elective/config/value/list/classTime',
+		method: 'get'
+	})
+}
+
 // 查询配置模板下内容的label与value详细
 export function getValue(id) {
   return request({
-    url: '/elective.config/value/' + id,
+    url: '/elective/config/value/' + id,
     method: 'get'
   })
 }
@@ -20,7 +36,7 @@ export function getValue(id) {
 // 新增配置模板下内容的label与value
 export function addValue(data) {
   return request({
-    url: '/elective.config/value',
+    url: '/elective/config/value',
     method: 'post',
     data: data
   })
@@ -29,7 +45,7 @@ export function addValue(data) {
 // 修改配置模板下内容的label与value
 export function updateValue(data) {
   return request({
-    url: '/elective.config/value',
+    url: '/elective/config/value',
     method: 'put',
     data: data
   })
@@ -38,7 +54,7 @@ export function updateValue(data) {
 // 删除配置模板下内容的label与value
 export function delValue(id) {
   return request({
-    url: '/elective.config/value/' + id,
+    url: '/elective/config/value/' + id,
     method: 'delete'
   })
 }
@@ -46,7 +62,7 @@ export function delValue(id) {
 // 导出配置模板下内容的label与value
 export function exportValue(query) {
   return request({
-    url: '/elective.config/value/export',
+    url: '/elective/config/value/export',
     method: 'get',
     params: query
   })

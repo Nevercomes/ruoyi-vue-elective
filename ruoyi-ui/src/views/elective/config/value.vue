@@ -50,7 +50,7 @@
         <el-form-item label="模板编号" prop="templateId">
           <el-input v-model="form.templateId" :disabled="true" />
         </el-form-item>
-        <el-form-item label="模板名">
+        <el-form-item label="模板名" prop="templateName">
           <el-input :value="templateFormat(templateOptions, form.templateId)" :disabled="true" />
         </el-form-item>
         <el-form-item label="内容" prop="label">
@@ -83,6 +83,7 @@
   } from "@/api/elective/config/template.js"
 
   export default {
+    name: "Value",
     data() {
       return {
         // 遮罩层
@@ -124,6 +125,11 @@
             required: true,
             message: "内容不能为空",
             trigger: "blur"
+          }],
+          sort: [{
+            required: true,
+            message: "显示排序不能为空",
+            trigger: "change"
           }]
         }
       };
@@ -132,8 +138,7 @@
       const templateId = this.$route.params && this.$route.params.templateId;
       this.getTemplateList()
       this.queryParams.templateId = templateId
-      if (templateId)
-        this.getList();
+      this.getList();
     },
     methods: {
       /** 查询配置模板下内容的label与value列表 */
@@ -154,10 +159,10 @@
       templateFormat(list, id) {
         var actions = [];
         Object.keys(list).map((key) => {
-        	if (list[key].id == ('' + id)) {
-        		actions.push(list[key].name);
-        		return false;
-        	}
+          if (list[key].id == ('' + id)) {
+            actions.push(list[key].name);
+            return false;
+          }
         })
         return actions.join('');
       },
@@ -172,7 +177,7 @@
           id: undefined,
           label: undefined,
           templateId: undefined,
-          sort: undefined
+          sort: 0
         };
         this.resetForm("form");
       },
@@ -197,6 +202,7 @@
         this.reset();
         this.open = true;
         this.title = "添加配置模板内容";
+        this.form.templateId = this.queryParams.templateId
       },
       /** 修改按钮操作 */
       handleUpdate(row) {

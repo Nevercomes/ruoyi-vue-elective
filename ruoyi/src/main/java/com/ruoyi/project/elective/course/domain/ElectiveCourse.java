@@ -1,5 +1,7 @@
 package com.ruoyi.project.elective.course.domain;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.framework.aspectj.lang.annotation.Excel;
@@ -11,6 +13,8 @@ import com.ruoyi.framework.web.domain.BaseEntity;
  * @author Sunss
  * @date 2020-02-12
  */
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class ElectiveCourse extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
@@ -26,22 +30,27 @@ public class ElectiveCourse extends BaseEntity {
     private String name;
 
     /**
-     * 课程状态 字典值 0 申请中 1 申请通过 2 退回
+     * 课程状态 字典值 0 审核中 1 审核通过 2 退回
      */
-    @Excel(name = "课程状态 字典值 0 申请中 1 申请通过 2 退回")
     private String status;
+
+    private Long teacherId;
 
     /**
      * 上课老师
      */
     @Excel(name = "上课老师")
-    private Long teacherId;
+    private String teacherName;
+
+    private String teacherAvatar;
 
     /**
-     * 对应的开课时间 字典值
+     * 学期
      */
-    @Excel(name = "对应的开课时间 字典值")
+    @Excel(name = "学期")
     private String semester;
+
+    private Long semesterId;
 
     /**
      * 课程简介
@@ -59,100 +68,13 @@ public class ElectiveCourse extends BaseEntity {
     private String specialNote;
 
     /**
-     * 上课时间 字典值
+     * 上课时间
      */
-    @Excel(name = "上课时间 字典值")
+    @Excel(name = "上课时间")
     private String classTime;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private Long classTimeId;
 
-    public Long getId() {
-        return id;
-    }
+    private String classLocation;
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setTeacherId(Long teacherId) {
-        this.teacherId = teacherId;
-    }
-
-    public Long getTeacherId() {
-        return teacherId;
-    }
-
-    public void setSemester(String semester) {
-        this.semester = semester;
-    }
-
-    public String getSemester() {
-        return semester;
-    }
-
-    public void setIntro(String intro) {
-        this.intro = intro;
-    }
-
-    public String getIntro() {
-        return intro;
-    }
-
-    public void setObjective(String objective) {
-        this.objective = objective;
-    }
-
-    public String getObjective() {
-        return objective;
-    }
-
-    public void setSpecialNote(String specialNote) {
-        this.specialNote = specialNote;
-    }
-
-    public String getSpecialNote() {
-        return specialNote;
-    }
-
-    public void setClassTime(String classTime) {
-        this.classTime = classTime;
-    }
-
-    public String getClassTime() {
-        return classTime;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
-                .append("id", getId())
-                .append("createBy", getCreateBy())
-                .append("createTime", getCreateTime())
-                .append("updateBy", getUpdateBy())
-                .append("updateTime", getUpdateTime())
-                .append("remark", getRemark())
-                .append("name", getName())
-                .append("status", getStatus())
-                .append("teacherId", getTeacherId())
-                .append("semester", getSemester())
-                .append("intro", getIntro())
-                .append("objective", getObjective())
-                .append("specialNote", getSpecialNote())
-                .append("classTime", getClassTime())
-                .toString();
-    }
 }
