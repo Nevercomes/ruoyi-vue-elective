@@ -58,4 +58,11 @@ public interface ElectiveStudentMapper {
      * @return 结果
      */
     public int deleteElectiveStudentByIds(Long[] ids);
+
+    /**
+     * 查询导出用的学生数据
+     * @param electiveStudent
+     * @return
+     */
+    List<ElectiveStudent> selectExportList(ElectiveStudent electiveStudent);
 }

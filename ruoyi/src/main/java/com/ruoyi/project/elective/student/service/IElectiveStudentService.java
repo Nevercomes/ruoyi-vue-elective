@@ -58,4 +58,20 @@ public interface IElectiveStudentService {
      * @return 结果
      */
     public int deleteElectiveStudentById(Long id);
+
+    /**
+     * 导入学生数据
+     * @param studentList
+     * @param updateSupport
+     * @param username
+     * @return
+     */
+    String importTeacher(List<ElectiveStudent> studentList, boolean updateSupport, String username);
+
+    /**
+     * 查询导出数据时的学生数据
+     * @param electiveStudent
+     * @return
+     */
+    List<ElectiveStudent> selectExportList(ElectiveStudent electiveStudent);
 }

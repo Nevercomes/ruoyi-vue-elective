@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +77,7 @@ public class ElectiveTeacherServiceImpl implements IElectiveTeacherService {
      * @return 结果
      */
     @Override
+    @Transactional
     public int insertElectiveTeacher(ElectiveTeacher electiveTeacher) {
         // 新增教师先创建用户
         SysUser newUser = new SysUser();
@@ -109,6 +111,7 @@ public class ElectiveTeacherServiceImpl implements IElectiveTeacherService {
      * @return 结果
      */
     @Override
+    @Transactional
     public int updateElectiveTeacher(ElectiveTeacher electiveTeacher) {
         // 更新用户
         SysUser user = new SysUser();
@@ -133,6 +136,7 @@ public class ElectiveTeacherServiceImpl implements IElectiveTeacherService {
      * @return 结果
      */
     @Override
+    @Transactional
     public int deleteElectiveTeacherByIds(Long[] ids) {
         // 同时批量删除user
         Long[] userIds = new Long[ids.length];
@@ -197,8 +201,8 @@ public class ElectiveTeacherServiceImpl implements IElectiveTeacherService {
                 failureMsg.append(msg).append(e.getMessage());
                 log.error(msg, e);
             }
-
         }
+
         if (failureNum > 0) {
             failureMsg.insert(0, "很抱歉，导入失败！共 " + failureNum + " 条数据格式不正确，错误如下：");
             throw new CustomException(failureMsg.toString());

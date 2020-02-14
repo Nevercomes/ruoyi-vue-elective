@@ -49,7 +49,6 @@
       <el-table-column label="登录名称" align="center" prop="userName" />
       <el-table-column label="手机" align="center" prop="phonenumber" />
       <el-table-column label="邮箱" align="center" prop="email" :show-overflow-tooltip="true" />
-      <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
       <el-table-column label="查看" align="center" class-name="small-padding fixed-width">
         <!-- TODO 增加查看课程和课程记录 需求 课程index和申请记录index -->
         <template slot-scope="scope">

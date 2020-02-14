@@ -1,9 +1,10 @@
 package com.ruoyi.project.elective.student.domain;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.framework.aspectj.lang.annotation.Excel;
 import com.ruoyi.framework.web.domain.BaseEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.apache.poi.ss.formula.functions.Na;
 
 /**
  * student对象 elective_student
@@ -11,6 +12,8 @@ import com.ruoyi.framework.web.domain.BaseEntity;
  * @author Sunss
  * @date 2020-02-11
  */
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class ElectiveStudent extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
@@ -22,80 +25,55 @@ public class ElectiveStudent extends BaseEntity {
     /**
      * 关联的用户
      */
-    @Excel(name = "关联的用户")
     private Long userId;
 
     /**
-     * 入学年份
+     * name
      */
-    @Excel(name = "入学年份")
-    private String enrollYear;
+    @Excel(name = "姓名")
+    private String name;
+
+    /**
+     * 登录名称
+     */
+    @Excel(name = "登录名称")
+    private String userName;
+
+    /**
+     * 密码
+     */
+    @Excel(name = "登录密码")
+    private String password;
 
     /**
      * 用户性别（0男 1女 2未知）
      */
-    @Excel(name = "用户性别", readConverterExp = "0=男,1=女,2=未知")
+    @Excel(name = "性别", readConverterExp = "0=男,1=女,2=未知")
     private String sex;
 
     /**
-     * 学生是否毕业 0在读 1毕业
+     * 状态
      */
-    @Excel(name = "学生是否毕业 0在读 1毕业")
     private String status;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    /**
+     * 班级(部门)Id
+     */
+    private Long deptId;
 
-    public Long getId() {
-        return id;
-    }
+    /**
+     * 年级名
+     */
+    @Excel(name = "年级")
+    private String gradeName;
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
+    /**
+     * 班级名
+     */
+    @Excel(name = "班级")
+    private String className;
 
-    public Long getUserId() {
-        return userId;
-    }
 
-    public void setEnrollYear(String enrollYear) {
-        this.enrollYear = enrollYear;
-    }
 
-    public String getEnrollYear() {
-        return enrollYear;
-    }
 
-    public void setSex(String sex) {
-        this.sex = sex;
-    }
-
-    public String getSex() {
-        return sex;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
-                .append("id", getId())
-                .append("createBy", getCreateBy())
-                .append("createTime", getCreateTime())
-                .append("updateBy", getUpdateBy())
-                .append("updateTime", getUpdateTime())
-                .append("remark", getRemark())
-                .append("userId", getUserId())
-                .append("enrollYear", getEnrollYear())
-                .append("sex", getSex())
-                .append("status", getStatus())
-                .toString();
-    }
 }

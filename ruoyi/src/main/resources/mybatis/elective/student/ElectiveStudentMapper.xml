@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.elective.student.mapper.ElectiveStudentMapper">
+
+    <resultMap type="ElectiveStudent" id="ElectiveStudentResult">
+        <result property="id" column="id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="sex" column="sex"/>
+        <result property="status" column="status"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="className" column="class_name"/>
+        <result property="name" column="name"/>
+        <result property="status" column="status"/>
+        <result property="gradeName" column="grade_name"/>
+    </resultMap>
+
+    <sql id="selectElectiveStudentVo">
+        select
+            a.id,
+            a.create_by,
+            a.create_time,
+            a.update_by,
+            a.update_time,
+            a.user_id,
+            a.dept_id,
+            a.name,
+            u.user_name,
+            u.remark,
+            u.sex,
+            u.status,
+            d.dept_name as class_name
+        from elective_student a
+            inner join sys_user u on u.user_id = a.user_id
+            inner join sys_dept d on d.dept_id = a.dept_id
+    </sql>
+
+    <select id="selectElectiveStudentList" parameterType="ElectiveStudent" resultMap="ElectiveStudentResult">
+        <include refid="selectElectiveStudentVo"/>
+        <where>
+            1 = 1
+            <if test="name != null and name != ''">
+                AND a.name like concat('%', #{name}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                AND u.status = #{status}
+            </if>
+            <if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(a.create_time,'%y%m%d') &gt;= date_format(#{beginTime},'%y%m%d')
+            </if>
+            <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(a.create_time,'%y%m%d') &lt;= date_format(#{endTime},'%y%m%d')
+            </if>
+            <if test="deptId != null and deptId != 0">
+                AND (a.dept_id = #{deptId} OR a.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE FIND_IN_SET
+                (#{deptId},ancestors) ))
+            </if>
+            <!-- 数据范围过滤 -->
+            ${dataScope}
+        </where>
+    </select>
+
+    <select id="selectElectiveStudentById" parameterType="Long" resultMap="ElectiveStudentResult">
+        <include refid="selectElectiveStudentVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectExportList" parameterType="ElectiveStudent" resultMap="ElectiveStudentResult">
+        select
+        a.id,
+        a.create_by,
+        a.create_time,
+        a.update_by,
+        a.update_time,
+        a.user_id,
+        a.dept_id,
+        a.name,
+        u.user_name,
+        u.remark,
+        u.sex,
+        u.status,
+        d.dept_name as class_name,
+        g.dept_name as grade_name
+        from elective_student a
+        inner join sys_user u on u.user_id = a.user_id
+        inner join sys_dept d on d.dept_id = a.dept_id
+        inner join sys_dept g on g.dept_id = d.parent_id
+        <where>
+            1 = 1
+            <if test="name != null and name != ''">
+                AND a.name like concat('%', #{name}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                AND u.status = #{status}
+            </if>
+            <if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(a.create_time,'%y%m%d') &gt;= date_format(#{beginTime},'%y%m%d')
+            </if>
+            <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(a.create_time,'%y%m%d') &lt;= date_format(#{endTime},'%y%m%d')
+            </if>
+            <if test="deptId != null and deptId != 0">
+                AND (a.dept_id = #{deptId} OR a.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE FIND_IN_SET
+                (#{deptId},ancestors) ))
+            </if>
+            <!-- 数据范围过滤 -->
+            ${dataScope}
+        </where>
+    </select>
+
+    <insert id="insertElectiveStudent" parameterType="ElectiveStudent" useGeneratedKeys="true" keyProperty="id">
+        insert into elective_student
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="userId != null ">user_id,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="deptId != null">dept_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="userId != null ">#{userId},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="deptId != null">#{deptId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateElectiveStudent" parameterType="ElectiveStudent">
+        update elective_student
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteElectiveStudentById" parameterType="Long">
+        delete from elective_student
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteElectiveStudentByIds" parameterType="String">
+        delete from elective_student where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
