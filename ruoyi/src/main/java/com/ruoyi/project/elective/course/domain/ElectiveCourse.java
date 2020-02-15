@@ -1,11 +1,16 @@
 package com.ruoyi.project.elective.course.domain;
 
+import com.ruoyi.common.utils.spring.SpringUtils;
+import com.ruoyi.project.elective.claszz.service.IElectiveClazzService;
+import com.ruoyi.project.system.domain.SysDept;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.framework.aspectj.lang.annotation.Excel;
 import com.ruoyi.framework.web.domain.BaseEntity;
+
+import java.util.List;
 
 /**
  * 课程对象 elective_course
@@ -77,4 +82,26 @@ public class ElectiveCourse extends BaseEntity {
 
     private String classLocation;
 
+    private List<ElectiveCoursePeople> peopleList;
+
+    private String enrollPeo;
+
+    public String getEnrollPeo() {
+        IElectiveClazzService clazzService = SpringUtils.getBean(IElectiveClazzService.class);
+        List<SysDept> gList = clazzService.getGradeList();
+        StringBuilder res = new StringBuilder();
+        if (peopleList == null) return null;
+        for (int i = 0; i < peopleList.size(); i++) {
+            ElectiveCoursePeople peo = peopleList.get(i);
+            for (SysDept dept : gList) {
+                if (peo.getGradeId().equals(dept.getDeptId())) {
+                    res.append(dept.getDeptName()).append("（").append(peo.getInitNum()).append("）人");
+                    if (i != peopleList.size() - 1)
+                        res.append("；\n");
+                    break;
+                }
+            }
+        }
+        return res.toString();
+    }
 }

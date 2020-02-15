@@ -18,11 +18,11 @@
         <el-select v-model="queryParams.classTimeId" placeholder="请选择上课时间" clearable size="small">
           <el-option v-for="item in classTimeOptions" :key="item.id" :label="item.label" :value="item.id" />
         </el-select>
-        <el-form-item label="状态" prop="status">
-          <el-select v-model="queryParams.status" placeholder="请选择状态" clearable size="small">
-            <el-option v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
-          </el-select>
-        </el-form-item>
+      </el-form-item>
+      <el-form-item label="状态" prop="status">
+        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable size="small">
+          <el-option v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
+        </el-select>
       </el-form-item>
       <el-form-item label="创建时间">
         <el-date-picker v-model="dateRange" size="small" style="width: 240px" value-format="yyyy-MM-dd" type="daterange"
@@ -58,13 +58,14 @@
       <el-table-column label="开课时间" align="center" prop="semester" :show-overflow-tooltip="true" />
       <el-table-column label="上课时间" align="center" prop="classTime" :show-overflow-tooltip="true" />
       <el-table-column label="上课地点" align="center" prop="classLocation" :show-overflow-tooltip="true" />
+      <el-table-column label="招生人数" align="center" prop="enrollPeo" :show-overflow-tooltip="true" />
       <!-- TODO 用标签来表示状态 -->
       <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+      <!-- <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <!-- TODO 课程审核  -->
@@ -114,6 +115,47 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
+            <!-- <el-form-item label="招生人数" v-for="(item, index) in form.peopleList" :key="index" :prop="'peopleList.' + index + '.initNum'"
+              :rules="{
+                  required: true, message: '招生人数不能为空', trigger: 'blur'
+                }">
+              <el-row :gutter="10">
+                <el-col :span="10">
+                  <el-select v-model="item.gradeId">
+                    <el-option v-for="grade in gradeOptions" :key="grade.deptId + index" :value="grade.deptId" :label="grade.deptName"></el-option>
+                  </el-select>
+                </el-col>
+                <el-col :span="10">
+                  <el-input v-model="item.item" placeholder="请输入招生人数" />
+                </el-col>
+                <el-col :span="2">
+                  <i v-if="index != 0" class="el-icon-minus people-config-minus" @click.prevent="removePeople(item)"></i>
+                  <i v-else class="el-icon-plus people-config-plus" @click.prevent="addPeople"></i>
+                </el-col>
+              </el-row>
+            </el-form-item> -->
+            <el-form-item label="招生人数">
+              <el-row class="peo-el-row" v-for="(item, index) in form.peopleList" :key="index">
+                <el-col class="peo-el-col" :span="10">
+                  <el-form-item :prop="`peopleList.${index}.gradeId`" :rules="{required: true, message: '请选择招生年级', trigger: 'change'}">
+                    <el-select v-model="item.gradeId">
+                      <el-option v-for="grade in gradeOptions" :key="grade.deptId + index" :value="grade.deptId" :label="grade.deptName"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col class="peo-el-col" :span="10">
+                  <el-form-item :prop="`peopleList.${index}.initNum`" :rules="{required: true, message: '请输入招生人数', trigger: 'blur'}">
+                    <el-input v-model="item.initNum" placeholder="请输入招生人数" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="2">
+                  <i v-if="index != 0" class="el-icon-minus people-config-minus" @click.prevent="removePeople(item)"></i>
+                  <i v-else class="el-icon-plus people-config-plus" @click.prevent="addPeople"></i>
+                </el-col>
+              </el-row>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
             <el-form-item label="课程简介" prop="intro">
               <el-input v-model="form.intro" type="textarea" placeholder="请输入内容" />
             </el-form-item>
@@ -154,6 +196,10 @@
   import {
     listTeacher
   } from "@/api/elective/teacher/teacher"
+  import {
+    listClazz,
+    listGrade
+  } from "@/api/elective/clazz/clazz"
 
   export default {
     name: "Course",
@@ -183,6 +229,8 @@
         semesterOptions: [],
         // 上课时间 字典值字典
         classTimeOptions: [],
+        // 年级列表
+        gradeOptions: [],
         // 教师列表
         teacherList: [],
         // 查询参数
@@ -233,6 +281,9 @@
       listTeacher().then(response => {
         this.teacherList = response.rows;
       })
+      listGrade().then(response => {
+        this.gradeOptions = response.data
+      })
       this.getDicts("elective_course_status").then(response => {
         this.statusOptions = response.data;
       });
@@ -269,7 +320,11 @@
           objective: undefined,
           specialNote: undefined,
           classTimeId: undefined,
-          classLocation: undefined
+          classLocation: undefined,
+          peopleList: [{
+            gradeId: null,
+            initNum: ''
+          }]
         };
         this.resetForm("form");
       },
@@ -302,6 +357,8 @@
         const id = row.id || this.ids
         getCourse(id).then(response => {
           this.form = response.data;
+          if(this.form.peopleList == undefined || this.form.peopleList.length == 0)
+            this.form.peopleList.push({})
           this.open = true;
           this.title = "修改课程";
         });
@@ -360,7 +417,40 @@
         }).then(response => {
           this.download(response.msg);
         }).catch(function() {});
+      },
+      removePeople(people) {
+        let index = this.form.peopleList.indexOf(people)
+        if (index != -1) {
+          this.form.peopleList.splice(index, 1)
+        }
+      },
+      addPeople() {
+        this.form.peopleList.push({
+          gradeId: null,
+          initNum: ''
+        })
       }
     }
   };
 </script>
+<style>
+  .people-config-minus {
+    color: red;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  .people-config-plus {
+    color: #5cb6ff;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  .peo-el-row {
+    margin-bottom: 20px;
+  }
+  .peo-el-row > .peo-el-col {
+    margin-right: 10px;
+  }
+
+</style>
