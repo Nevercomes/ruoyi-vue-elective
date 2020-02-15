@@ -59,7 +59,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             dept = deptService.selectDeptById(dept.getParentId());
         }
         loginUser.setSchoolId(dept.getDeptId());
-        System.err.println(dept.getDeptId());
         return loginUser;
     }
 }

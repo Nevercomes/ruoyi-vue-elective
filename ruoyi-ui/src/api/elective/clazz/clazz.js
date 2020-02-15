@@ -58,3 +58,17 @@ export function delDept(deptId) {
     method: 'delete'
   })
 }
+
+export function listGrade() {
+	return request({
+		url: '/elective/clazz/grade',
+		method: 'get'
+	})
+}
+
+export function listClazz() {
+	return request({
+		url: '/elective/clazz/clazz',
+		method: 'get'
+	})
+}

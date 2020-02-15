@@ -105,7 +105,6 @@ public class ElectiveClazzServiceImpl implements IElectiveClazzService {
             list = sysDeptService.selectDeptList(query);
             redisCache.setCacheList(GRADE_CACHE_KEY + SecurityUtils.getSchoolId(), list);
         }
-        System.err.println(list.size());
         return list;
     }
 

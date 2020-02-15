@@ -31,7 +31,7 @@
         <id property="id" column="peo_id"/>
         <result property="courseId" column="course_id"/>
         <result property="gradeId" column="grade_id"/>
-        <result property="leftNum" column="left_num"/>
+        <result property="selectNum" column="select_num"/>
         <result property="initNum" column="init_num"/>
     </resultMap>
 
@@ -63,7 +63,7 @@
             p.id                         as peo_id,
             p.course_id,
             p.grade_id,
-            p.left_num,
+            p.select_num,
             p.init_num
         from elective_course a
             left join elective_teacher et on et.id = a.teacher_id
