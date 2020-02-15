@@ -42,7 +42,7 @@ public class ElectiveStudent extends BaseEntity {
     /**
      * 密码
      */
-    @Excel(name = "登录密码")
+    @Excel(name = "登录密码", type = Excel.Type.IMPORT)
     private String password;
 
     /**

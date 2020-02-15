@@ -1,36 +1,56 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.project.elective.record.mapper.ElectiveApplyRecordMapper">
-    
+
     <resultMap type="ElectiveApplyRecord" id="ElectiveApplyRecordResult">
-        <result property="id"    column="id"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="teacherId"    column="teacher_id"    />
-        <result property="courseId"    column="course_id"    />
+        <result property="id" column="id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="teacherId" column="teacher_id"/>
+        <result property="courseId" column="course_id"/>
+        <result property="teacherName" column="teacher_name"/>
+        <result property="courseName" column="course_name"/>
+        <result property="status" column="status"/>
     </resultMap>
 
     <sql id="selectElectiveApplyRecordVo">
-        select id, create_by, create_time, update_by, update_time, teacher_id, course_id from elective_apply_record
+        select
+            a.id,
+            a.create_by,
+            a.create_time,
+            a.update_by,
+            a.update_time,
+            a.teacher_id,
+            a.course_id,
+            a.status,
+            t.name as teacher_name,
+            c.name as course_name
+        from elective_apply_record a
+            left join elective_course c on c.id = course_id
+            left join elective_teacher t on t.id = c.teacher_id
     </sql>
 
-    <select id="selectElectiveApplyRecordList" parameterType="ElectiveApplyRecord" resultMap="ElectiveApplyRecordResult">
+    <select id="selectElectiveApplyRecordList" parameterType="ElectiveApplyRecord"
+            resultMap="ElectiveApplyRecordResult">
         <include refid="selectElectiveApplyRecordVo"/>
-        <where>  
-            <if test="teacherId != null "> and teacher_id = #{teacherId}</if>
-            <if test="courseId != null "> and course_id = #{courseId}</if>
+        <where>
+            1 = 1
+            <if test="teacherId != null ">and a.teacher_id = #{teacherId}</if>
+            <if test="courseId != null ">and a.course_id = #{courseId}</if>
+            <if test="courseName != null and courseName != ''">and c.name like concat('%', #{courseName}, '%')</if>
+            <if test="status != null and status != ''">and a.status = #{status}</if>
         </where>
     </select>
-    
+
     <select id="selectElectiveApplyRecordById" parameterType="Long" resultMap="ElectiveApplyRecordResult">
         <include refid="selectElectiveApplyRecordVo"/>
         where id = #{id}
     </select>
-        
+
     <insert id="insertElectiveApplyRecord" parameterType="ElectiveApplyRecord" useGeneratedKeys="true" keyProperty="id">
         insert into elective_apply_record
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -40,7 +60,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null ">update_time,</if>
             <if test="teacherId != null ">teacher_id,</if>
             <if test="courseId != null ">course_id,</if>
-         </trim>
+            <if test="status != null and status != ''">status,</if>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             <if test="createTime != null ">#{createTime},</if>
@@ -48,7 +69,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null ">#{updateTime},</if>
             <if test="teacherId != null ">#{teacherId},</if>
             <if test="courseId != null ">#{courseId},</if>
-         </trim>
+            <if test="status != null and status != ''">#{status},</if>
+        </trim>
     </insert>
 
     <update id="updateElectiveApplyRecord" parameterType="ElectiveApplyRecord">
@@ -60,19 +82,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null ">update_time = #{updateTime},</if>
             <if test="teacherId != null ">teacher_id = #{teacherId},</if>
             <if test="courseId != null ">course_id = #{courseId},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
         </trim>
         where id = #{id}
     </update>
 
     <delete id="deleteElectiveApplyRecordById" parameterType="Long">
-        delete from elective_apply_record where id = #{id}
+        delete from elective_apply_record
+        where id = #{id}
     </delete>
 
     <delete id="deleteElectiveApplyRecordByIds" parameterType="String">
-        delete from elective_apply_record where id in 
+        delete from elective_apply_record where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
-    
+
 </mapper>

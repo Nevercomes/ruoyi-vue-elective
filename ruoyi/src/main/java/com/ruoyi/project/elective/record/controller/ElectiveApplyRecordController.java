@@ -53,7 +53,7 @@ public class ElectiveApplyRecordController extends BaseController {
     public AjaxResult export(ElectiveApplyRecord electiveApplyRecord) {
         List<ElectiveApplyRecord> list = electiveApplyRecordService.selectElectiveApplyRecordList(electiveApplyRecord);
         ExcelUtil<ElectiveApplyRecord> util = new ExcelUtil<ElectiveApplyRecord>(ElectiveApplyRecord.class);
-        return util.exportExcel(list, "apply");
+        return util.exportExcel(list, "课程申请记录");
     }
 
     /**

@@ -6,6 +6,8 @@ import java.util.List;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.project.elective.course.domain.ElectiveCoursePeople;
 import com.ruoyi.project.elective.course.service.IElectiveCoursePeopleService;
+import com.ruoyi.project.elective.record.domain.ElectiveApplyRecord;
+import com.ruoyi.project.elective.record.service.IElectiveApplyRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.project.elective.course.mapper.ElectiveCourseMapper;
@@ -25,6 +27,8 @@ public class ElectiveCourseServiceImpl implements IElectiveCourseService {
     private ElectiveCourseMapper electiveCourseMapper;
     @Autowired
     private IElectiveCoursePeopleService electiveCoursePeopleService;
+    @Autowired
+    private IElectiveApplyRecordService applyRecordService;
 
     /**
      * 查询课程
@@ -65,6 +69,11 @@ public class ElectiveCourseServiceImpl implements IElectiveCourseService {
             people.setCourseId(electiveCourse.getId());
             electiveCoursePeopleService.insertElectiveCoursePeople(people);
         }
+        // 插入申请记录
+        ElectiveApplyRecord applyRecord = new ElectiveApplyRecord();
+        applyRecord.setCourseId(electiveCourse.getId());
+        applyRecord.setTeacherId(electiveCourse.getTeacherId());
+        applyRecordService.insertElectiveApplyRecord(applyRecord);
         return res;
     }
 

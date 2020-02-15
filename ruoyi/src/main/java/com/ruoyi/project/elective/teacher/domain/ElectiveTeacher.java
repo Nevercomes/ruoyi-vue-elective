@@ -59,7 +59,7 @@ public class ElectiveTeacher extends BaseEntity {
     @Excel(name = "登录名称")
     private String userName;
 
-    @Excel(name = "登录密码")
+    @Excel(name = "登录密码", type = Excel.Type.IMPORT)
     private String password;
 
     /**
