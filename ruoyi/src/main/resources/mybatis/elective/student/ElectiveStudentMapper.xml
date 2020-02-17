@@ -115,6 +115,10 @@
         </where>
     </select>
 
+    <select id="selectStudentByUserId" resultMap="ElectiveStudentResult">
+        select id from elective_student where user_id = #{userId}
+    </select>
+
     <insert id="insertElectiveStudent" parameterType="ElectiveStudent" useGeneratedKeys="true" keyProperty="id">
         insert into elective_student
         <trim prefix="(" suffix=")" suffixOverrides=",">

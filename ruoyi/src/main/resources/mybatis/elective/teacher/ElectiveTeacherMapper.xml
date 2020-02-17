@@ -64,6 +64,10 @@
         where id = #{id}
     </select>
 
+    <select id="selectTeacherByUserId" resultMap="ElectiveTeacherResult">
+        select id from elective_teacher where user_id = #{userId}
+    </select>
+
     <insert id="insertElectiveTeacher" parameterType="ElectiveTeacher" useGeneratedKeys="true" keyProperty="id">
         insert into elective_teacher
         <trim prefix="(" suffix=")" suffixOverrides=",">

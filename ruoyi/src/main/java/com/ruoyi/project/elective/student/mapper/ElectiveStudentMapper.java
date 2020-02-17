@@ -65,4 +65,11 @@ public interface ElectiveStudentMapper {
      * @return
      */
     List<ElectiveStudent> selectExportList(ElectiveStudent electiveStudent);
+
+    /**
+     * 根据userId获取学生
+     * @param userId
+     * @return
+     */
+    ElectiveStudent selectStudentByUserId(Long userId);
 }

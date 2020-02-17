@@ -1,38 +1,57 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.project.elective.record.mapper.ElectiveCheckRecordMapper">
-    
+
     <resultMap type="ElectiveCheckRecord" id="ElectiveCheckRecordResult">
-        <result property="id"    column="id"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="courseId"    column="course_id"    />
-        <result property="requestId"    column="request_id"    />
-        <result property="result"    column="result"    />
+        <result property="id" column="id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="courseId" column="course_id"/>
+        <result property="applyId" column="apply_id"/>
+        <result property="result" column="result"/>
+        <result property="courseName" column="course_name"/>
+        <result property="teacherName" column="teacher_name"/>
     </resultMap>
 
     <sql id="selectElectiveCheckRecordVo">
-        select id, create_by, create_time, update_by, update_time, course_id, request_id, result from elective_check_record
+        select
+            a.id,
+            a.create_by,
+            a.create_time,
+            a.update_by,
+            a.update_time,
+            a.course_id,
+            a.apply_id,
+            a.result,
+            (select name
+             from elective_teacher t, elective_apply_record ar
+             where ar.id = a.id and t.id = ar.teacher_id) as teacher_name,
+            c.name as course_name
+        from elective_check_record a
+            left join elective_course c on c.id = a.course_id
     </sql>
 
-    <select id="selectElectiveCheckRecordList" parameterType="ElectiveCheckRecord" resultMap="ElectiveCheckRecordResult">
+    <select id="selectElectiveCheckRecordList" parameterType="ElectiveCheckRecord"
+            resultMap="ElectiveCheckRecordResult">
         <include refid="selectElectiveCheckRecordVo"/>
-        <where>  
-            <if test="courseId != null "> and course_id = #{courseId}</if>
-            <if test="requestId != null "> and request_id = #{requestId}</if>
-            <if test="result != null  and result != ''"> and result = #{result}</if>
+        <where>
+            1 = 1
+            <if test="courseName != null and courseName != ''">and c.name like concat('%', #{courseName}, '%')</if>
+            <if test="courseId != null ">and a.course_id = #{courseId}</if>
+            <if test="applyId != null ">and a.apply_id = #{applyId}</if>
+            <if test="result != null  and result != ''">and a.result = #{result}</if>
         </where>
     </select>
-    
+
     <select id="selectElectiveCheckRecordById" parameterType="Long" resultMap="ElectiveCheckRecordResult">
         <include refid="selectElectiveCheckRecordVo"/>
-        where id = #{id}
+        where a.id = #{id}
     </select>
-        
+
     <insert id="insertElectiveCheckRecord" parameterType="ElectiveCheckRecord" useGeneratedKeys="true" keyProperty="id">
         insert into elective_check_record
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -41,43 +60,40 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null  and updateBy != ''">update_by,</if>
             <if test="updateTime != null ">update_time,</if>
             <if test="courseId != null ">course_id,</if>
-            <if test="requestId != null ">request_id,</if>
-            <if test="result != null  and result != ''">result,</if>
-         </trim>
+            <if test="applyId != null ">apply_id,</if>
+            <if test="result != null and result != ''">result,</if>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             <if test="createTime != null ">#{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
             <if test="updateTime != null ">#{updateTime},</if>
             <if test="courseId != null ">#{courseId},</if>
-            <if test="requestId != null ">#{requestId},</if>
+            <if test="applyId != null ">#{applyId},</if>
             <if test="result != null  and result != ''">#{result},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateElectiveCheckRecord" parameterType="ElectiveCheckRecord">
         update elective_check_record
         <trim prefix="SET" suffixOverrides=",">
-            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
-            <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             <if test="updateTime != null ">update_time = #{updateTime},</if>
-            <if test="courseId != null ">course_id = #{courseId},</if>
-            <if test="requestId != null ">request_id = #{requestId},</if>
             <if test="result != null  and result != ''">result = #{result},</if>
         </trim>
         where id = #{id}
     </update>
 
     <delete id="deleteElectiveCheckRecordById" parameterType="Long">
-        delete from elective_check_record where id = #{id}
+        delete from elective_check_record
+        where id = #{id}
     </delete>
 
     <delete id="deleteElectiveCheckRecordByIds" parameterType="String">
-        delete from elective_check_record where id in 
+        delete from elective_check_record where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
-    
+
 </mapper>

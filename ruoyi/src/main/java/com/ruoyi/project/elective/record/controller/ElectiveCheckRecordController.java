@@ -1,6 +1,7 @@
 package com.ruoyi.project.elective.record.controller;
 
 import java.util.List;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,14 +23,13 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 
 /**
  * checkController
- * 
+ *
  * @author Sunss
  * @date 2020-02-11
  */
 @RestController
 @RequestMapping("/elective/check")
-public class ElectiveCheckRecordController extends BaseController
-{
+public class ElectiveCheckRecordController extends BaseController {
     @Autowired
     private IElectiveCheckRecordService electiveCheckRecordService;
 
@@ -38,8 +38,7 @@ public class ElectiveCheckRecordController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('elective:check:list')")
     @GetMapping("/list")
-    public TableDataInfo list(ElectiveCheckRecord electiveCheckRecord)
-    {
+    public TableDataInfo list(ElectiveCheckRecord electiveCheckRecord) {
         startPage();
         List<ElectiveCheckRecord> list = electiveCheckRecordService.selectElectiveCheckRecordList(electiveCheckRecord);
         return getDataTable(list);
@@ -49,10 +48,9 @@ public class ElectiveCheckRecordController extends BaseController
      * 导出check列表
      */
     @PreAuthorize("@ss.hasPermi('elective:check:export')")
-    @Log(title = "check", businessType = BusinessType.EXPORT)
+    @Log(title = "申请审核", businessType = BusinessType.EXPORT)
     @GetMapping("/export")
-    public AjaxResult export(ElectiveCheckRecord electiveCheckRecord)
-    {
+    public AjaxResult export(ElectiveCheckRecord electiveCheckRecord) {
         List<ElectiveCheckRecord> list = electiveCheckRecordService.selectElectiveCheckRecordList(electiveCheckRecord);
         ExcelUtil<ElectiveCheckRecord> util = new ExcelUtil<ElectiveCheckRecord>(ElectiveCheckRecord.class);
         return util.exportExcel(list, "check");
@@ -63,8 +61,7 @@ public class ElectiveCheckRecordController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('elective:check:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return AjaxResult.success(electiveCheckRecordService.selectElectiveCheckRecordById(id));
     }
 
@@ -72,10 +69,9 @@ public class ElectiveCheckRecordController extends BaseController
      * 新增check
      */
     @PreAuthorize("@ss.hasPermi('elective:check:add')")
-    @Log(title = "check", businessType = BusinessType.INSERT)
+    @Log(title = "申请审核", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody ElectiveCheckRecord electiveCheckRecord)
-    {
+    public AjaxResult add(@RequestBody ElectiveCheckRecord electiveCheckRecord) {
         return toAjax(electiveCheckRecordService.insertElectiveCheckRecord(electiveCheckRecord));
     }
 
@@ -83,10 +79,9 @@ public class ElectiveCheckRecordController extends BaseController
      * 修改check
      */
     @PreAuthorize("@ss.hasPermi('elective:check:edit')")
-    @Log(title = "check", businessType = BusinessType.UPDATE)
+    @Log(title = "申请审核", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody ElectiveCheckRecord electiveCheckRecord)
-    {
+    public AjaxResult edit(@RequestBody ElectiveCheckRecord electiveCheckRecord) {
         return toAjax(electiveCheckRecordService.updateElectiveCheckRecord(electiveCheckRecord));
     }
 
@@ -94,10 +89,9 @@ public class ElectiveCheckRecordController extends BaseController
      * 删除check
      */
     @PreAuthorize("@ss.hasPermi('elective:check:remove')")
-    @Log(title = "check", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
+    @Log(title = "申请审核", businessType = BusinessType.DELETE)
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(electiveCheckRecordService.deleteElectiveCheckRecordByIds(ids));
     }
 }

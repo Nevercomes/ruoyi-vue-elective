@@ -1,5 +1,8 @@
 package com.ruoyi.project.elective.record.domain;
 
+import com.ruoyi.project.elective.course.domain.ElectiveCourse;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.framework.aspectj.lang.annotation.Excel;
@@ -7,77 +10,42 @@ import com.ruoyi.framework.web.domain.BaseEntity;
 
 /**
  * check对象 elective_check_record
- * 
+ *
  * @author Sunss
  * @date 2020-02-11
  */
-public class ElectiveCheckRecord extends BaseEntity
-{
+@EqualsAndHashCode(callSuper = true)
+@Data
+public class ElectiveCheckRecord extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
-    /** 编号 */
+    /**
+     * 编号
+     */
     private Long id;
 
-    /** 申请课程 */
-    @Excel(name = "申请课程")
+    /**
+     * 申请课程
+     */
     private Long courseId;
 
-    /** 申请记录 */
-    @Excel(name = "申请记录")
-    private Long requestId;
+    /**
+     * 申请记录
+     */
+    private Long applyId;
 
-    /** 审核结果 */
-    @Excel(name = "审核结果")
+    /**
+     * 审核结果
+     */
+    @Excel(name = "审核结果", readConverterExp = "1=通过,2=退回")
     private String result;
 
-    public void setId(Long id) 
-    {
-        this.id = id;
-    }
+    @Excel(name = "申请课程")
+    private String courseName;
 
-    public Long getId() 
-    {
-        return id;
-    }
-    public void setCourseId(Long courseId) 
-    {
-        this.courseId = courseId;
-    }
+    @Excel(name = "申请教师")
+    private String teacherName;
 
-    public Long getCourseId() 
-    {
-        return courseId;
-    }
-    public void setRequestId(Long requestId) 
-    {
-        this.requestId = requestId;
-    }
+    private ElectiveCourse course;
 
-    public Long getRequestId() 
-    {
-        return requestId;
-    }
-    public void setResult(String result) 
-    {
-        this.result = result;
-    }
-
-    public String getResult() 
-    {
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .append("courseId", getCourseId())
-            .append("requestId", getRequestId())
-            .append("result", getResult())
-            .toString();
-    }
 }

@@ -46,6 +46,30 @@ public class SecurityUtils {
         }
     }
 
+    /**
+     * 获取学生id
+     * @return
+     */
+    public static Long getStudentId() {
+        try {
+            return getLoginUser().getStudentId();
+        } catch (Exception e) {
+            throw new CustomException("获取用户学生Id异常", HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    /**
+     * 获取教师id
+     * @return
+     */
+    public static Long getTeacherId() {
+        try {
+            return getLoginUser().getTeacherId();
+        } catch (Exception e) {
+            throw new CustomException("获取用户教师Id异常", HttpStatus.UNAUTHORIZED);
+        }
+    }
+
 
     /**
      * 获取用户

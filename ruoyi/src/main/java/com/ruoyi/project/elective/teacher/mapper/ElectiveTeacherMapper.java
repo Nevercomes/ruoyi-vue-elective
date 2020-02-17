@@ -58,4 +58,11 @@ public interface ElectiveTeacherMapper {
      * @return 结果
      */
     public int deleteElectiveTeacherByIds(Long[] ids);
+
+    /**
+     * 根据userId获取教师
+     * @param userId
+     * @return
+     */
+    ElectiveTeacher selectTeacherByUserId(Long userId);
 }

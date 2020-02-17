@@ -1,5 +1,9 @@
 package com.ruoyi.framework.security.service;
 
+import com.ruoyi.project.elective.student.domain.ElectiveStudent;
+import com.ruoyi.project.elective.student.mapper.ElectiveStudentMapper;
+import com.ruoyi.project.elective.teacher.domain.ElectiveTeacher;
+import com.ruoyi.project.elective.teacher.mapper.ElectiveTeacherMapper;
 import com.ruoyi.project.system.domain.SysDept;
 import com.ruoyi.project.system.service.ISysDeptService;
 import org.slf4j.Logger;
@@ -34,6 +38,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private ISysDeptService deptService;
 
+    @Autowired
+    private ElectiveStudentMapper studentMapper;
+
+    @Autowired
+    private ElectiveTeacherMapper teacherMapper;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         SysUser user = userService.selectUserByUserName(username);
@@ -59,6 +69,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             dept = deptService.selectDeptById(dept.getParentId());
         }
         loginUser.setSchoolId(dept.getDeptId());
+        // 填入学生id
+        ElectiveStudent student = studentMapper.selectStudentByUserId(user.getUserId());
+        if(student != null) loginUser.setStudentId(student.getId());
+        // 填入教师id
+        ElectiveTeacher teacher = teacherMapper.selectTeacherByUserId(user.getUserId());
+        if(teacher != null) loginUser.setTeacherId(teacher.getId());
         return loginUser;
     }
 }
