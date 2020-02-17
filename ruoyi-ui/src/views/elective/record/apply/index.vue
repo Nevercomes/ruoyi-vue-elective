@@ -1,11 +1,18 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
-      <el-form-item label="申请教师" prop="teacherId">
-        <el-input v-model="queryParams.teacherId" placeholder="请输入申请教师" clearable size="small" @keyup.enter.native="handleQuery" />
+      <el-form-item label="教师" prop="teacherId">
+        <el-select v-model="queryParams.teacherId" placeholder="请选择教师" clearable size="small">
+          <el-option v-for="item in teacherList" :key="item.id" :label="item.name" :value="item.id" />
+        </el-select>
       </el-form-item>
-      <el-form-item label="申请课程" prop="courseId">
-        <el-input v-model="queryParams.courseId" placeholder="请输入申请课程" clearable size="small" @keyup.enter.native="handleQuery" />
+      <el-form-item label="课程" prop="courseName">
+        <el-input v-model="queryParams.courseName" placeholder="请输入申请课程" clearable size="small" @keyup.enter.native="handleQuery" />
+      </el-form-item>
+      <el-form-item label="状态" prop="status">
+        <el-select v-model="queryParams.status" placeholder="请选择申请状态" clearable size="small">
+          <el-option v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -15,16 +22,6 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd" v-hasPermi="['elective:apply:add']">新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate" v-hasPermi="['elective:apply:edit']">修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
-          v-hasPermi="['elective:apply:remove']">删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
         <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport" v-hasPermi="['elective:apply:export']">导出</el-button>
       </el-col>
     </el-row>
@@ -32,8 +29,20 @@
     <el-table v-loading="loading" :data="applyList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="编号" align="center" prop="id" />
-      <el-table-column label="申请教师" align="center" prop="teacherId" />
-      <el-table-column label="申请课程" align="center" prop="courseId" />
+      <el-table-column label="教师" align="center" prop="teacherName" />
+      <el-table-column label="课程" align="center" prop="courseName" />
+      <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.status == 0">{{statusFormat(scope.row.status)}}</el-tag>
+          <el-tag v-else-if="scope.row.status == 1" type="success">{{statusFormat(scope.row.status)}}</el-tag>
+          <el-tag v-else-if="scope.row.status == 2" type="danger">{{statusFormat(scope.row.status)}}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.createTime) }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['elective:apply:edit']">修改</el-button>
@@ -45,7 +54,7 @@
     <pagination v-show="total>0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize"
       @pagination="getList" />
 
-    <!-- 添加或修改apply对话框 -->
+    <!-- 添加或修改申请记录对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="申请教师" prop="teacherId">
@@ -53,6 +62,11 @@
         </el-form-item>
         <el-form-item label="申请课程" prop="courseId">
           <el-input v-model="form.courseId" placeholder="请输入申请课程" />
+        </el-form-item>
+        <el-form-item label="申请状态">
+          <el-select v-model="form.status" placeholder="请选择申请状态">
+            <el-option v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue"></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -72,6 +86,9 @@
     updateApply,
     exportApply
   } from "@/api/elective/record/apply";
+  import {
+    listTeacher
+  } from "@/api/elective/teacher/teacher"
 
   export default {
     data() {
@@ -86,18 +103,23 @@
         multiple: true,
         // 总条数
         total: 0,
-        // apply表格数据
+        // 申请记录表格数据
         applyList: [],
         // 弹出层标题
         title: "",
         // 是否显示弹出层
         open: false,
+        // 申请状态字典
+        statusOptions: [],
+        // 教师列表
+        teacherList: [],
         // 查询参数
         queryParams: {
           pageNum: 1,
           pageSize: 10,
           teacherId: undefined,
-          courseId: undefined
+          courseName: undefined,
+          status: undefined
         },
         // 表单参数
         form: {},
@@ -112,15 +134,26 @@
             required: true,
             message: "申请课程不能为空",
             trigger: "blur"
+          }],
+          status: [{
+            required: true,
+            message: "申请状态不能为空",
+            trigger: "blur"
           }]
         }
       };
     },
     created() {
       this.getList();
+      listTeacher().then(response => {
+        this.teacherList = response.rows;
+      })
+      this.getDicts("elective_apply_status").then(response => {
+        this.statusOptions = response.data;
+      });
     },
     methods: {
-      /** 查询apply列表 */
+      /** 查询申请记录列表 */
       getList() {
         this.loading = true;
         listApply(this.queryParams).then(response => {
@@ -128,6 +161,10 @@
           this.total = response.total;
           this.loading = false;
         });
+      },
+      // 申请状态字典翻译
+      statusFormat(status) {
+        return this.selectDictLabel(this.statusOptions, status);
       },
       // 取消按钮
       cancel() {
@@ -143,7 +180,8 @@
           updateBy: undefined,
           updateTime: undefined,
           teacherId: undefined,
-          courseId: undefined
+          courseId: undefined,
+          status: undefined
         };
         this.resetForm("form");
       },
@@ -167,7 +205,7 @@
       handleAdd() {
         this.reset();
         this.open = true;
-        this.title = "添加apply";
+        this.title = "添加申请记录";
       },
       /** 修改按钮操作 */
       handleUpdate(row) {
@@ -176,7 +214,7 @@
         getApply(id).then(response => {
           this.form = response.data;
           this.open = true;
-          this.title = "修改apply";
+          this.title = "修改申请记录";
         });
       },
       /** 提交按钮 */
@@ -210,7 +248,7 @@
       /** 删除按钮操作 */
       handleDelete(row) {
         const ids = row.id || this.ids;
-        this.$confirm('是否确认删除apply编号为"' + ids + '"的数据项?', "警告", {
+        this.$confirm('是否确认删除申请记录编号为"' + ids + '"的数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
@@ -224,7 +262,7 @@
       /** 导出按钮操作 */
       handleExport() {
         const queryParams = this.queryParams;
-        this.$confirm('是否确认导出所有apply数据项?', "警告", {
+        this.$confirm('是否确认导出所有申请记录数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"

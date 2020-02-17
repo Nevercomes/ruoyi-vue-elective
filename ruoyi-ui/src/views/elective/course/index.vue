@@ -60,7 +60,13 @@
       <el-table-column label="上课地点" align="center" prop="classLocation" :show-overflow-tooltip="true" />
       <el-table-column label="招生人数" align="center" prop="enrollPeo" :show-overflow-tooltip="true" />
       <!-- TODO 用标签来表示状态 -->
-      <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
+      <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.status == 0">{{statusFormat(scope.row.status)}}</el-tag>
+          <el-tag v-else-if="scope.row.status == 1" type="success">{{statusFormat(scope.row.status)}}</el-tag>
+          <el-tag v-else-if="scope.row.status == 2" type="danger">{{statusFormat(scope.row.status)}}</el-tag>
+        </template>
+      </el-table-column>
       <!-- <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -115,25 +121,6 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <!-- <el-form-item label="招生人数" v-for="(item, index) in form.peopleList" :key="index" :prop="'peopleList.' + index + '.initNum'"
-              :rules="{
-                  required: true, message: '招生人数不能为空', trigger: 'blur'
-                }">
-              <el-row :gutter="10">
-                <el-col :span="10">
-                  <el-select v-model="item.gradeId">
-                    <el-option v-for="grade in gradeOptions" :key="grade.deptId + index" :value="grade.deptId" :label="grade.deptName"></el-option>
-                  </el-select>
-                </el-col>
-                <el-col :span="10">
-                  <el-input v-model="item.item" placeholder="请输入招生人数" />
-                </el-col>
-                <el-col :span="2">
-                  <i v-if="index != 0" class="el-icon-minus people-config-minus" @click.prevent="removePeople(item)"></i>
-                  <i v-else class="el-icon-plus people-config-plus" @click.prevent="addPeople"></i>
-                </el-col>
-              </el-row>
-            </el-form-item> -->
             <el-form-item label="招生人数">
               <el-row class="peo-el-row" v-for="(item, index) in form.peopleList" :key="index">
                 <el-col class="peo-el-col" :span="10">
@@ -299,8 +286,8 @@
         });
       },
       // 课程状态字典翻译
-      statusFormat(row, column) {
-        return this.selectDictLabel(this.statusOptions, row.status);
+      statusFormat(status) {
+        return this.selectDictLabel(this.statusOptions, status);
       },
       // 取消按钮
       cancel() {

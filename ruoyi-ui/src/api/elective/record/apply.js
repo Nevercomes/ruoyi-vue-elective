@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-// 查询apply列表
+// 查询申请记录列表
 export function listApply(query) {
   return request({
     url: '/elective/apply/list',
@@ -9,7 +9,7 @@ export function listApply(query) {
   })
 }
 
-// 查询apply详细
+// 查询申请记录详细
 export function getApply(id) {
   return request({
     url: '/elective/apply/' + id,
@@ -17,7 +17,7 @@ export function getApply(id) {
   })
 }
 
-// 新增apply
+// 新增申请记录
 export function addApply(data) {
   return request({
     url: '/elective/apply',
@@ -26,7 +26,7 @@ export function addApply(data) {
   })
 }
 
-// 修改apply
+// 修改申请记录
 export function updateApply(data) {
   return request({
     url: '/elective/apply',
@@ -35,7 +35,7 @@ export function updateApply(data) {
   })
 }
 
-// 删除apply
+// 删除申请记录
 export function delApply(id) {
   return request({
     url: '/elective/apply/' + id,
@@ -43,7 +43,7 @@ export function delApply(id) {
   })
 }
 
-// 导出apply
+// 导出申请记录
 export function exportApply(query) {
   return request({
     url: '/elective/apply/export',
