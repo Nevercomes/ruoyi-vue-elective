@@ -13,8 +13,10 @@
         <result property="remark" column="remark"/>
         <result property="name" column="name"/>
         <result property="semesterId" column="semester_id"/>
+        <result property="semester" column="semester"/>
         <result property="openTime" column="open_time"/>
         <result property="closeTime" column="close_time"/>
+        <result property="status" column="status"/>
     </resultMap>
 
     <sql id="selectElectiveOpenSelectVo">
@@ -29,19 +31,43 @@
             semester_id,
             open_time,
             close_time,
-            (select label from elective_config_value c where c.id = semester_id limit 1 ) as semester
+            status,
+            (select label
+             from elective_config_value c
+             where c.id = semester_id
+             limit 1) as semester
         from elective_open_select
     </sql>
 
     <select id="selectElectiveOpenSelectList" parameterType="ElectiveOpenSelect" resultMap="ElectiveOpenSelectResult">
         <include refid="selectElectiveOpenSelectVo"/>
         <where>
-            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''">
-                and create_time between #{params.beginCreateTime} and #{params.endCreateTime}
-            </if>
+            1 = 1
             <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
             <if test="semesterId != null ">and semester_id = #{semesterId}</if>
+            <if test="status != null and status != ''">and status = #{status}</if>
         </where>
+    </select>
+
+    <select id="selectForUse" parameterType="ElectiveOpenSelect" resultMap="ElectiveOpenSelectResult">
+        select
+            id,
+            semester_id,
+            name
+        from elective_open_select
+        where status = '1'
+              and open_time &lt; current_date()
+              and close_time &gt; current_date()
+        order by id desc
+        limit 1
+    </select>
+
+    <select id="selectStudentOpen" parameterType="ElectiveOpenSelect" resultMap="ElectiveOpenSelectResult">
+        <include refid="selectElectiveOpenSelectVo"/>
+        where status = '1'
+        and open_time &lt; current_date()
+        and close_time &gt; current_date()
+        order by id desc
     </select>
 
     <select id="selectElectiveOpenSelectById" parameterType="Long" resultMap="ElectiveOpenSelectResult">
@@ -61,6 +87,7 @@
             <if test="semesterId != null ">semester_id,</if>
             <if test="openTime != null ">open_time,</if>
             <if test="closeTime != null ">close_time,</if>
+            <if test="status != null and status != ''">status,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
@@ -72,6 +99,7 @@
             <if test="semesterId != null ">#{semesterId},</if>
             <if test="openTime != null ">#{openTime},</if>
             <if test="closeTime != null ">#{closeTime},</if>
+            <if test="status != null and status != ''">#{status},</if>
         </trim>
     </insert>
 
@@ -87,6 +115,7 @@
             <if test="semesterId != null ">semester_id = #{semesterId},</if>
             <if test="openTime != null ">open_time = #{openTime},</if>
             <if test="closeTime != null ">close_time = #{closeTime},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
         </trim>
         where id = #{id}
     </update>

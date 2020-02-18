@@ -58,4 +58,11 @@ public interface IElectiveSelectRecordService
      * @return 结果
      */
     public int deleteElectiveSelectRecordById(Long id);
+
+    /**
+     * 查询学生的可选课程 不包括已满课程
+     * @param electiveSelectRecord
+     * @return
+     */
+    List<ElectiveSelectRecord> listCanSelect(ElectiveSelectRecord electiveSelectRecord);
 }

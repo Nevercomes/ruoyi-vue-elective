@@ -1,70 +1,55 @@
 package com.ruoyi.project.elective.record.domain;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.framework.aspectj.lang.annotation.Excel;
 import com.ruoyi.framework.web.domain.BaseEntity;
 
+import java.util.Date;
+
 /**
  * select对象 elective_select_record
- * 
+ *
  * @author Sunss
  * @date 2020-02-11
  */
-public class ElectiveSelectRecord extends BaseEntity
-{
+@EqualsAndHashCode(callSuper = true)
+@Data
+public class ElectiveSelectRecord extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
-    /** id */
+    /**
+     * id
+     */
     private Long id;
 
-    /** 选课的学生 */
-    @Excel(name = "选课的学生")
+    /**
+     * 选课的学生
+     */
     private Long studentId;
 
-    /** 对应选课人数 */
-    @Excel(name = "对应选课人数")
-    private Long selectId;
+    @Excel(name = "学生")
+    private String studentName;
 
-    public void setId(Long id) 
-    {
-        this.id = id;
-    }
+    @Excel(name = "课程")
+    private String courseName;
 
-    public Long getId() 
-    {
-        return id;
-    }
-    public void setStudentId(Long studentId) 
-    {
-        this.studentId = studentId;
-    }
+    @Excel(name = "班级")
+    private String className;
 
-    public Long getStudentId() 
-    {
-        return studentId;
-    }
-    public void setSelectId(Long selectId) 
-    {
-        this.selectId = selectId;
-    }
+    /**
+     * 对应选课人数
+     */
+    private Long courseId;
 
-    public Long getSelectId() 
-    {
-        return selectId;
-    }
+    @Excel(name = "创建时间")
+    private Date createTime;
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .append("remark", getRemark())
-            .append("studentId", getStudentId())
-            .append("selectId", getSelectId())
-            .toString();
-    }
+    /**
+     * 对应的开放选课
+     */
+    private Long openId;
+
 }

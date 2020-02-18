@@ -58,4 +58,11 @@ public interface ElectiveSelectRecordMapper
      * @return 结果
      */
     public int deleteElectiveSelectRecordByIds(Long[] ids);
+
+    /**
+     * 根据学生查询可选课程
+     * @param studentId
+     * @return
+     */
+    List<ElectiveSelectRecord> listCanSelect(ElectiveSelectRecord electiveSelectRecord);
 }

@@ -82,12 +82,24 @@
             <if test="teacherId != null ">and teacher_id = #{teacherId}</if>
             <if test="semesterId != null">and semester_id = #{semesterId}</if>
             <if test="classTimeId != null">and class_time_id = #{classTimeId}</if>
+            <if test="gradeId != null">and a.id in (select course_id from elective_course_people where grade_id = #{gradeId})</if>
         </where>
     </select>
 
     <select id="selectElectiveCourseById" parameterType="Long" resultMap="ElectiveCourseResult">
         <include refid="selectElectiveCourseVo"/>
         where a.id = #{id}
+    </select>
+
+    <select id="listSelect" parameterType="ElectiveCourse" resultMap="ElectiveCourseResult">
+        <include refid="selectElectiveCourseVo"/>
+        <where>
+            a.semester_id = #{semesterId}
+            <if test="name != null  and name != ''">and a.name like concat('%', #{name}, '%')</if>
+            <if test="teacherId != null ">and teacher_id = #{teacherId}</if>
+            <if test="classTimeId != null">and class_time_id = #{classTimeId}</if>
+            <if test="gradeId != null">and a.id in (select course_id from elective_course_people where grade_id = #{gradeId})</if>
+        </where>
     </select>
 
     <insert id="insertElectiveCourse" parameterType="ElectiveCourse" useGeneratedKeys="true" keyProperty="id">

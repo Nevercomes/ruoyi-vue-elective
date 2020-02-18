@@ -64,6 +64,16 @@
         where id = #{id}
     </update>
 
+    <update id="addOneSelectNum" parameterType="ElectiveSelectRecord">
+        update elective_course_people
+        set select_num = select_num + 1
+        where course_id = #{courseId}
+              and grade_id = (select parent_id
+                              from sys_dept d
+                                  inner join elective_student s on s.dept_id = d.dept_id
+                              where s.id = #{studentId})
+    </update>
+
     <delete id="deleteElectiveCoursePeopleById" parameterType="Long">
         delete from elective_course_people
         where id = #{id}

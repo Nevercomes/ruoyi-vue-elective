@@ -1,58 +1,99 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.project.elective.record.mapper.ElectiveSelectRecordMapper">
-    
+
     <resultMap type="ElectiveSelectRecord" id="ElectiveSelectRecordResult">
-        <result property="id"    column="id"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="remark"    column="remark"    />
-        <result property="studentId"    column="student_id"    />
-        <result property="selectId"    column="select_id"    />
+        <result property="id" column="id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="studentId" column="student_id"/>
+        <result property="courseId" column="course_id"/>
+        <result property="studentName" column="student_name"/>
+        <result property="courseName" column="course_name"/>
+        <result property="className" column="class_name"/>
+        <result property="openId" column="open_id"/>
     </resultMap>
 
     <sql id="selectElectiveSelectRecordVo">
-        select id, create_by, create_time, update_by, update_time, remark, student_id, select_id from elective_select_record
+        select
+            a.id,
+            a.create_by,
+            a.create_time,
+            a.student_id,
+            a.course_id,
+            a.open_id,
+            s.name                      as student_name,
+            c.name                      as course_name,
+            (select dept_name
+             from sys_dept
+             where dept_id = s.dept_id) as class_name
+        from elective_select_record a
+            left join elective_course c on c.id = a.course_id
+            left join elective_student s on s.id = a.student_id
     </sql>
 
-    <select id="selectElectiveSelectRecordList" parameterType="ElectiveSelectRecord" resultMap="ElectiveSelectRecordResult">
+    <select id="selectElectiveSelectRecordList" parameterType="ElectiveSelectRecord"
+            resultMap="ElectiveSelectRecordResult">
         <include refid="selectElectiveSelectRecordVo"/>
-        <where>  
-            <if test="createTime != null "> and create_time = #{createTime}</if>
-            <if test="studentId != null "> and student_id = #{studentId}</if>
-            <if test="selectId != null "> and select_id = #{selectId}</if>
+        <where>
+            1 = 1
+            <if test="beginTime != null and endTime != '' and beginTime != null and endTime != ''">
+                and a.create_time between #{beginTime} and #{endTime}
+            </if>
+            <if test="studentId != null ">and a.student_id = #{studentId}</if>
+            <if test="courseId != null ">and a.course_id = #{courseId}</if>
+            <if test="courseName != null and courseName != ''">and c.name like concat('%', #{courseName}, '%')</if>
+            <if test="studentName != null and studentName != ''">and s.name like concat('%', #{studentName}, '%')</if>
         </where>
     </select>
-    
+
     <select id="selectElectiveSelectRecordById" parameterType="Long" resultMap="ElectiveSelectRecordResult">
         <include refid="selectElectiveSelectRecordVo"/>
-        where id = #{id}
+        where a.id = #{id}
     </select>
-        
-    <insert id="insertElectiveSelectRecord" parameterType="ElectiveSelectRecord" useGeneratedKeys="true" keyProperty="id">
+
+    <select id="listCanSelect" parameterType="ElectiveSelectRecord" resultMap="ElectiveSelectRecordResult">
+        select
+            c.name as course_name,
+            c.id   as course_id
+        from elective_course_people p
+            inner join elective_course c on p.course_id = c.id
+        where (p.init_num - p.select_num) &gt; 0
+              and p.grade_id = (select parent_id
+                                from sys_dept
+                                where id = (select dept_id
+                                            from elective_student
+                                            where id = #{studentId}))
+              and c.status = '1'
+              and c.semester_id = (select semester_id
+                                   from elective_open_select
+                                   where id = #{openId})
+    </select>
+    <!--and c.semester_id = (select semester_id
+                             from elective_open_select
+                             where status = '1'
+                                   and open_time &lt; current_date()
+                                   and close_time &gt; current_date()
+                             order by id desc
+                             limit 1)-->
+
+    <insert id="insertElectiveSelectRecord" parameterType="ElectiveSelectRecord" useGeneratedKeys="true"
+            keyProperty="id">
         insert into elective_select_record
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="createBy != null  and createBy != ''">create_by,</if>
             <if test="createTime != null ">create_time,</if>
-            <if test="updateBy != null  and updateBy != ''">update_by,</if>
-            <if test="updateTime != null ">update_time,</if>
-            <if test="remark != null  and remark != ''">remark,</if>
             <if test="studentId != null ">student_id,</if>
-            <if test="selectId != null ">select_id,</if>
-         </trim>
+            <if test="courseId != null ">course_id,</if>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             <if test="createTime != null ">#{createTime},</if>
-            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
-            <if test="updateTime != null ">#{updateTime},</if>
-            <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="studentId != null ">#{studentId},</if>
-            <if test="selectId != null ">#{selectId},</if>
-         </trim>
+            <if test="courseId != null ">#{courseId},</if>
+        </trim>
     </insert>
 
     <update id="updateElectiveSelectRecord" parameterType="ElectiveSelectRecord">
@@ -60,24 +101,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>
-            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
-            <if test="updateTime != null ">update_time = #{updateTime},</if>
-            <if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="studentId != null ">student_id = #{studentId},</if>
-            <if test="selectId != null ">select_id = #{selectId},</if>
+            <if test="courseId != null ">course_id = #{courseId},</if>
         </trim>
         where id = #{id}
     </update>
 
     <delete id="deleteElectiveSelectRecordById" parameterType="Long">
-        delete from elective_select_record where id = #{id}
+        delete from elective_select_record
+        where id = #{id}
     </delete>
 
     <delete id="deleteElectiveSelectRecordByIds" parameterType="String">
-        delete from elective_select_record where id in 
+        delete from elective_select_record where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
-    
+
 </mapper>

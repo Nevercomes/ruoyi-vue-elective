@@ -58,4 +58,18 @@ public interface ElectiveOpenSelectMapper {
      * @return 结果
      */
     public int deleteElectiveOpenSelectByIds(Long[] ids);
+
+    /**
+     * 获取当前开放的选课
+     * @param electiveOpenSelect
+     * @return
+     */
+    public ElectiveOpenSelect selectForUse(ElectiveOpenSelect electiveOpenSelect);
+
+    /**
+     * 获取学生选课可以进入的选课
+     * @param electiveOpenSelect
+     * @return
+     */
+    List<ElectiveOpenSelect> selectStudentOpen(ElectiveOpenSelect electiveOpenSelect);
 }

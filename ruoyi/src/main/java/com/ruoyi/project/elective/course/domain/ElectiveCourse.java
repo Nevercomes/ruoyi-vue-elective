@@ -104,4 +104,9 @@ public class ElectiveCourse extends BaseEntity {
         }
         return res.toString();
     }
+
+    /**
+     * 用于检索年级课程
+     */
+    private Long gradeId;
 }

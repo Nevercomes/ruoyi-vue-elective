@@ -87,4 +87,24 @@ public class ElectiveOpenSelectServiceImpl implements IElectiveOpenSelectService
     public int deleteElectiveOpenSelectById(Long id) {
         return electiveOpenSelectMapper.deleteElectiveOpenSelectById(id);
     }
+
+    /**
+     * 获取当前开放的选课
+     * @param electiveOpenSelect
+     * @return
+     */
+    @Override
+    public ElectiveOpenSelect selectForUse(ElectiveOpenSelect electiveOpenSelect) {
+        return electiveOpenSelectMapper.selectForUse(electiveOpenSelect);
+    }
+
+    /**
+     * 选取学生选课可以进入的选课
+     * @param electiveOpenSelect
+     * @return
+     */
+    @Override
+    public List<ElectiveOpenSelect> selectStudentOpen(ElectiveOpenSelect electiveOpenSelect) {
+        return electiveOpenSelectMapper.selectStudentOpen(electiveOpenSelect);
+    }
 }

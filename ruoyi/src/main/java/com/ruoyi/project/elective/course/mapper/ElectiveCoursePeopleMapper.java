@@ -1,6 +1,8 @@
 package com.ruoyi.project.elective.course.mapper;
 
 import com.ruoyi.project.elective.course.domain.ElectiveCoursePeople;
+import com.ruoyi.project.elective.record.domain.ElectiveSelectRecord;
+
 import java.util.List;
 
 /**
@@ -58,4 +60,11 @@ public interface ElectiveCoursePeopleMapper
      * @return 结果
      */
     public int deleteElectiveCoursePeopleByIds(Long[] ids);
+
+    /**
+     * 根据选课记录做加1操作
+     * @param electiveSelectRecord
+     */
+    void addOneSelectNum(ElectiveSelectRecord electiveSelectRecord);
+
 }

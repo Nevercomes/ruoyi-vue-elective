@@ -45,7 +45,7 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['elective:apply:edit']">修改</el-button>
+          <el-button size="mini" type="text" icon="el-icon-edit-outline" @click="handleCheck(scope.row)" v-hasPermi="['elective:check:add']">审核</el-button>
           <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['elective:apply:remove']">删除</el-button>
         </template>
       </el-table-column>
@@ -55,22 +55,82 @@
       @pagination="getList" />
 
     <!-- 添加或修改申请记录对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px">
+    <el-dialog :title="title" :visible.sync="open" width="600px">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="申请教师" prop="teacherId">
-          <el-input v-model="form.teacherId" placeholder="请输入申请教师" />
-        </el-form-item>
-        <el-form-item label="申请课程" prop="courseId">
-          <el-input v-model="form.courseId" placeholder="请输入申请课程" />
-        </el-form-item>
-        <el-form-item label="申请状态">
-          <el-select v-model="form.status" placeholder="请选择申请状态">
-            <el-option v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue"></el-option>
-          </el-select>
-        </el-form-item>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="课程名" prop="course.name">
+              <el-input v-model="form.course.name" placeholder="请输入课程名" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="上课教师" prop="course.teacherId">
+              <el-select v-model="form.course.teacherId" placeholder="请选择上课教师" :disabled="true">
+                <el-option v-for="item in teacherList" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="开课时间" prop="course.semesterId">
+              <el-select v-model="form.course.semesterId" placeholder="请选择开课时间">
+                <el-option v-for="item in semesterOptions" :key="item.id" :label="item.label" :value="item.id" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="上课时间" prop="classTimeId">
+              <el-select v-model="form.course.classTimeId" placeholder="请选择上课时间">
+                <el-option v-for="item in classTimeOptions" :key="item.id" :label="item.label" :value="item.id" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="上课地点" prop="classLocation">
+              <el-input v-model="form.course.classLocation" placeholder="请输入上课地点" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="招生人数">
+              <el-row class="peo-el-row" v-for="(item, index) in form.course.peopleList" :key="index">
+                <el-col class="peo-el-col" :span="10">
+                  <el-form-item :prop="`course.peopleList.${index}.gradeId`" :rules="{required: true, message: '请选择招生年级', trigger: 'change'}">
+                    <el-select v-model="item.gradeId">
+                      <el-option v-for="grade in gradeOptions" :key="grade.deptId + index" :value="grade.deptId" :label="grade.deptName"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col class="peo-el-col" :span="10">
+                  <el-form-item :prop="`course.peopleList.${index}.initNum`" :rules="{required: true, message: '请输入招生人数', trigger: 'blur'}">
+                    <el-input v-model="item.initNum" placeholder="请输入招生人数" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="2">
+                  <i v-if="index != 0" class="el-icon-minus people-config-minus" @click.prevent="removePeople(item)"></i>
+                  <i v-else class="el-icon-plus people-config-plus" @click.prevent="addPeople"></i>
+                </el-col>
+              </el-row>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="课程简介" prop="intro">
+              <el-input v-model="form.course.intro" type="textarea" placeholder="请输入内容" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="目标" prop="objective">
+              <el-input v-model="form.course.objective" type="textarea" placeholder="请输入内容" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="特别声明" prop="specialNote">
+              <el-input v-model="form.course.specialNote" type="textarea" placeholder="请输入内容" />
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="success" @click="submitCheckForm('1')">通 过</el-button>
+        <el-button type="danger" @click="submitCheckForm('2')">退 回</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -87,8 +147,22 @@
     exportApply
   } from "@/api/elective/record/apply";
   import {
+    listSemester,
+    listClassTime
+  } from "@/api/elective/config/value"
+  import {
     listTeacher
   } from "@/api/elective/teacher/teacher"
+  import {
+    listClazz,
+    listGrade
+  } from "@/api/elective/clazz/clazz"
+  import {
+    getCourse
+  } from "@/api/elective/course/course"
+  import {
+    addCheck
+  } from "@/api/elective/record/check"
 
   export default {
     data() {
@@ -113,6 +187,12 @@
         statusOptions: [],
         // 教师列表
         teacherList: [],
+        // 对应的开课时间 字典值字典
+        semesterOptions: [],
+        // 上课时间 字典值字典
+        classTimeOptions: [],
+        // 年级列表
+        gradeOptions: [],
         // 查询参数
         queryParams: {
           pageNum: 1,
@@ -125,28 +205,39 @@
         form: {},
         // 表单校验
         rules: {
-          teacherId: [{
+          "course.name": [{
             required: true,
-            message: "申请教师不能为空",
+            message: "课程名不能为空",
             trigger: "blur"
           }],
-          courseId: [{
+          "course.semesterId": [{
             required: true,
-            message: "申请课程不能为空",
+            message: "开课时间不能为空",
             trigger: "blur"
           }],
-          status: [{
+          "course.teacherId": [{
             required: true,
-            message: "申请状态不能为空",
+            message: "上课教师不能为空",
             trigger: "blur"
           }]
         }
       };
     },
     created() {
+      // 当存在两级对象的时候 需要现在data里面声明出来
+      this.reset()
       this.getList();
       listTeacher().then(response => {
         this.teacherList = response.rows;
+      })
+      listSemester().then(response => {
+        this.semesterOptions = response.data;
+      });
+      listClassTime().then(response => {
+        this.classTimeOptions = response.data;
+      });
+      listGrade().then(response => {
+        this.gradeOptions = response.data
       })
       this.getDicts("elective_apply_status").then(response => {
         this.statusOptions = response.data;
@@ -175,13 +266,26 @@
       reset() {
         this.form = {
           id: undefined,
-          createBy: undefined,
-          createTime: undefined,
-          updateBy: undefined,
-          updateTime: undefined,
-          teacherId: undefined,
+          applyId: undefined,
           courseId: undefined,
-          status: undefined
+          result: undefined,
+          course: {
+            id: undefined,
+            remark: undefined,
+            name: undefined,
+            status: undefined,
+            teacherId: undefined,
+            semesterId: undefined,
+            intro: undefined,
+            objective: undefined,
+            specialNote: undefined,
+            classTimeId: undefined,
+            classLocation: undefined,
+            peopleList: [{
+              gradeId: null,
+              initNum: ''
+            }]
+          }
         };
         this.resetForm("form");
       },
@@ -217,6 +321,18 @@
           this.title = "修改申请记录";
         });
       },
+      /** 审核按钮操作 */
+      handleCheck(row) {
+        this.reset()
+        const courseId = row.courseId
+        this.form.applyId = row.id
+        this.form.courseId = courseId
+        getCourse(courseId).then(response => {
+          this.form.course = response.data;
+          this.open = true;
+          this.title = "审核课程";
+        });
+      },
       /** 提交按钮 */
       submitForm: function() {
         this.$refs["form"].validate(valid => {
@@ -242,6 +358,24 @@
                 }
               });
             }
+          }
+        });
+      },
+      submitCheckForm(result) {
+        this.$refs["form"].validate(valid => {
+          if (valid) {
+            this.form.result = result;
+            let text = '通过';
+            if (result == '2') '退回';
+            addCheck(this.form).then(response => {
+              if (response.code === 200) {
+                this.msgSuccess(text + "成功");
+                this.open = false;
+                this.getList();
+              } else {
+                this.msgError(response.msg);
+              }
+            });
           }
         });
       },
@@ -271,7 +405,41 @@
         }).then(response => {
           this.download(response.msg);
         }).catch(function() {});
+      },
+      removePeople(people) {
+        let index = this.form.course.peopleList.indexOf(people)
+        if (index != -1) {
+          this.form.course.peopleList.splice(index, 1)
+        }
+      },
+      addPeople() {
+        this.form.course.peopleList.push({
+          gradeId: null,
+          initNum: ''
+        })
       }
     }
   };
 </script>
+
+<style>
+  .people-config-minus {
+    color: red;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  .people-config-plus {
+    color: #5cb6ff;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  .peo-el-row {
+    margin-bottom: 20px;
+  }
+
+  .peo-el-row>.peo-el-col {
+    margin-right: 10px;
+  }
+</style>

@@ -1,6 +1,11 @@
 package com.ruoyi.project.elective.record.controller;
 
 import java.util.List;
+
+import com.ruoyi.common.exception.CustomException;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.project.elective.open.domain.ElectiveOpenSelect;
+import com.ruoyi.project.elective.open.service.IElectiveOpenSelectService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,65 +33,86 @@ import com.ruoyi.framework.web.page.TableDataInfo;
  */
 @RestController
 @RequestMapping("/elective/select")
-public class ElectiveSelectRecordController extends BaseController
-{
+public class ElectiveSelectRecordController extends BaseController {
     @Autowired
     private IElectiveSelectRecordService electiveSelectRecordService;
 
     /**
-     * 查询select列表
+     * 查询选课记录列表
      */
     @PreAuthorize("@ss.hasPermi('elective:select:list')")
     @GetMapping("/list")
-    public TableDataInfo list(ElectiveSelectRecord electiveSelectRecord)
-    {
+    public TableDataInfo list(ElectiveSelectRecord electiveSelectRecord) {
         startPage();
         List<ElectiveSelectRecord> list = electiveSelectRecordService.selectElectiveSelectRecordList(electiveSelectRecord);
         return getDataTable(list);
     }
 
     /**
-     * 导出select列表
+     * 查询学生可选课程
+     */
+    @PreAuthorize("@ss.hasPermi('elective:select:list')")
+    @GetMapping("/student")
+    public TableDataInfo listCanSelect(@RequestBody ElectiveSelectRecord electiveSelectRecord) {
+        startPage();
+        List<ElectiveSelectRecord> list = electiveSelectRecordService.listCanSelect(electiveSelectRecord);
+        return getDataTable(list);
+    }
+
+    /**
+     * 导出选课记录列表
      */
     @PreAuthorize("@ss.hasPermi('elective:select:export')")
-    @Log(title = "select", businessType = BusinessType.EXPORT)
+    @Log(title = "选课记录", businessType = BusinessType.EXPORT)
     @GetMapping("/export")
-    public AjaxResult export(ElectiveSelectRecord electiveSelectRecord)
-    {
+    public AjaxResult export(ElectiveSelectRecord electiveSelectRecord) {
         List<ElectiveSelectRecord> list = electiveSelectRecordService.selectElectiveSelectRecordList(electiveSelectRecord);
         ExcelUtil<ElectiveSelectRecord> util = new ExcelUtil<ElectiveSelectRecord>(ElectiveSelectRecord.class);
         return util.exportExcel(list, "select");
     }
 
     /**
-     * 获取select详细信息
+     * 获取选课记录详细信息
      */
     @PreAuthorize("@ss.hasPermi('elective:select:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return AjaxResult.success(electiveSelectRecordService.selectElectiveSelectRecordById(id));
     }
 
     /**
-     * 新增select
+     * 新增选课记录
      */
     @PreAuthorize("@ss.hasPermi('elective:select:add')")
-    @Log(title = "select", businessType = BusinessType.INSERT)
+    @Log(title = "选课记录", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody ElectiveSelectRecord electiveSelectRecord)
-    {
-        return toAjax(electiveSelectRecordService.insertElectiveSelectRecord(electiveSelectRecord));
+    public AjaxResult add(@RequestBody ElectiveSelectRecord electiveSelectRecord) {
+        // 检查是否已经选择过课程
+        Long studentId = SecurityUtils.getStudentId();
+        electiveSelectRecord.setStudentId(studentId);
+        ElectiveSelectRecord query = new ElectiveSelectRecord();
+        query.setStudentId(studentId);
+        query.setOpenId(electiveSelectRecord.getOpenId());
+        List<ElectiveSelectRecord> list = electiveSelectRecordService.selectElectiveSelectRecordList(query);
+        if (list == null || list.size() == 0) {
+            // 检查课程是否有余量
+            list = electiveSelectRecordService.listCanSelect(electiveSelectRecord);
+            if (list == null || list.size() == 0) {
+                throw new CustomException("抱歉，无可选余量");
+            }
+            return toAjax(electiveSelectRecordService.insertElectiveSelectRecord(electiveSelectRecord));
+        } else {
+            throw new CustomException("抱歉，您已经选课");
+        }
     }
 
     /**
-     * 修改select
+     * 修改选课记录
      */
     @PreAuthorize("@ss.hasPermi('elective:select:edit')")
-    @Log(title = "select", businessType = BusinessType.UPDATE)
+    @Log(title = "选课记录", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody ElectiveSelectRecord electiveSelectRecord)
-    {
+    public AjaxResult edit(@RequestBody ElectiveSelectRecord electiveSelectRecord) {
         return toAjax(electiveSelectRecordService.updateElectiveSelectRecord(electiveSelectRecord));
     }
 
@@ -94,10 +120,9 @@ public class ElectiveSelectRecordController extends BaseController
      * 删除select
      */
     @PreAuthorize("@ss.hasPermi('elective:select:remove')")
-    @Log(title = "select", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
+    @Log(title = "选课记录", businessType = BusinessType.DELETE)
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(electiveSelectRecordService.deleteElectiveSelectRecordByIds(ids));
     }
 }

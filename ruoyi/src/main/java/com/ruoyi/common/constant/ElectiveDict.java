@@ -31,4 +31,9 @@ public class ElectiveDict {
      */
     public static final String DEPT_TYPE_CLASS = "3";
 
+    /**
+     * 课程状态-已通过
+     */
+    public static final String COURSE_STATUS_PASSING = "1";
+
 }
