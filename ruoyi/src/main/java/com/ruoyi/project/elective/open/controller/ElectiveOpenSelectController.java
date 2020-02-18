@@ -48,7 +48,7 @@ public class ElectiveOpenSelectController extends BaseController {
      * 查询开放选课列表
      */
     @PreAuthorize("@ss.hasPermi('elective:open:list')")
-    @GetMapping("/list/student")
+    @GetMapping("/student")
     public TableDataInfo listStudentOpen(ElectiveOpenSelect electiveOpenSelect) {
         startPage();
         List<ElectiveOpenSelect> list = electiveOpenSelectService.selectStudentOpen(electiveOpenSelect);

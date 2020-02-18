@@ -19,6 +19,11 @@
           <el-option v-for="item in classTimeOptions" :key="item.id" :label="item.label" :value="item.id" />
         </el-select>
       </el-form-item>
+      <el-form-item label="年级" prop="gradeId">
+        <el-select v-model="queryParams.gradeId" placeholder="请选择年级" clearable size="small">
+          <el-option v-for="grade in gradeOptions" :key="grade.deptId" :value="grade.deptId" :label="grade.deptName"></el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择状态" clearable size="small">
           <el-option v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
@@ -75,7 +80,7 @@
       <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <!-- TODO 课程审核  -->
-          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['elective:check:add']">审核</el-button>
+          <!-- <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['elective:check:add']">审核</el-button> -->
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['elective:course:edit']">修改</el-button>
           <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['elective:course:remove']">删除</el-button>
         </template>
@@ -228,7 +233,8 @@
           status: undefined,
           teacherId: undefined,
           semesterId: undefined,
-          classTimeId: undefined
+          classTimeId: undefined,
+          gradeId: undefined
         },
         // 表单参数
         form: {},

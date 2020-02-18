@@ -51,3 +51,11 @@ export function exportSelect(query) {
     params: query
   })
 }
+
+export function listCanSelect(query) {
+  return request({
+    url: '/elective/select/student',
+    method: 'get',
+    params: query
+  })
+}

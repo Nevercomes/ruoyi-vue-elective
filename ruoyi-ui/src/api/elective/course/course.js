@@ -51,3 +51,11 @@ export function exportCourse(query) {
     params: query
   })
 }
+
+export function listForSelect(query) {
+  return request({
+    url: '/elective/course/select/list',
+    method: 'get',
+    params: query
+  })
+}
