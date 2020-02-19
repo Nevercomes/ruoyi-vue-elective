@@ -24,6 +24,7 @@
         <result property="classTime" column="class_time"/>
         <result property="classTimeId" column="class_time_id"/>
         <result property="classLocation" column="class_location"/>
+        <result property="schoolId" column="school_id" />
         <collection property="peopleList" javaType="java.util.List" resultMap="PeopleResult"/>
     </resultMap>
 
@@ -55,6 +56,7 @@
             a.special_note,
             a.class_time_id,
             a.class_location,
+            a.school_id,
             (select label
              from elective_config_value
              where id = a.class_time_id) as class_time,
@@ -73,7 +75,7 @@
     <select id="selectElectiveCourseList" parameterType="ElectiveCourse" resultMap="ElectiveCourseResult">
         <include refid="selectElectiveCourseVo"/>
         <where>
-            1 = 1
+            a.school_id = #{schoolId}
             <if test="beginTime != null and endTime != '' and beginTime != null and endTime != ''">
                 and a.create_time between #{beginTime} and #{endTime}
             </if>
@@ -83,6 +85,7 @@
             <if test="semesterId != null">and semester_id = #{semesterId}</if>
             <if test="classTimeId != null">and class_time_id = #{classTimeId}</if>
             <if test="gradeId != null">and a.id in (select course_id from elective_course_people where grade_id = #{gradeId})</if>
+            <if test="loginTeacherId != null">and a.teacher_id = #{loginTeacherId}</if>
         </where>
     </select>
 
@@ -119,6 +122,7 @@
             <if test="specialNote != null  and specialNote != ''">special_note,</if>
             <if test="classTimeId != null">class_time_id,</if>
             <if test="classLocation != null  and classLocation != ''">class_location,</if>
+            <if test="schoolId != null">school_id,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
@@ -135,6 +139,7 @@
             <if test="specialNote != null  and specialNote != ''">#{specialNote},</if>
             <if test="classTimeId != null">#{classTimeId},</if>
             <if test="classLocation != null  and classLocation != ''">#{classLocation},</if>
+            <if test="schoolId != null">#{schoolId},</if>
         </trim>
     </insert>
 

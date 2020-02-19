@@ -42,7 +42,7 @@
     <select id="selectElectiveOpenSelectList" parameterType="ElectiveOpenSelect" resultMap="ElectiveOpenSelectResult">
         <include refid="selectElectiveOpenSelectVo"/>
         <where>
-            1 = 1
+            school_id = #{schoolId}
             <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
             <if test="semesterId != null ">and semester_id = #{semesterId}</if>
             <if test="status != null and status != ''">and status = #{status}</if>
@@ -55,7 +55,8 @@
             semester_id,
             name
         from elective_open_select
-        where status = '1'
+        where school_id = #{schoolId}
+              and status = '1'
               and open_time &lt; current_date()
               and close_time &gt; current_date()
         order by id desc
@@ -64,7 +65,8 @@
 
     <select id="selectStudentOpen" parameterType="ElectiveOpenSelect" resultMap="ElectiveOpenSelectResult">
         <include refid="selectElectiveOpenSelectVo"/>
-        where status = '1'
+        where school_id = #{schoolId}
+        and status = '1'
         and open_time &lt; current_date()
         and close_time &gt; current_date()
         order by id desc

@@ -56,6 +56,9 @@
             <if test="sex != null and sex != ''">
                 and u.sex = #{sex}
             </if>
+            <if test="loginTeacherId != null">
+                and a.id = #{loginTeacherId}
+            </if>
         </where>
     </select>
 

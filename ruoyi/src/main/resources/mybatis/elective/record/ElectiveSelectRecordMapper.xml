@@ -14,6 +14,7 @@
         <result property="courseName" column="course_name"/>
         <result property="className" column="class_name"/>
         <result property="openId" column="open_id"/>
+        <result property="openName" column="open_name"/>
     </resultMap>
 
     <resultMap id="ElectiveSelectStatisticResult" type="ElectiveSelectStatistic">
@@ -36,17 +37,19 @@
             c.name                      as course_name,
             (select dept_name
              from sys_dept
-             where dept_id = s.dept_id) as class_name
+             where dept_id = s.dept_id) as class_name,
+            o.name                      as open_name
         from elective_select_record a
             left join elective_course c on c.id = a.course_id
             left join elective_student s on s.id = a.student_id
+            left join elective_open_select o on o.id = a.open_id
     </sql>
 
     <select id="selectElectiveSelectRecordList" parameterType="ElectiveSelectRecord"
             resultMap="ElectiveSelectRecordResult">
         <include refid="selectElectiveSelectRecordVo"/>
         <where>
-            1 = 1
+            c.school_id = #{schoolId}
             <if test="beginTime != null and endTime != '' and beginTime != null and endTime != ''">
                 and a.create_time between #{beginTime} and #{endTime}
             </if>
@@ -54,6 +57,8 @@
             <if test="courseId != null ">and a.course_id = #{courseId}</if>
             <if test="courseName != null and courseName != ''">and c.name like concat('%', #{courseName}, '%')</if>
             <if test="studentName != null and studentName != ''">and s.name like concat('%', #{studentName}, '%')</if>
+            <if test="loginStudentId != null">and a.student_id = #{loginStudentId}</if>
+            <if test="openId != null">and a.open_id = #{openId}</if>
         </where>
     </select>
 
@@ -68,7 +73,8 @@
             c.id   as course_id
         from elective_course_people p
             inner join elective_course c on p.course_id = c.id
-        where (p.init_num - p.select_num) &gt; 0
+        where c.school_id = #{schoolId}
+              and (p.init_num - p.select_num) &gt; 0
               and p.grade_id = (select parent_id
                                 from sys_dept
                                 where sys_dept.dept_id = (select elective_student.dept_id
@@ -87,7 +93,7 @@
                              order by id desc
                              limit 1)-->
 
-    <!-- TODO 有点复杂 一时半会先不好这个SQL -->
+    <!-- TODO 有点复杂 一时半会写不好这个SQL -->
     <select id="listStatistic" parameterType="ElectiveSelectStatistic" resultMap="ElectiveSelectStatisticResult">
         select
             c.name                      as courseName,

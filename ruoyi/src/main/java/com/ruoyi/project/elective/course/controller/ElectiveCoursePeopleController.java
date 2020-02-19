@@ -43,10 +43,11 @@ public class ElectiveCoursePeopleController extends BaseController {
         List<ElectiveCoursePeople> list = electiveCoursePeopleService.selectElectiveCoursePeopleList(electiveCoursePeople);
         return getDataTable(list);
     }
+
     /**
      * 统计选课人数
      */
-    @PreAuthorize("@ss.hasPermi('elective:people:statistic')")
+    @PreAuthorize("@ss.hasPermi('elective:statistic:list')")
     @GetMapping("/statistic")
     public TableDataInfo statistic(ElectiveCoursePeople electiveCoursePeople) {
         startPage();
@@ -58,7 +59,7 @@ public class ElectiveCoursePeopleController extends BaseController {
     /**
      * 导出选课人数列表
      */
-    @PreAuthorize("@ss.hasPermi('elective:people:export')")
+    @PreAuthorize("@ss.hasPermi('elective:statistic:export')")
     @Log(title = "选课人数", businessType = BusinessType.EXPORT)
     @GetMapping("/export")
     public AjaxResult export(ElectiveCoursePeople electiveCoursePeople) {

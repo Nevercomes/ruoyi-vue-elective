@@ -38,6 +38,7 @@ public class BaseEntity implements Serializable {
     /**
      * 更新者
      */
+    @JsonIgnore
     private String updateBy;
 
     /**
@@ -74,6 +75,16 @@ public class BaseEntity implements Serializable {
     private Map<String, Object> params;
 
     /**
+     * 登录的TeacherId
+     */
+    private Long loginTeacherId;
+
+    /**
+     * 登录的学生Id
+     */
+    private Long loginStudentId;
+
+    /**
      * 对应部门表中的dept_id 这里代表学校
      */
     private Long schoolId;
@@ -85,6 +96,22 @@ public class BaseEntity implements Serializable {
     public Long getSchoolId() {
         try {
             return SecurityUtils.getSchoolId();
+        } catch (Exception e) {
+            return -1L;
+        }
+    }
+
+    public Long getLoginTeacherId() {
+        try {
+            return SecurityUtils.getTeacherId();
+        } catch (Exception e) {
+            return -1L;
+        }
+    }
+
+    public Long getLoginStudentId() {
+        try {
+            return SecurityUtils.getStudentId();
         } catch (Exception e) {
             return -1L;
         }

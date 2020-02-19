@@ -39,7 +39,7 @@
             resultMap="ElectiveCheckRecordResult">
         <include refid="selectElectiveCheckRecordVo"/>
         <where>
-            1 = 1
+            c.school_id = #{schoolId}
             <if test="courseName != null and courseName != ''">and c.name like concat('%', #{courseName}, '%')</if>
             <if test="courseId != null ">and a.course_id = #{courseId}</if>
             <if test="applyId != null ">and a.apply_id = #{applyId}</if>

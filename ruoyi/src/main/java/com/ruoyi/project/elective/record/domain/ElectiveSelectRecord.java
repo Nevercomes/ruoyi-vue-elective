@@ -33,11 +33,15 @@ public class ElectiveSelectRecord extends BaseEntity {
     @Excel(name = "学生")
     private String studentName;
 
-    @Excel(name = "课程")
-    private String courseName;
 
     @Excel(name = "班级")
     private String className;
+
+    @Excel(name = "课程")
+    private String courseName;
+
+    @Excel(name = "选课")
+    private String openName;
 
     /**
      * 对应选课人数

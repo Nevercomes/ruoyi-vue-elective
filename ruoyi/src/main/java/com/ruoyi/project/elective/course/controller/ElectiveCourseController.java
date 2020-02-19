@@ -54,7 +54,7 @@ public class ElectiveCourseController extends BaseController {
     /**
      * 查询选课可选课程
      */
-    @PreAuthorize("@ss.hasPermi('elective:course:list')")
+    @PreAuthorize("@ss.hasPermi('elective:select:course:list')")
     @GetMapping("/select/list")
     public TableDataInfo listSelect(ElectiveCourse electiveCourse) {
         ElectiveOpenSelect openSelect = openSelectService.selectForUse(new ElectiveOpenSelect());

@@ -114,7 +114,6 @@ public class ElectiveClazzController extends BaseController {
     /**
      * 获取年级列表
      */
-    @PreAuthorize(("@ss.hasPermi('elective:clazz:list')"))
     @GetMapping("/grade")
     public AjaxResult listGrade() {
         return AjaxResult.success(electiveClazzService.getGradeList());
@@ -123,7 +122,6 @@ public class ElectiveClazzController extends BaseController {
     /**
      * 获取班级列表
      */
-    @PreAuthorize(("@ss.hasPermi('elective:clazz:list')"))
     @GetMapping("/clazz")
     public AjaxResult listClazz() {
         return AjaxResult.success(electiveClazzService.getClassList());

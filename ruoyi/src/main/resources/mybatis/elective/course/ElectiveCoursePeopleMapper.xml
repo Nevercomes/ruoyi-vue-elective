@@ -29,7 +29,6 @@
             resultMap="ElectiveCoursePeopleResult">
         <include refid="selectElectiveCoursePeopleVo"/>
         <where>
-            1 = 1
             <if test="courseId != null ">and course_id = #{courseId}</if>
             <if test="gradeId != null ">and grade_id = #{gradeId}</if>
         </where>
@@ -56,7 +55,7 @@
             inner join elective_course c on c.id = a.course_id
             left join sys_dept d on d.dept_id = a.grade_id
         <where>
-            1 = 1
+            c.school_id = #{schoolId}
             <if test="semesterId != null">
                 and c.semester_id = #{semesterId}
             </if>
