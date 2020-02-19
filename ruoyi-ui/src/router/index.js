@@ -130,6 +130,19 @@ export const constantRoutes = [
         meta: { title: '选课记录' }
       }
     ]
+  },
+  {
+    path: '/config',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'value/:templateId(\\d+)',
+        component: () => import('@/views/elective/config/value'),
+        name: 'SelectRecord',
+        meta: { title: '模板数据' }
+      }
+    ]
   }
 ]
 
