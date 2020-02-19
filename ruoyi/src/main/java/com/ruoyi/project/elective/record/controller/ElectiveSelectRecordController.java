@@ -4,8 +4,7 @@ import java.util.List;
 
 import com.ruoyi.common.exception.CustomException;
 import com.ruoyi.common.utils.SecurityUtils;
-import com.ruoyi.project.elective.open.domain.ElectiveOpenSelect;
-import com.ruoyi.project.elective.open.service.IElectiveOpenSelectService;
+import com.ruoyi.project.elective.record.domain.ElectiveSelectStatistic;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,9 +52,20 @@ public class ElectiveSelectRecordController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('elective:select:list')")
     @GetMapping("/student")
-    public TableDataInfo listCanSelect(@RequestBody ElectiveSelectRecord electiveSelectRecord) {
+    public TableDataInfo listCanSelect(ElectiveSelectRecord electiveSelectRecord) {
         startPage();
         List<ElectiveSelectRecord> list = electiveSelectRecordService.listCanSelect(electiveSelectRecord);
+        return getDataTable(list);
+    }
+
+    /**
+     * 统计选课结果
+     */
+    @PreAuthorize("@ss.hasPermi('elective:select:list')")
+    @GetMapping("/statistic")
+    public TableDataInfo statistic(ElectiveSelectStatistic electiveSelectStatistic) {
+        startPage();
+        List<ElectiveSelectStatistic> list = electiveSelectRecordService.listStatistic(electiveSelectStatistic);
         return getDataTable(list);
     }
 
@@ -85,10 +95,11 @@ public class ElectiveSelectRecordController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('elective:select:add')")
     @Log(title = "选课记录", businessType = BusinessType.INSERT)
-    @PostMapping
+    @PostMapping()
     public AjaxResult add(@RequestBody ElectiveSelectRecord electiveSelectRecord) {
         // 检查是否已经选择过课程
-        Long studentId = SecurityUtils.getStudentId();
+        Long studentId = electiveSelectRecord.getStudentId();
+        if (studentId == null) studentId = SecurityUtils.getStudentId();
         electiveSelectRecord.setStudentId(studentId);
         ElectiveSelectRecord query = new ElectiveSelectRecord();
         query.setStudentId(studentId);

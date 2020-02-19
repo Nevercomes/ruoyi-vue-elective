@@ -96,4 +96,14 @@ public class ElectiveCoursePeopleServiceImpl implements IElectiveCoursePeopleSer
         query.setCourseId(courseId);
         return electiveCoursePeopleMapper.selectElectiveCoursePeopleList(query);
     }
+
+    /**
+     * 统计选课人数
+     * @param electiveCoursePeople
+     * @return
+     */
+    @Override
+    public List<ElectiveCoursePeople> listStatistic(ElectiveCoursePeople electiveCoursePeople) {
+        return electiveCoursePeopleMapper.listStatistic(electiveCoursePeople);
+    }
 }

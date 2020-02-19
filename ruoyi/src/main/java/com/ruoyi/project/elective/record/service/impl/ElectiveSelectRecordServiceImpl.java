@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.project.elective.course.mapper.ElectiveCoursePeopleMapper;
+import com.ruoyi.project.elective.record.domain.ElectiveSelectStatistic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.project.elective.record.mapper.ElectiveSelectRecordMapper;
@@ -96,9 +97,24 @@ public class ElectiveSelectRecordServiceImpl implements IElectiveSelectRecordSer
         return electiveSelectRecordMapper.deleteElectiveSelectRecordById(id);
     }
 
+    /**
+     * 查询学生可选的课程
+     * @param electiveSelectRecord
+     * @return
+     */
     @Override
     public List<ElectiveSelectRecord> listCanSelect(ElectiveSelectRecord electiveSelectRecord) {
         List<ElectiveSelectRecord> list = electiveSelectRecordMapper.listCanSelect(electiveSelectRecord);
         return list;
+    }
+
+    /**
+     * 统计选课结果
+     * @param electiveSelectStatistic
+     * @return
+     */
+    @Override
+    public List<ElectiveSelectStatistic> listStatistic(ElectiveSelectStatistic electiveSelectStatistic) {
+        return electiveSelectRecordMapper.listStatistic(electiveSelectStatistic);
     }
 }

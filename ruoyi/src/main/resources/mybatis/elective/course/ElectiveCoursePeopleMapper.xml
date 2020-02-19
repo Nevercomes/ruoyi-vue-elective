@@ -10,6 +10,9 @@
         <result property="gradeId" column="grade_id"/>
         <result property="selectNum" column="select_num"/>
         <result property="initNum" column="init_num"/>
+        <result property="courseName" column="course_name"/>
+        <result property="gradeName" column="grade_name"/>
+        <result property="teacherName" column="teacher_name"/>
     </resultMap>
 
     <sql id="selectElectiveCoursePeopleVo">
@@ -35,6 +38,32 @@
     <select id="selectElectiveCoursePeopleById" parameterType="Long" resultMap="ElectiveCoursePeopleResult">
         <include refid="selectElectiveCoursePeopleVo"/>
         where id = #{id}
+    </select>
+
+    <select id="listStatistic" parameterType="ElectiveCoursePeople" resultMap="ElectiveCoursePeopleResult">
+        select
+            a.id,
+            a.course_id,
+            a.grade_id,
+            a.select_num,
+            a.init_num,
+            c.name                      as course_name,
+            d.dept_name                 as grade_name,
+            (select t.name
+             from elective_teacher t
+             where t.id = c.teacher_id) as teacher_name
+        from elective_course_people a
+            inner join elective_course c on c.id = a.course_id
+            left join sys_dept d on d.dept_id = a.grade_id
+        <where>
+            1 = 1
+            <if test="semesterId != null">
+                and c.semester_id = #{semesterId}
+            </if>
+            <if test="gradeId != null">
+                and a.grade_id = #{gradeId}
+            </if>
+        </where>
     </select>
 
     <insert id="insertElectiveCoursePeople" parameterType="ElectiveCoursePeople" useGeneratedKeys="true"

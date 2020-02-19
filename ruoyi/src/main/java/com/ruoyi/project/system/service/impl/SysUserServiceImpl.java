@@ -153,10 +153,10 @@ public class SysUserServiceImpl implements ISysUserService {
         if (StringUtils.isEmpty(user.getPhonenumber())) {
             return UserConstants.UNIQUE;
         }
-        SysUser info = userMapper.checkPhoneUnique(user.getPhonenumber());
-        if (StringUtils.isNotNull(info) && info.getUserId().longValue() != userId.longValue()) {
-            return UserConstants.NOT_UNIQUE;
-        }
+//        SysUser info = userMapper.checkPhoneUnique(user.getPhonenumber());
+//        if (StringUtils.isNotNull(info) && info.getUserId().longValue() != userId.longValue()) {
+//            return UserConstants.NOT_UNIQUE;
+//        }
         return UserConstants.UNIQUE;
     }
 
@@ -172,10 +172,10 @@ public class SysUserServiceImpl implements ISysUserService {
         if (StringUtils.isEmpty(user.getEmail())) {
             return UserConstants.UNIQUE;
         }
-        SysUser info = userMapper.checkEmailUnique(user.getEmail());
-        if (StringUtils.isNotNull(info) && info.getUserId().longValue() != userId.longValue()) {
-            return UserConstants.NOT_UNIQUE;
-        }
+//        SysUser info = userMapper.checkEmailUnique(user.getEmail());
+//        if (StringUtils.isNotNull(info) && info.getUserId().longValue() != userId.longValue()) {
+//            return UserConstants.NOT_UNIQUE;
+//        }
         return UserConstants.UNIQUE;
     }
 

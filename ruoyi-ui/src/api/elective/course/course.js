@@ -59,3 +59,19 @@ export function listForSelect(query) {
     params: query
   })
 }
+
+export function listStatistic(query) {
+  return request({
+    url: '/elective/people/statistic',
+    method: 'get',
+    params: query
+  })
+}
+
+export function exportStatistic(query) {
+  return request({
+    url: '/elective/people/export',
+    method: 'get',
+    params: query
+  })
+}

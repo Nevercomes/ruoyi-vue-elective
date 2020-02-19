@@ -29,17 +29,35 @@ public class ElectiveCoursePeople extends BaseEntity {
     private Long courseId;
 
     /**
+     * 开课时间
+     */
+    private Long semesterId;
+
+    /**
      * 年级
      */
     private Long gradeId;
 
-    /**
-     * 选课人数
-     */
-    private Integer selectNum;
+    @Excel(name = "课程")
+    private String courseName;
+
+    @Excel(name = "教师")
+    private String teacherName;
+
+    @Excel(name = "年级")
+    private String gradeName;
 
     /**
      * 招生人数
      */
+    @Excel(name = "计划招生")
     private Integer initNum;
+
+    /**
+     * 选课人数
+     */
+    @Excel(name = "选课人数")
+    private Integer selectNum;
+
+
 }

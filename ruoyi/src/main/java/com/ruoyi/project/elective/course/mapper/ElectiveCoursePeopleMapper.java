@@ -3,6 +3,7 @@ package com.ruoyi.project.elective.course.mapper;
 import com.ruoyi.project.elective.course.domain.ElectiveCoursePeople;
 import com.ruoyi.project.elective.record.domain.ElectiveSelectRecord;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -67,4 +68,10 @@ public interface ElectiveCoursePeopleMapper
      */
     void addOneSelectNum(ElectiveSelectRecord electiveSelectRecord);
 
+    /**
+     * 统计选课人数
+     * @param electiveCoursePeople
+     * @return
+     */
+    List<ElectiveCoursePeople> listStatistic(Serializable electiveCoursePeople);
 }

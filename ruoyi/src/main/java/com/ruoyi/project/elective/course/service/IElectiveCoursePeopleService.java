@@ -67,4 +67,10 @@ public interface IElectiveCoursePeopleService {
      */
     public List<ElectiveCoursePeople> selectElectiveCoursePeopleListByCourseId(Long courseId);
 
+    /**
+     * 统计选课人数
+     * @param electiveCoursePeople
+     * @return
+     */
+    List<ElectiveCoursePeople> listStatistic(ElectiveCoursePeople electiveCoursePeople);
 }

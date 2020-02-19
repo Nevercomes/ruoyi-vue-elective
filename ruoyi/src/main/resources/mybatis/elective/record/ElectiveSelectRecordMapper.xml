@@ -16,6 +16,14 @@
         <result property="openId" column="open_id"/>
     </resultMap>
 
+    <resultMap id="ElectiveSelectStatisticResult" type="ElectiveSelectStatistic">
+        <result property="courseName" column="course_name"/>
+        <result property="teacherName" column="teacher_name"/>
+        <result property="gradeName" column="grade_name"/>
+        <result property="initNum" column="init_num"/>
+        <result property="selectNum" column="select_num"/>
+    </resultMap>
+
     <sql id="selectElectiveSelectRecordVo">
         select
             a.id,
@@ -63,13 +71,13 @@
         where (p.init_num - p.select_num) &gt; 0
               and p.grade_id = (select parent_id
                                 from sys_dept
-                                where id = (select dept_id
-                                            from elective_student
-                                            where id = #{studentId}))
+                                where sys_dept.dept_id = (select elective_student.dept_id
+                                                          from elective_student
+                                                          where elective_student.id = #{studentId}))
               and c.status = '1'
               and c.semester_id = (select semester_id
                                    from elective_open_select
-                                   where id = #{openId})
+                                   where elective_open_select.id = #{openId})
     </select>
     <!--and c.semester_id = (select semester_id
                              from elective_open_select
@@ -79,6 +87,19 @@
                              order by id desc
                              limit 1)-->
 
+    <!-- TODO 有点复杂 一时半会先不好这个SQL -->
+    <select id="listStatistic" parameterType="ElectiveSelectStatistic" resultMap="ElectiveSelectStatisticResult">
+        select
+            c.name                      as courseName,
+            (select t.name
+             from elective_teacher t
+             where t.id = c.teacher_id) as teacher_name,
+            count()                     as select_num
+        from elective_course c
+            left join elective_open_select o on c.semester_id = o.semester_id
+            left join elective_course_people p on p.course_id = c.id
+    </select>
+
     <insert id="insertElectiveSelectRecord" parameterType="ElectiveSelectRecord" useGeneratedKeys="true"
             keyProperty="id">
         insert into elective_select_record
@@ -87,12 +108,14 @@
             <if test="createTime != null ">create_time,</if>
             <if test="studentId != null ">student_id,</if>
             <if test="courseId != null ">course_id,</if>
+            <if test="openId != null ">open_id,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             <if test="createTime != null ">#{createTime},</if>
             <if test="studentId != null ">#{studentId},</if>
             <if test="courseId != null ">#{courseId},</if>
+            <if test="openId != null ">#{openId},</if>
         </trim>
     </insert>
 
@@ -103,6 +126,7 @@
             <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="studentId != null ">student_id = #{studentId},</if>
             <if test="courseId != null ">course_id = #{courseId},</if>
+            <if test="openId != null ">open_id = #{openId},</if>
         </trim>
         where id = #{id}
     </update>

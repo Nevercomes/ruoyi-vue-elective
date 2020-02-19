@@ -1,5 +1,6 @@
 package com.ruoyi.project.elective.record.mapper;
 
+import com.ruoyi.project.elective.record.domain.ElectiveSelectStatistic;
 import com.ruoyi.project.elective.record.domain.ElectiveSelectRecord;
 import java.util.List;
 
@@ -61,8 +62,15 @@ public interface ElectiveSelectRecordMapper
 
     /**
      * 根据学生查询可选课程
-     * @param studentId
+     * @param electiveSelectRecord
      * @return
      */
     List<ElectiveSelectRecord> listCanSelect(ElectiveSelectRecord electiveSelectRecord);
+
+    /**
+     * 统计选课结果
+     * @param electiveSelectStatistic
+     * @return
+     */
+    List<ElectiveSelectStatistic> listStatistic(ElectiveSelectStatistic electiveSelectStatistic);
 }

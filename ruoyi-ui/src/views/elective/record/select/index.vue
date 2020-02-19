@@ -130,7 +130,8 @@
           pageSize: 10,
           studentName: undefined,
           courseName: undefined,
-          clazzId: undefined
+          clazzId: undefined,
+          studentId: undefined
         },
         // 表单参数
         form: {},
@@ -151,6 +152,7 @@
     },
     created() {
       this.getList();
+      this.queryParams.studentId = this.$route.params && this.$route.params.studentId;
       listClazz().then(response => {
         this.clazzOptions = response.data
       })

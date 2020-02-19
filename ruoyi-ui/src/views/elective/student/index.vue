@@ -56,7 +56,13 @@
         <el-table v-loading="loading" :data="studentList" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="40" align="center" />
           <el-table-column label="编号" align="center" prop="userId" />
-          <el-table-column label="学生姓名" align="center" prop="name" :show-overflow-tooltip="true" />
+          <el-table-column label="学生姓名" align="center" prop="name">
+            <!-- <template slot-scope="scope">
+              <router-link :to="'/user/profile/' + scope.row.userId" class="link-type">
+                {{scope.row.name}}
+              </router-link>
+            </template> -->
+          </el-table-column>
           <el-table-column label="登录名称" align="center" prop="userName" :show-overflow-tooltip="true" />
           <el-table-column label="性别" align="center" prop="sex" :formatter="sexFormat"></el-table-column>
           <el-table-column label="班级" align="center" prop="className" :show-overflow-tooltip="true" />
@@ -71,15 +77,15 @@
             </template>
           </el-table-column>
           <el-table-column label="查看" align="center" class-name="small-padding fixed-width">
-            <!-- TODO 增加查看 -->
             <template slot-scope="scope">
-              <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['elective:teacher:edit']">课程</el-button>
+              <router-link :to="'/select/record/list/' + scope.row.id" class="link-type">
+                <el-button size="mini" type="text" icon="el-icon-document" v-hasPermi="['elective:select:list']">课程</el-button>
+              </router-link>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
             <template slot-scope="scope">
-              <!-- TODO 增加代为选课 -->
-              <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['elective:teacher:remove']">选课</el-button>
+              <el-button size="mini" type="text" icon="el-icon-mobile" @click="handleSelect(scope.row)" v-hasPermi="['elective:select:add']">代选</el-button>
               <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:user:edit']">修改</el-button>
               <el-button v-if="scope.row.userId !== 1" size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
                 v-hasPermi="['system:user:remove']">删除</el-button>
@@ -165,6 +171,28 @@
         <el-button @click="upload.open = false">取 消</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog :title="select.title" :visible.sync="select.open" width="500px">
+      <el-form ref="selectForm" :model="selectForm" :rules="selectRules" label-width="80px">
+        <el-form-item label="姓名" prop="studentName">
+          <el-input v-model="selectForm.studentName" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="选课" prop="openId">
+          <el-select v-model="selectForm.openId" placeholder="请选择选课">
+            <el-option v-for="item in openList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="课程" prop="courseId" v-if="selectForm.openId">
+          <el-select v-model="selectForm.courseId" placeholder="请选择课程">
+            <el-option v-for="item in canSelelctList" :key="item.courseId" :label="item.courseName" :value="item.courseId"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitSelectForm">确 定</el-button>
+        <el-button @click="cancelSelect">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -186,6 +214,13 @@
   import {
     treeselect
   } from "@/api/system/dept";
+  import {
+    listCanSelect,
+    addSelect
+  } from "@/api/elective/record/select"
+  import {
+    listStudentOpen
+  } from "@/api/elective/open/open"
   import Treeselect from "@riophae/vue-treeselect";
   import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
@@ -224,6 +259,10 @@
         statusOptions: [],
         // 性别状态字典
         sexOptions: [],
+        // 开放选课列表
+        openList: [],
+        // 该学生的可选课程
+        canSelelctList: [],
         // 表单参数
         form: {},
         defaultProps: {
@@ -277,6 +316,27 @@
             message: "登录密码不能为空",
             trigger: "blur"
           }]
+        },
+        // 代选表单
+        selectForm: {},
+        // 代选表单控制
+        select: {
+          title: '学生选课',
+          open: false
+        },
+        selectRules: {
+          studentName: {
+            required: true,
+            message: "学生不能为空"
+          },
+          openId: {
+            required: true,
+            message: "选课不能为空"
+          },
+          courseId: {
+            required: true,
+            message: "课程不能为空"
+          }
         }
       };
     },
@@ -284,6 +344,13 @@
       // 根据名称筛选部门树
       deptName(val) {
         this.$refs.tree.filter(val);
+      },
+      'selectForm.openId': function(val, oldVal) {
+        if (val) {
+          listCanSelect(this.selectForm).then(response => {
+            this.canSelelctList = response.rows
+          })
+        }
       }
     },
     created() {
@@ -298,6 +365,9 @@
       this.getConfigKey("sys.user.initPassword").then(response => {
         this.initPassword = response.data;
       });
+      listStudentOpen().then(response => {
+        this.openList = response.rows
+      })
     },
     methods: {
       /** 查询用户列表 */
@@ -362,6 +432,18 @@
           remark: undefined
         };
         this.resetForm("form");
+      },
+      // 代选表单重置
+      resetSelectForm() {
+        this.selectForm = {
+          openId: undefined,
+          studentId: undefined,
+          courseId: undefined,
+          studentName: undefined
+        };
+        this.openId = undefined
+        this.canSelelctList = []
+        this.resetForm("selectForm")
       },
       /** 搜索按钮操作 */
       handleQuery() {
@@ -501,6 +583,31 @@
       // 提交上传文件
       submitFileForm() {
         this.$refs.upload.submit();
+      },
+      handleSelect(row) {
+        this.resetSelectForm()
+        this.selectForm.studentId = row.id
+        this.selectForm.studentName = row.name
+        this.select.open = true
+      },
+      submitSelectForm: function() {
+        this.$refs["selectForm"].validate(valid => {
+          if (valid) {
+            addSelect(this.selectForm).then(response => {
+              if (response.code === 200) {
+                this.msgSuccess("代选成功");
+                this.select.open = false;
+                this.getList();
+              } else {
+                this.msgError(response.msg);
+              }
+            });
+          }
+        });
+      },
+      cancelSelect() {
+        this.select.open = false
+        this.resetSelectForm()
       }
     }
   };

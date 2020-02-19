@@ -1,5 +1,6 @@
 package com.ruoyi.project.elective.record.service;
 
+import com.ruoyi.project.elective.record.domain.ElectiveSelectStatistic;
 import com.ruoyi.project.elective.record.domain.ElectiveSelectRecord;
 import java.util.List;
 
@@ -65,4 +66,7 @@ public interface IElectiveSelectRecordService
      * @return
      */
     List<ElectiveSelectRecord> listCanSelect(ElectiveSelectRecord electiveSelectRecord);
+
+
+    List<ElectiveSelectStatistic> listStatistic(ElectiveSelectStatistic electiveSelectStatistic);
 }

@@ -63,7 +63,7 @@
       <el-table-column label="开课时间" align="center" prop="semester" :show-overflow-tooltip="true" />
       <el-table-column label="上课时间" align="center" prop="classTime" :show-overflow-tooltip="true" />
       <el-table-column label="上课地点" align="center" prop="classLocation" :show-overflow-tooltip="true" />
-      <el-table-column label="招生人数" align="center" prop="enrollPeo" :show-overflow-tooltip="true" />
+      <el-table-column label="计划招生" align="center" prop="enrollPeo" :show-overflow-tooltip="true" />
       <!-- TODO 用标签来表示状态 -->
       <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat">
         <template slot-scope="scope">

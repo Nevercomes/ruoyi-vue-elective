@@ -24,8 +24,9 @@
                 <div class="pull-right">{{ user.email }}</div>
               </li>
               <li class="list-group-item">
-                <svg-icon icon-class="tree" />所属部门
-                <div class="pull-right" v-if="user.dept">{{ user.dept.deptName }} / {{ postGroup }}</div>
+                <svg-icon icon-class="tree" />所在班级
+                <div class="pull-right" v-if="user.dept">{{ user.dept.deptName }}</div>
+                <!-- <div class="pull-right" v-if="user.dept">{{ user.dept.deptName }} / {{ postGroup }}</div> -->
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="peoples" />所属角色
@@ -76,11 +77,12 @@ export default {
     };
   },
   created() {
-    this.getUser();
+    const userId = this.$route.params && this.$route.params.userId
+    this.getUser(userId);
   },
   methods: {
-    getUser() {
-      getUserProfile().then(response => {
+    getUser(userId) {
+      getUserProfile(userId).then(response => {
         this.user = response.data;
         this.roleGroup = response.roleGroup;
         this.postGroup = response.postGroup;

@@ -72,7 +72,7 @@ export const constantRoutes = [
     redirect: 'noredirect',
     children: [
       {
-        path: 'profile',
+        path: 'profile/:userId(\\d+)',
         component: () => import('@/views/system/user/profile/index'),
         name: 'Profile',
         meta: { title: '个人中心', icon: 'user' }
@@ -102,6 +102,32 @@ export const constantRoutes = [
         component: () => import('@/views/tool/gen/editTable'),
         name: 'GenEdit',
         meta: { title: '修改生成配置' }
+      }
+    ]
+  },
+  {
+    path: '/select',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'course/list/:openId(\\d+)',
+        component: () => import('@/views/elective/select/list'),
+        name: 'Select',
+        meta: { title: '选课列表' }
+      }
+    ]
+  },
+  {
+    path: '/select',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'record/list/:studentId(\\d+)',
+        component: () => import('@/views/elective/record/select/index'),
+        name: 'SelectRecord',
+        meta: { title: '选课记录' }
       }
     ]
   }
