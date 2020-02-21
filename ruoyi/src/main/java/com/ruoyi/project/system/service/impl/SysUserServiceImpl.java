@@ -3,6 +3,10 @@ package com.ruoyi.project.system.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ruoyi.project.elective.student.domain.ElectiveStudent;
+import com.ruoyi.project.elective.student.mapper.ElectiveStudentMapper;
+import com.ruoyi.project.elective.teacher.domain.ElectiveTeacher;
+import com.ruoyi.project.elective.teacher.mapper.ElectiveTeacherMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +56,12 @@ public class SysUserServiceImpl implements ISysUserService {
 
     @Autowired
     private ISysConfigService configService;
+
+    @Autowired
+    private ElectiveTeacherMapper teacherMapper;
+
+    @Autowired
+    private ElectiveStudentMapper studentMapper;
 
     /**
      * 根据条件分页查询用户列表
@@ -248,17 +258,37 @@ public class SysUserServiceImpl implements ISysUserService {
      */
     @Override
     public int updateUserProfile(SysUser user) {
+        // 同时更新教师的姓名
+        ElectiveTeacher teacher = teacherMapper.selectTeacherByUserId(user.getUserId());
+        if (teacher != null) {
+            teacher.setName(user.getNickName());
+            teacherMapper.updateElectiveTeacher(teacher);
+        }
+        ElectiveStudent student = studentMapper.selectElectiveStudentById(user.getUserId());
+        if (student != null) {
+            student.setName(user.getNickName());
+            studentMapper.updateElectiveStudent(student);
+        }
+        // 或学生姓名
         return userMapper.updateUser(user);
     }
 
     /**
      * 修改用户头像
      *
-     * @param userId 用户ID
-     * @param avatar 头像地址
+     * @param userName 用户ID
+     * @param avatar   头像地址
      * @return 结果
      */
+    @Transactional
     public boolean updateUserAvatar(String userName, String avatar) {
+        // 同时更新教师
+        SysUser user = userMapper.selectUserByUserName(userName);
+        ElectiveTeacher teacher = teacherMapper.selectTeacherByUserId(user.getUserId());
+        if (teacher != null) {
+            teacher.setAvatar(avatar);
+            teacherMapper.updateElectiveTeacher(teacher);
+        }
         return userMapper.updateUserAvatar(userName, avatar) > 0;
     }
 

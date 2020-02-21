@@ -77,12 +77,11 @@ export default {
     };
   },
   created() {
-    const userId = this.$route.params && this.$route.params.userId
-    this.getUser(userId);
+    this.getUser();
   },
   methods: {
-    getUser(userId) {
-      getUserProfile(userId).then(response => {
+    getUser() {
+      getUserProfile().then(response => {
         this.user = response.data;
         this.roleGroup = response.roleGroup;
         this.postGroup = response.postGroup;

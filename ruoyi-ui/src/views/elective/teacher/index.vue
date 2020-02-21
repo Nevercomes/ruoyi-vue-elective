@@ -23,20 +23,20 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd" v-hasPermi="['teacher:teacher:add']">新增</el-button>
+        <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd" v-hasPermi="['elective:teacher:add']">新增</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate" v-hasPermi="['teacher:teacher:edit']">修改</el-button>
+        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate" v-hasPermi="['elective:teacher:edit']">修改</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
-          v-hasPermi="['teacher:teacher:remove']">删除</el-button>
+          v-hasPermi="['elective:teacher:remove']">删除</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="info" icon="el-icon-upload2" size="mini" @click="handleImport" v-hasPermi="['system:user:import']">导入</el-button>
+        <el-button type="info" icon="el-icon-upload2" size="mini" @click="handleImport" v-hasPermi="['elective:teacher:import']">导入</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport" v-hasPermi="['teacher:teacher:export']">导出</el-button>
+        <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport" v-hasPermi="['elective:teacher:export']">导出</el-button>
       </el-col>
     </el-row>
 
@@ -50,10 +50,13 @@
       <el-table-column label="手机" align="center" prop="phonenumber" />
       <el-table-column label="邮箱" align="center" prop="email" :show-overflow-tooltip="true" />
       <el-table-column label="查看" align="center" class-name="small-padding fixed-width">
-        <!-- TODO 增加查看课程和课程记录 需求 课程index和申请记录index -->
         <template slot-scope="scope">
-          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['elective:teacher:edit']">课程</el-button>
-          <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['elective:teacher:remove']">申请</el-button>
+          <router-link :to="'/course/list/' + scope.row.id" class="link-type">
+            <el-button size="mini" type="text" icon="el-icon-reading" v-hasPermi="['elective:course:list']">课程</el-button>
+          </router-link>
+          <router-link :to="'/apply/list/' + scope.row.id" class="link-type">
+            <el-button size="mini" type="text" icon="el-icon-document" v-hasPermi="['elective:apply:list']">申请</el-button>
+          </router-link>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">

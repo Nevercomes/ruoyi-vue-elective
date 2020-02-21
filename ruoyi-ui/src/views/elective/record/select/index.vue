@@ -1,16 +1,21 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
-      <el-form-item label="学生姓名" prop="studentName">
-        <el-input v-model="queryParams.studentName" placeholder="请输入学生姓名" clearable size="small" @keyup.enter.native="handleQuery" />
-      </el-form-item>
-      <el-form-item label="班级" prop="clazzId">
+      <el-form-item label="班级" prop="clazzId" v-hasPermi="['sys:role:staff']">
         <el-select v-model="queryParams.clazzId" placeholder="请选择班级" clearable size="small">
           <el-option v-for="item in clazzOptions" :key="item.deptId" :label="item.deptName" :value="item.deptId"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="课程名称" prop="courseName">
+      <el-form-item label="学生" prop="studentName" v-hasPermi="['sys:role:staff']">
+        <el-input v-model="queryParams.studentName" placeholder="请输入学生姓名" clearable size="small" @keyup.enter.native="handleQuery" />
+      </el-form-item>
+      <el-form-item label="课程" prop="courseName">
         <el-input v-model="queryParams.courseName" placeholder="请输入课程名称" clearable size="small" @keyup.enter.native="handleQuery" />
+      </el-form-item>
+      <el-form-item label="选课" prop="openId">
+        <el-select v-model="queryParams.openId" placeholder="请选择选课" clearable size="small">
+          <el-option v-for="item in openOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+        </el-select>
       </el-form-item>
       <!-- <el-form-item label="创建时间">
         <el-date-picker v-model="dateRange" size="small" style="width: 240px" value-format="yyyy-MM-dd" type="daterange"
@@ -40,13 +45,14 @@
       <el-table-column label="编号" align="center" prop="id" />
       <el-table-column label="学生" align="center" prop="studentName" />
       <el-table-column label="班级" align="center" prop="className" />
-      <el-table-column label="课程" align="center" prop="courseName"  />
+      <el-table-column label="选课" align="center" prop="openName" :show-overflow-tooltip="true"/>
+      <el-table-column label="课程" align="center" prop="courseName" :show-overflow-tooltip="true" />
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" v-hasPermi="['sys:role:staff']">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['elective:select:edit']">修改</el-button>
           <!-- <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['elective:select:remove']">删除</el-button> -->
@@ -96,8 +102,12 @@
   import {
     listStudent
   } from "@/api/elective/student/student"
+  import {
+    listOpen
+  } from "@/api/elective/open/open"
 
   export default {
+    name: "SelectRecord",
     data() {
       return {
         // 遮罩层
@@ -124,6 +134,8 @@
         canSelectList: [],
         // 班级列表
         clazzOptions: [],
+        // 选课列表
+        openOptions: [],
         // 查询参数
         queryParams: {
           pageNum: 1,
@@ -131,7 +143,9 @@
           studentName: undefined,
           courseName: undefined,
           clazzId: undefined,
-          studentId: undefined
+          studentId: undefined,
+          openId: undefined,
+          courseId: undefined
         },
         // 表单参数
         form: {},
@@ -153,11 +167,15 @@
     created() {
       this.getList();
       this.queryParams.studentId = this.$route.params && this.$route.params.studentId;
+      this.queryParams.courseId = this.$route.params && this.$route.params.courseId
       listClazz().then(response => {
         this.clazzOptions = response.data
       })
       listStudent().then(response => {
         this.studentList = response.rows
+      })
+      listOpen().then(response => {
+        this.openOptions = response.rows
       })
     },
     methods: {

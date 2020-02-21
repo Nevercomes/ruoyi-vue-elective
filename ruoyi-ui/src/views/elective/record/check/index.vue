@@ -93,6 +93,7 @@
   } from "@/api/elective/record/check";
 
   export default {
+    name: "Check",
     data() {
       return {
         // 遮罩层

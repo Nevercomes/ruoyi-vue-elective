@@ -1,5 +1,5 @@
 module.exports = {
-  title: '若依管理系统',
+  title: '新桥小学选课系统',
 
   /**
    * 是否系统布局配置

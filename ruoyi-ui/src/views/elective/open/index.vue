@@ -36,7 +36,7 @@
     <el-table v-loading="loading" :data="openList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="编号" align="center" prop="id" />
-      <el-table-column label="名称" align="center" prop="name" />
+      <el-table-column label="名称" align="center" prop="name" :show-overflow-tooltip="true"/>
       <el-table-column label="开课时间" align="center" prop="semester" />
       <el-table-column label="开始时间" align="center" prop="openTime" width="180">
         <template slot-scope="scope">

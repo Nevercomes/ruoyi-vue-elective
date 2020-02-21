@@ -72,7 +72,7 @@ export const constantRoutes = [
     redirect: 'noredirect',
     children: [
       {
-        path: 'profile/:userId(\\d+)',
+        path: 'profile',
         component: () => import('@/views/system/user/profile/index'),
         name: 'Profile',
         meta: { title: '个人中心', icon: 'user' }
@@ -115,16 +115,15 @@ export const constantRoutes = [
         component: () => import('@/views/elective/select/list'),
         name: 'Select',
         meta: { title: '选课列表' }
-      }
-    ]
-  },
-  {
-    path: '/select',
-    component: Layout,
-    hidden: true,
-    children: [
+      },
       {
         path: 'record/list/:studentId(\\d+)',
+        component: () => import('@/views/elective/record/select/index'),
+        name: 'SelectRecord',
+        meta: { title: '选课记录' }
+      },
+      {
+        path: 'record/course/list/:courseId(\\d+)',
         component: () => import('@/views/elective/record/select/index'),
         name: 'SelectRecord',
         meta: { title: '选课记录' }
@@ -141,6 +140,32 @@ export const constantRoutes = [
         component: () => import('@/views/elective/config/value'),
         name: 'SelectRecord',
         meta: { title: '模板数据' }
+      }
+    ]
+  },
+  {
+    path: '/course',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'list/:teacherId(\\d+)',
+        component: () => import('@/views/elective/course/index'),
+        name: 'Course',
+        meta: { title: '课程列表' }
+      }
+    ]
+  },
+  {
+    path: '/apply',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'list/:teacherId(\\d+)',
+        component: () => import('@/views/elective/record/apply/index'),
+        name: 'Apply',
+        meta: { title: '申请列表' }
       }
     ]
   }

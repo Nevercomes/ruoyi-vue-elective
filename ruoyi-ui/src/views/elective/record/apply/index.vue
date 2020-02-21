@@ -1,13 +1,13 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
-      <el-form-item label="教师" prop="teacherId">
+      <el-form-item label="课程" prop="courseName">
+        <el-input v-model="queryParams.courseName" placeholder="请输入申请课程" clearable size="small" @keyup.enter.native="handleQuery" />
+      </el-form-item>
+      <el-form-item label="教师" prop="teacherId" v-hasPermi="['sys:role:staff']">
         <el-select v-model="queryParams.teacherId" placeholder="请选择教师" clearable size="small">
           <el-option v-for="item in teacherList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
-      </el-form-item>
-      <el-form-item label="课程" prop="courseName">
-        <el-input v-model="queryParams.courseName" placeholder="请输入申请课程" clearable size="small" @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择申请状态" clearable size="small">
@@ -22,7 +22,11 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport" v-hasPermi="['elective:apply:export']">导出</el-button>
+        <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
+          v-hasPermi="['elective:apply:remove', 'sys:role:teacher']">删除</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport" v-hasPermi="['elective:apply:export', 'sys:role:teacher']">导出</el-button>
       </el-col>
     </el-row>
 
@@ -165,6 +169,7 @@
   } from "@/api/elective/record/check"
 
   export default {
+    name: "Apply",
     data() {
       return {
         // 遮罩层
@@ -224,7 +229,9 @@
       };
     },
     created() {
-      // 当存在两级对象的时候 需要现在data里面声明出来
+      // 当存在两级对象的时候 需要先在data里面声明出来
+      const teacherId = this.$route.params && this.$route.params.teacherId
+      if (teacherId) this.queryParams.teacherId = Number(teacherId)
       this.reset()
       this.getList();
       listTeacher().then(response => {

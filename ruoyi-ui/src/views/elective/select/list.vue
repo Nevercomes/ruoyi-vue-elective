@@ -29,7 +29,7 @@
       <el-card class="course-card el-card" v-for="(item, index) in courseList" :key="index">
         <el-row>
           <el-col :span="12">
-            <el-image style="width: 120px; height: 120px; border-radius: 50%;" :src="item.teacherAvatar" :fit="'contain'"></el-image>
+            <el-image style="width: 120px; height: 120px; border-radius: 50%;" :src="getAvatarUrl(item.teacherAvatar)" :fit="'contain'"></el-image>
             <!-- <img :src="item.teacherAvatar" style="width: 120px; height: 120px; border-radius: 50%;" /> -->
           </el-col>
           <el-col :span="12">
@@ -96,7 +96,7 @@
         </div>
         <el-divider></el-divider>
         <el-row class="card-footer" justify="end">
-          <el-button class="card-footer-button" type="primary" @click="selectCourse(item)">我要选课</el-button>
+          <el-button class="card-footer-button" type="primary" @click="selectCourse(item)" v-hasPermi="['elective:select:course:add']">我要选课</el-button>
         </el-row>
       </el-card>
     </div>
@@ -235,8 +235,10 @@
     addSelect
   } from "@/api/elective/record/select"
 
+  import defaultAvatar from "@/assets/image/profile.jpg"
+
   export default {
-    name: "Select",
+    name: "StudentSelect",
     data() {
       return {
         // 遮罩层
@@ -284,7 +286,10 @@
         // 表单参数
         form: {},
         // 选课选项
-        select: {},
+        select: {
+          oepnId: undefined,
+          courseId: undefined
+        },
         // 表单校验
         rules: {
           name: [{
@@ -312,6 +317,7 @@
     },
     created() {
       this.openId = this.$route.params && this.$route.params.openId;
+      this.select.openId = this.openId
       this.getList();
       listSemester().then(response => {
         this.semesterOptions = response.data;
@@ -434,16 +440,23 @@
       },
       selectCourse(row) {
         let text = row.specialNote || '无'
-        this.$confirm("特别说明：" + text + "。确定要选课吗？", "提示", {
+        let that = this
+        let hint = "亲爱的同学，感谢你选择本课！请你再次确认你的身体条件等是否符合本课要求等信息。若你一旦选择，本学期内将无法作任何调整。"
+        this.$confirm(hint, "温馨提示", {
           confirmButtonText: '确定选课',
           cancelButtonText: '不了，再看看',
-          type: 'info'
+          type: 'warning'
         }).then(function() {
-          this.select.courseId = row.id
-          addSelect(this.select)
-        }).then(() => {
-          this.msgSuccess("选课成功")
-        }).catch(function() {});
+          that.select.courseId = row.id
+          addSelect(that.select).then(response => {
+            if (response.code === 200) {
+              that.msgSuccess("选课成功");
+              that.getList();
+            } else {
+              that.msgError(response.msg);
+            }
+          })
+        })
       },
       /** 删除按钮操作 */
       handleDelete(row) {
@@ -491,8 +504,12 @@
             return g.deptName
         }
       },
-      getImageUrl(url) {
-        return this.getImageUrl(url)
+      // getImageUrl(url) {
+      //   return this.getImageUrl(url)
+      // },
+      getAvatarUrl(url) {
+        if(url) return url
+        else return defaultAvatar
       }
     }
   };

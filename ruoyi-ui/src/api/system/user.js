@@ -81,9 +81,8 @@ export function changeUserStatus(userId, status) {
 
 // 查询用户个人信息
 export function getUserProfile(userId) {
-  let url = userId ? '/system/user/profile/' + userId : '/system/user/profile';
   return request({
-    url: url,
+    url: '/system/user/profile/',
     method: 'get'
   })
 }

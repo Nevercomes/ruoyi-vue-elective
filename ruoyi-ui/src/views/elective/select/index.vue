@@ -51,7 +51,7 @@
   } from "@/api/elective/config/value"
 
   export default {
-    name: "Open",
+    name: "StudentOpen",
     data() {
       return {
         // 遮罩层

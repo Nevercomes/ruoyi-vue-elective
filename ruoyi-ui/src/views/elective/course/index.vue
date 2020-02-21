@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
-      <el-form-item label="课程名" prop="name">
+      <el-form-item label="课程" prop="name">
         <el-input v-model="queryParams.name" placeholder="请输入课程名" clearable size="small" @keyup.enter.native="handleQuery" />
       </el-form-item>
-      <el-form-item label="上课教师" prop="teacherId">
+      <el-form-item label="教师" prop="teacherId" v-hasPermi="['sys:role:staff']">
         <el-select v-model="queryParams.teacherId" placeholder="请选择上课教师" clearable size="small">
           <el-option v-for="item in teacherList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
@@ -28,10 +28,6 @@
         <el-select v-model="queryParams.status" placeholder="请选择状态" clearable size="small">
           <el-option v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
         </el-select>
-      </el-form-item>
-      <el-form-item label="创建时间">
-        <el-date-picker v-model="dateRange" size="small" style="width: 240px" value-format="yyyy-MM-dd" type="daterange"
-          range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -264,6 +260,8 @@
       };
     },
     created() {
+      const teacherId = this.$route.params && this.$route.params.teacherId
+      if(teacherId) this.queryParams.teacherId = Number(teacherId)
       this.getList();
       listSemester().then(response => {
         this.semesterOptions = response.data;
