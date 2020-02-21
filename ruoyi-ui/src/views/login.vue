@@ -58,8 +58,8 @@
         codeUrl: "",
         cookiePassword: "",
         loginForm: {
-          username: "admin",
-          password: "admin123",
+          username: "xinqiao-admin",
+          password: "adminxinqiao",
           rememberMe: false,
           code: "",
           uuid: ""
@@ -75,11 +75,11 @@
             trigger: "blur",
             message: "密码不能为空"
           }],
-          code: [{
-            required: true,
-            trigger: "change",
-            message: "验证码不能为空"
-          }]
+          // code: [{
+          //   required: true,
+          //   trigger: "change",
+          //   message: "验证码不能为空"
+          // }]
         },
         loading: false,
         redirect: undefined,

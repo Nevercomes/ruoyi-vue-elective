@@ -57,7 +57,8 @@ public class ElectiveCourseController extends BaseController {
     @PreAuthorize("@ss.hasPermi('elective:select:course:list')")
     @GetMapping("/select/list")
     public TableDataInfo listSelect(ElectiveCourse electiveCourse) {
-        ElectiveOpenSelect openSelect = openSelectService.selectForUse(new ElectiveOpenSelect());
+//        ElectiveOpenSelect openSelect = openSelectService.selectForUse(new ElectiveOpenSelect());
+        ElectiveOpenSelect openSelect = openSelectService.selectElectiveOpenSelectById(electiveCourse.getOpenId());
         if (openSelect != null) {
             electiveCourse.setSemesterId(openSelect.getSemesterId());
             electiveCourse.setStatus(ElectiveDict.COURSE_STATUS_PASSING);

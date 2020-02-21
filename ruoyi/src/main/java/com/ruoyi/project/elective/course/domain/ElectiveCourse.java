@@ -109,4 +109,8 @@ public class ElectiveCourse extends BaseEntity {
      * 用于检索年级课程
      */
     private Long gradeId;
+
+    private boolean onlyCan;
+
+    private Long openId;
 }

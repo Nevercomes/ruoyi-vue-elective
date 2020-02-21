@@ -29,6 +29,8 @@ public class ElectiveCourseServiceImpl implements IElectiveCourseService {
     private IElectiveCoursePeopleService electiveCoursePeopleService;
     @Autowired
     private IElectiveApplyRecordService applyRecordService;
+    @Autowired
+    private IElectiveCoursePeopleService coursePeopleService;
 
     /**
      * 查询课程
@@ -38,7 +40,11 @@ public class ElectiveCourseServiceImpl implements IElectiveCourseService {
      */
     @Override
     public ElectiveCourse selectElectiveCourseById(Long id) {
-        return electiveCourseMapper.selectElectiveCourseById(id);
+        ElectiveCourse course = electiveCourseMapper.selectElectiveCourseById(id);
+        if (course != null) {
+            course.setPeopleList(coursePeopleService.selectElectiveCoursePeopleList(new ElectiveCoursePeople(id)));
+        }
+        return course;
     }
 
     /**
@@ -49,7 +55,11 @@ public class ElectiveCourseServiceImpl implements IElectiveCourseService {
      */
     @Override
     public List<ElectiveCourse> selectElectiveCourseList(ElectiveCourse electiveCourse) {
-        return electiveCourseMapper.selectElectiveCourseList(electiveCourse);
+        List<ElectiveCourse> list = electiveCourseMapper.selectElectiveCourseList(electiveCourse);
+        for (ElectiveCourse course : list) {
+            course.setPeopleList(coursePeopleService.selectElectiveCoursePeopleList(new ElectiveCoursePeople(course.getId())));
+        }
+        return list;
     }
 
     /**

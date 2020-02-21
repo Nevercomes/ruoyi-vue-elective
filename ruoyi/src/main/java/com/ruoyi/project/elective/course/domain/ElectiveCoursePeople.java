@@ -2,6 +2,7 @@ package com.ruoyi.project.elective.course.domain;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.framework.aspectj.lang.annotation.Excel;
@@ -15,6 +16,7 @@ import com.ruoyi.framework.web.domain.BaseEntity;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NoArgsConstructor
 public class ElectiveCoursePeople extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
@@ -58,6 +60,10 @@ public class ElectiveCoursePeople extends BaseEntity {
      */
     @Excel(name = "选课人数")
     private Integer selectNum;
+
+    public ElectiveCoursePeople(Long courseId) {
+        this.courseId = courseId;
+    }
 
 
 }

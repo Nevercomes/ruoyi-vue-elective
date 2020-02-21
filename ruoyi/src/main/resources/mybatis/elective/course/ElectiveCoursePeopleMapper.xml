@@ -62,6 +62,9 @@
             <if test="gradeId != null">
                 and a.grade_id = #{gradeId}
             </if>
+            <if test="loginTeacherId != null">
+                and c.teacher_id = #{loginTeacherId}
+            </if>
         </where>
     </select>
 

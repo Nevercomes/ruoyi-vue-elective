@@ -60,6 +60,9 @@
             <if test="loginStudentId != null">and a.student_id = #{loginStudentId}</if>
             <if test="openId != null">and a.open_id = #{openId}</if>
             <if test="loginTeacherId != null">and c.teacher_id = #{loginTeacherId}</if>
+            <if test="gradeId != null">
+                and (select parent_id from sys_dept where sys_dept.dept_id = s.dept_id) = #{gradeId}
+            </if>
         </where>
     </select>
 
