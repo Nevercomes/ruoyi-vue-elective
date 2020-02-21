@@ -1,14 +1,14 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
-      <el-form-item label="教师姓名" prop="name">
+      <el-form-item label="教姓名" prop="name">
         <el-input v-model="queryParams.name" placeholder="请输入教师姓名" clearable size="small" @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="登录名称" prop="userName">
         <el-input v-model="queryParams.userName" placeholder="请输入登录名称" clearable size="small" @keyup.enter.native="handleQuery" />
       </el-form-item>
-      <el-form-item label="手机号码" prop="phonenumber">
-        <el-input v-model="queryParams.phonenumber" placeholder="请输入手机号码" clearable size="small" @keyup.enter.native="handleQuery" />
+      <el-form-item label="学科" prop="subject">
+        <el-input v-model="queryParams.subject" placeholder="请输入学科" clearable size="small" @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="性别" prop="sex">
         <el-select v-model="queryParams.sex" placeholder="性别" clearable size="small" style="width: 240px">
@@ -43,12 +43,12 @@
     <el-table v-loading="loading" :data="teacherList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="编号" align="center" prop="id" />
-      <!-- TODO 路由到个人中心页面 -->
       <el-table-column label="姓名" align="center" prop="name" />
-      <el-table-column label="性别" align="center" prop="sex" :formatter="sexFormat" />
+      <el-table-column label="学科" align="center" prop="subject" />
       <el-table-column label="登录名称" align="center" prop="userName" />
       <el-table-column label="手机" align="center" prop="phonenumber" />
       <el-table-column label="邮箱" align="center" prop="email" :show-overflow-tooltip="true" />
+      <el-table-column label="性别" align="center" prop="sex" :formatter="sexFormat" />
       <el-table-column label="查看" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <router-link :to="'/course/list/' + scope.row.id" class="link-type">
@@ -92,6 +92,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
+            <el-form-item label="学科" prop="subject">
+              <el-input v-model="form.subject" placeholder="请输入学科" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item label="手机号码" prop="phonenumber">
               <el-input v-model="form.phonenumber" placeholder="请输入手机号码" maxlength="11" />
             </el-form-item>
@@ -109,8 +114,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="备注">
-              <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
+            <el-form-item label="简介">
+              <el-input v-model="form.intro" type="textarea" placeholder="请输入内容"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="专长">
+              <el-input v-model="form.special" type="textarea" placeholder="请输入内容"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -210,7 +220,7 @@
           pageSize: 10,
           name: undefined,
           userName: undefined,
-          phonenumber: undefined,
+          subject: undefined,
           sex: undefined
         },
         // 表单参数
@@ -284,7 +294,10 @@
           password: undefined,
           remark: undefined,
           sex: undefined,
-          avatar: undefined
+          avatar: undefined,
+          subject: undefined,
+          intro: undefined,
+          special: undefined
         };
         this.resetForm("form");
       },

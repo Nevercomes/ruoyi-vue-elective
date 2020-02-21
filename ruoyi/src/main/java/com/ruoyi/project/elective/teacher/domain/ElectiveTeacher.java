@@ -84,4 +84,19 @@ public class ElectiveTeacher extends BaseEntity {
     public String getPhonenumber() {
         return phonenumber;
     }
+
+    /**
+     * 个人简介
+     */
+    private String intro;
+
+    /**
+     * 学科
+     */
+    private String subject;
+
+    /**
+     * 专长
+     */
+    private String special;
 }

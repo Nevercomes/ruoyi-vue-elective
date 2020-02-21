@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
-      <el-form-item label="课程名" prop="name">
+      <el-form-item label="课程" prop="name">
         <el-input v-model="queryParams.name" placeholder="请输入课程名" clearable size="small" @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="上课教师" prop="teacherId">
@@ -18,6 +18,9 @@
         <el-select v-model="queryParams.gradeId" placeholder="请选择年级" clearable size="small">
           <el-option v-for="grade in gradeOptions" :key="grade.deptId" :value="grade.deptId" :label="grade.deptName"></el-option>
         </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-checkbox v-model="queryParams.onlyCan" v-hasPermi="['sys:role:student']">仅显示可选课程</el-checkbox>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -44,7 +47,7 @@
             <el-row class="card-item">
               <span class="item-label">上课时间</span>
               <span class="item-value">{{item.classTime}}</span>
-            </el-row class="card-item">
+            </el-row>
             <el-row class="card-item">
               <span class="item-label">上课地点</span>
               <span class="item-value">{{item.classLocation}}</span>
@@ -62,9 +65,9 @@
                 <el-col :span="8" class="align-center"><span class="item-label-nomargin">剩余</span></el-col>
               </el-row>
               <el-row class="card-item" v-for="peo in item.peopleList" :key="peo.id">
-                <el-col :span="8" class="align-center"><span class="item-value">{{gradeFormat(peo.gradeId)}}</span></el-col>
-                <el-col :span="8" class="align-center"><span class="item-value">{{peo.initNum}}</span></el-col>
-                <el-col :span="8" class="align-center"><span class="item-value">{{peo.initNum - peo.selectNum}}</span>
+                <el-col :span="8" class="align-center" :class="peo.initNum == peo.selectNum ? 'forbid-select' : ''"><span class="item-value">{{gradeFormat(peo.gradeId)}}</span></el-col>
+                <el-col :span="8" class="align-center" :class="peo.initNum == peo.selectNum ? 'forbid-select' : ''"><span class="item-value">{{peo.initNum}}</span></el-col>
+                <el-col :span="8" class="align-center" :class="peo.initNum == peo.selectNum ? 'forbid-select' : ''"><span class="item-value">{{peo.initNum - peo.selectNum}}</span>
                 </el-col>
               </el-row>
             </el-col>
@@ -145,8 +148,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="开课时间" prop="semesterId">
-              <el-select v-model="form.semesterId" placeholder="请选择开课时间">
+            <el-form-item label="学年学期" prop="semesterId">
+              <el-select v-model="form.semesterId" placeholder="请选择学年学期">
                 <el-option v-for="item in semesterOptions" :key="item.id" :label="item.label" :value="item.id" />
               </el-select>
             </el-form-item>
@@ -281,7 +284,8 @@
           semesterId: undefined,
           classTimeId: undefined,
           gradeId: undefined,
-          openId: this.openId
+          openId: undefined,
+          onlyCan: false
         },
         // 表单参数
         form: {},
@@ -309,7 +313,7 @@
           }],
           semesterId: [{
             required: true,
-            message: "开课时间不能为空",
+            message: "学年学期不能为空",
             trigger: "blur"
           }]
         }
@@ -317,6 +321,7 @@
     },
     created() {
       this.openId = this.$route.params && this.$route.params.openId;
+      this.queryParams.openId = this.openId
       this.select.openId = this.openId
       this.getList();
       listSemester().then(response => {
@@ -582,4 +587,9 @@
   .card-footer-button {
     float: right;
   }
+
+  .forbid-select {
+    opacity: 0.5;
+  }
+
 </style>

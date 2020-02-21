@@ -4,8 +4,8 @@
       <el-form-item label="名称" prop="name">
         <el-input v-model="queryParams.name" placeholder="请输入名称" clearable size="small" @keyup.enter.native="handleQuery" />
       </el-form-item>
-      <el-form-item label="开课时间" prop="semesterId">
-        <el-select v-model="queryParams.semesterId" placeholder="请选择开课时间" clearable size="small">
+      <el-form-item label="学年学期" prop="semesterId">
+        <el-select v-model="queryParams.semesterId" placeholder="请选择学年学期" clearable size="small">
           <el-option v-for="item in semesterOptions" :key="item.id" :label="item.label" :value="item.id" />
         </el-select>
       </el-form-item>
@@ -37,7 +37,7 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="编号" align="center" prop="id" />
       <el-table-column label="名称" align="center" prop="name" :show-overflow-tooltip="true"/>
-      <el-table-column label="开课时间" align="center" prop="semester" />
+      <el-table-column label="学年学期" align="center" prop="semester" />
       <el-table-column label="开始时间" align="center" prop="openTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.openTime) }}</span>
@@ -75,8 +75,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="开课时间" prop="semesterId">
-              <el-select v-model="form.semesterId" placeholder="请选择开课时间">
+            <el-form-item label="学年学期" prop="semesterId">
+              <el-select v-model="form.semesterId" placeholder="请选择学年学期">
                 <el-option v-for="item in semesterOptions" :key="item.id" :label="item.label" :value="item.id" />
               </el-select>
             </el-form-item>
@@ -175,7 +175,7 @@
           }],
           semesterId: [{
             required: true,
-            message: "开课时间不能为空",
+            message: "学年学期不能为空",
             trigger: ["change", "blur"]
           }],
           openTime: [{

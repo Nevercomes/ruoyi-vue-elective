@@ -123,10 +123,10 @@ export const constantRoutes = [
         meta: { title: '选课记录' }
       },
       {
-        path: 'record/course/list/:courseId(\\d+)',
+        path: 'record/course/student',
         component: () => import('@/views/elective/record/select/index'),
-        name: 'SelectRecord',
-        meta: { title: '选课记录' }
+        name: 'SelectStudent',
+        meta: { title: '选课学生' }
       }
     ]
   },
@@ -153,6 +153,12 @@ export const constantRoutes = [
         component: () => import('@/views/elective/course/index'),
         name: 'Course',
         meta: { title: '课程列表' }
+      },
+      {
+        path: 'info/:courseId(\\d+)',
+        component: () => import('@/views/elective/course/info'),
+        name: 'Course',
+        meta: { title: '课程详情' }
       }
     ]
   },

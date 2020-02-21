@@ -63,20 +63,20 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="课程名" prop="course.name">
+            <el-form-item label="课程" prop="course.name">
               <el-input v-model="form.course.name" placeholder="请输入课程名" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="上课教师" prop="course.teacherId">
+            <el-form-item label="教师" prop="course.teacherId">
               <el-select v-model="form.course.teacherId" placeholder="请选择上课教师" :disabled="true">
                 <el-option v-for="item in teacherList" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="开课时间" prop="course.semesterId">
-              <el-select v-model="form.course.semesterId" placeholder="请选择开课时间">
+            <el-form-item label="学年学期" prop="course.semesterId">
+              <el-select v-model="form.course.semesterId" placeholder="请选择学年学期">
                 <el-option v-for="item in semesterOptions" :key="item.id" :label="item.label" :value="item.id" />
               </el-select>
             </el-form-item>
@@ -217,7 +217,7 @@
           }],
           "course.semesterId": [{
             required: true,
-            message: "开课时间不能为空",
+            message: "学年学期不能为空",
             trigger: "blur"
           }],
           "course.teacherId": [{

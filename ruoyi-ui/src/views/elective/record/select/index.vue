@@ -1,7 +1,17 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
-      <el-form-item label="班级" prop="clazzId" v-hasPermi="['sys:role:staff']">
+      <el-form-item label="选课" prop="openId">
+        <el-select v-model="queryParams.openId" placeholder="请选择选课" clearable size="small">
+          <el-option v-for="item in openOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="年级" prop="gradeId" v-hasPermi="['sys:role:staff', 'sys:role:teacher']">
+        <el-select v-model="queryParams.gradeId" placeholder="请选择年级" clearable size="small">
+          <el-option v-for="item in gradeOptions" :key="item.deptId" :label="item.deptName" :value="item.deptId"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="班级" prop="clazzId" v-hasPermi="['sys:role:staff', 'sys:role:teacher']">
         <el-select v-model="queryParams.clazzId" placeholder="请选择班级" clearable size="small">
           <el-option v-for="item in clazzOptions" :key="item.deptId" :label="item.deptName" :value="item.deptId"></el-option>
         </el-select>
@@ -11,11 +21,6 @@
       </el-form-item>
       <el-form-item label="课程" prop="courseName">
         <el-input v-model="queryParams.courseName" placeholder="请输入课程名称" clearable size="small" @keyup.enter.native="handleQuery" />
-      </el-form-item>
-      <el-form-item label="选课" prop="openId">
-        <el-select v-model="queryParams.openId" placeholder="请选择选课" clearable size="small">
-          <el-option v-for="item in openOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-        </el-select>
       </el-form-item>
       <!-- <el-form-item label="创建时间">
         <el-date-picker v-model="dateRange" size="small" style="width: 240px" value-format="yyyy-MM-dd" type="daterange"
@@ -45,8 +50,14 @@
       <el-table-column label="编号" align="center" prop="id" />
       <el-table-column label="学生" align="center" prop="studentName" />
       <el-table-column label="班级" align="center" prop="className" />
-      <el-table-column label="选课" align="center" prop="openName" :show-overflow-tooltip="true"/>
-      <el-table-column label="课程" align="center" prop="courseName" :show-overflow-tooltip="true" />
+      <el-table-column label="选课" align="center" prop="openName" :show-overflow-tooltip="true" />
+      <el-table-column label="课程" align="center" prop="courseName" :show-overflow-tooltip="true">
+        <template slot-scope="scope">
+          <router-link :to="'/course/info/' + scope.row.courseId" class="link-type">
+            <span>{{scope.row.courseName}}</span>
+          </router-link>
+        </template>
+      </el-table-column>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -134,6 +145,8 @@
         canSelectList: [],
         // 班级列表
         clazzOptions: [],
+        // 年级列表
+        gradeOptions: [],
         // 选课列表
         openOptions: [],
         // 查询参数
@@ -145,7 +158,8 @@
           clazzId: undefined,
           studentId: undefined,
           openId: undefined,
-          courseId: undefined
+          courseId: undefined,
+          gradeId: undefined
         },
         // 表单参数
         form: {},
@@ -165,11 +179,15 @@
       };
     },
     created() {
-      this.getList();
       this.queryParams.studentId = this.$route.params && this.$route.params.studentId;
-      this.queryParams.courseId = this.$route.params && this.$route.params.courseId
+      this.queryParams.courseId = this.$route.query && this.$route.query.courseId
+      this.queryParams.gradeId = this.$route.query && this.$route.query.gradeId
+      this.getList();
       listClazz().then(response => {
         this.clazzOptions = response.data
+      })
+      listGrade().then(response => {
+        this.gradeOptions = response.data
       })
       listStudent().then(response => {
         this.studentList = response.rows
@@ -198,9 +216,22 @@
         this.form = {
           id: undefined,
           studentId: undefined,
-          courseId: undefined
+          courseId: undefined,
+          classTimeId: undefined,
+          classLocation: undefined,
+
         };
         this.resetForm("form");
+      },
+      // 重置课程详情表单
+      resetCourseForm() {
+        this.courseForm = {
+          id: undefined,
+          name: undefined,
+          teacherName: undefined,
+          semesterId: undefined
+        }
+        this.resetForm("courseForm")
       },
       /** 搜索按钮操作 */
       handleQuery() {
@@ -230,7 +261,7 @@
         const id = row.id || this.ids
         listCanSelect(row.studentId).then(response => {
           this.canSelectList = response.rows
-         });
+        });
         getSelect(id).then(response => {
           this.form = response.data;
           this.open = true;
