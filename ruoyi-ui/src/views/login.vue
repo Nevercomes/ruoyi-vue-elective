@@ -2,7 +2,7 @@
   <div class="login">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
       <el-image style="width: 164px; height: 60px; margin: 0 auto; display: block;" :src="loginLogo"></el-image>
-      <h3 class="title">选课系统</h3>
+      <h3 class="title">卓越校园</h3>
       <el-form-item prop="username">
         <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">
           <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
@@ -34,8 +34,8 @@
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
-      <el-row>Copyright © 2018-2019 <a href="http://haitun158.com" target="_blank">海豚软件</a> All Rights Reserved.</el-row>
-      <el-row>Powered By 华舞企业管理有限公司</el-row>
+      <el-row>Copyright © 2018-2019 <a href="http://haitun158.com" target="_blank">卓越软件</a> All Rights Reserved.</el-row>
+      <el-row>Powered By 铸才网络科技</el-row>
     </div>
   </div>
 </template>

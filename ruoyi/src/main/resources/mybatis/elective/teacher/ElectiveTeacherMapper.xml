@@ -18,6 +18,9 @@
         <result property="phonenumber" column="phonenumber"/>
         <result property="sex" column="sex"/>
         <result property="avatar" column="avatar"/>
+        <result property="intro" column="intro"/>
+        <result property="specialty" column="specialty"/>
+        <result property="subject" column="subject"/>
     </resultMap>
 
     <sql id="selectElectiveTeacherVo">
@@ -30,6 +33,9 @@
             a.user_id,
             a.name,
             a.avatar,
+            a.intro,
+            a.specialty,
+            a.subject,
             u.remark,
             u.user_name,
             u.nick_name,
@@ -44,31 +50,23 @@
         <include refid="selectElectiveTeacherVo"/>
         <where>
             u.dept_id = #{schoolId}
-            <if test="userName != null and userName != ''">
-                and u.user_name like concat('%', #{userName}, '%')
-            </if>
-            <if test="name != null and name != ''">
-                and a.name like concat('%', #{name}, '%')
-            </if>
-            <if test="phonenumber != null and phonenumber != ''">
-                and u.phonenumber like concat('%', #{phonenumber}, '%')
-            </if>
-            <if test="sex != null and sex != ''">
-                and u.sex = #{sex}
-            </if>
-            <if test="loginTeacherId != null">
-                and a.id = #{loginTeacherId}
-            </if>
+            <if test="userName != null and userName != ''">and u.user_name like concat('%', #{userName}, '%')</if>
+            <if test="name != null and name != ''">and a.name like concat('%', #{name}, '%')</if>
+            <if test="phonenumber != null and phonenumber != ''">and u.phonenumber like concat('%', #{phonenumber}, '%')</if>
+            <if test="sex != null and sex != ''">and u.sex = #{sex}</if>
+            <if test="loginTeacherId != null">and a.id = #{loginTeacherId}</if>
+            <if test="subject != null and subject != ''">and a.subject like concat('%', #{subject}, '%')</if>
         </where>
     </select>
 
     <select id="selectElectiveTeacherById" parameterType="Long" resultMap="ElectiveTeacherResult">
         <include refid="selectElectiveTeacherVo"/>
-        where id = #{id}
+        where a.id = #{id}
     </select>
 
     <select id="selectTeacherByUserId" resultMap="ElectiveTeacherResult">
-        select id from elective_teacher where user_id = #{userId}
+        <include refid="selectElectiveTeacherVo"/>
+        where a.user_id = #{userId}
     </select>
 
     <insert id="insertElectiveTeacher" parameterType="ElectiveTeacher" useGeneratedKeys="true" keyProperty="id">
@@ -81,6 +79,9 @@
             <if test="userId != null ">user_id,</if>
             <if test="name != null and name != ''">name,</if>
             <if test="avatar != null and avatar != ''">avatar,</if>
+            <if test="specialty != null and specialty != ''">specialty,</if>
+            <if test="intro != null and intro != ''">intro,</if>
+            <if test="subject != null and subject != ''">subject,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
@@ -90,6 +91,9 @@
             <if test="userId != null ">#{userId},</if>
             <if test="name != null and name != '' ">#{name},</if>
             <if test="avatar != null and avatar != '' ">#{avatar},</if>
+            <if test="specialty != null and specialty != '' ">#{specialty},</if>
+            <if test="intro != null and intro != '' ">#{intro},</if>
+            <if test="subject != null and subject != '' ">#{subject},</if>
         </trim>
     </insert>
 
@@ -100,6 +104,9 @@
             <if test="updateTime != null ">update_time = #{updateTime},</if>
             <if test="name != null and name != '' ">name = #{name},</if>
             <if test="avatar != null and avatar != '' ">avatar = #{avatar},</if>
+            <if test="specialty != null and specialty != '' ">specialty = #{specialty},</if>
+            <if test="intro != null and intro != '' ">intro = #{intro},</if>
+            <if test="subject != null and subject != '' ">subject = #{subject},</if>
         </trim>
         where id = #{id}
     </update>

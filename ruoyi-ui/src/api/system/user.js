@@ -81,8 +81,9 @@ export function changeUserStatus(userId, status) {
 
 // 查询用户个人信息
 export function getUserProfile(userId) {
+  let url = userId ? '/system/user/profile/' + userId : '/system/user/profile/'
   return request({
-    url: '/system/user/profile/',
+    url: url,
     method: 'get'
   })
 }
@@ -122,6 +123,14 @@ export function uploadAvatar(data) {
 export function importTemplate() {
   return request({
     url: '/system/user/importTemplate',
+    method: 'get'
+  })
+}
+
+// 根据用户获取教师
+export function getTeacherByUser(userId) {
+  return request({
+    url: '/system/user/teacher/' + userId,
     method: 'get'
   })
 }

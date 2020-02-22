@@ -23,7 +23,7 @@
                 <svg-icon icon-class="email" />用户邮箱
                 <div class="pull-right">{{ user.email }}</div>
               </li>
-              <li class="list-group-item">
+              <li class="list-group-item" v-hasPermi="['sys:role:student']">
                 <svg-icon icon-class="tree" />所在班级
                 <div class="pull-right" v-if="user.dept">{{ user.dept.deptName }}</div>
                 <!-- <div class="pull-right" v-if="user.dept">{{ user.dept.deptName }} / {{ postGroup }}</div> -->
@@ -49,6 +49,9 @@
             <el-tab-pane label="基本资料" name="userinfo">
               <userInfo :user="user" />
             </el-tab-pane>
+            <el-tab-pane v-if="isTeacher" label="教师资料" name="teacherinfo" v-hasPermi="['sys:role:teacher', 'sys:role:staff']">
+              <teacherInfo :teacher="teacher" />
+            </el-tab-pane>
             <el-tab-pane label="修改密码" name="resetPwd">
               <resetPwd :user="user" />
             </el-tab-pane>
@@ -60,33 +63,53 @@
 </template>
 
 <script>
-import userAvatar from "./userAvatar";
-import userInfo from "./userInfo";
-import resetPwd from "./resetPwd";
-import { getUserProfile } from "@/api/system/user";
+  import userAvatar from "./userAvatar";
+  import userInfo from "./userInfo";
+  import resetPwd from "./resetPwd";
+  import teacherInfo from "./teacherInfo"
 
-export default {
-  name: "Profile",
-  components: { userAvatar, userInfo, resetPwd },
-  data() {
-    return {
-      user: {},
-      roleGroup: {},
-      postGroup: {},
-      activeTab: "userinfo"
-    };
-  },
-  created() {
-    this.getUser();
-  },
-  methods: {
-    getUser() {
-      getUserProfile().then(response => {
-        this.user = response.data;
-        this.roleGroup = response.roleGroup;
-        this.postGroup = response.postGroup;
-      });
+  import {
+    getUserProfile,
+    getTeacherByUser
+  } from "@/api/system/user";
+
+  export default {
+    name: "Profile",
+    components: {
+      userAvatar,
+      userInfo,
+      resetPwd,
+      teacherInfo
+    },
+    data() {
+      return {
+        user: {},
+        teacher: {},
+        roleGroup: {},
+        postGroup: {},
+        activeTab: "userinfo",
+        isTeacher: false
+      };
+    },
+    created() {
+      const userId = this.$route.params && this.$route.params.userId
+      this.getUser(userId);
+    },
+    methods: {
+      getUser(userId) {
+        let that = this
+        getUserProfile(userId).then(response => {
+          this.user = response.data;
+          this.roleGroup = response.roleGroup;
+          this.postGroup = response.postGroup;
+          if (this.roleGroup.indexOf('教师') != -1) {
+            this.isTeacher = true
+            getTeacherByUser(this.user.userId).then(res => {
+              that.teacher = res.data
+            })
+          }
+        });
+      }
     }
-  }
-};
+  };
 </script>

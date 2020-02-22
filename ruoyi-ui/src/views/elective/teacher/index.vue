@@ -43,7 +43,13 @@
     <el-table v-loading="loading" :data="teacherList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="编号" align="center" prop="id" />
-      <el-table-column label="姓名" align="center" prop="name" />
+      <el-table-column label="姓名" align="center" prop="name">
+        <template slot-scope="scope">
+          <router-link :to="'/user/profile/userId/' + scope.row.userId" class="link-type">
+            <span>{{scope.row.name}}</span>
+          </router-link>
+        </template>
+      </el-table-column>
       <el-table-column label="学科" align="center" prop="subject" />
       <el-table-column label="登录名称" align="center" prop="userName" />
       <el-table-column label="手机" align="center" prop="phonenumber" />
@@ -120,7 +126,7 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="专长">
-              <el-input v-model="form.special" type="textarea" placeholder="请输入内容"></el-input>
+              <el-input v-model="form.specialty" type="textarea" placeholder="请输入内容"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -297,7 +303,7 @@
           avatar: undefined,
           subject: undefined,
           intro: undefined,
-          special: undefined
+          specialty: undefined
         };
         this.resetForm("form");
       },

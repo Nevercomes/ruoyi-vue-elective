@@ -59,3 +59,11 @@ export function importTemplate() {
     method: 'get'
   })
 }
+
+export function updateTeacherProfile(data) {
+  return request({
+    url: '/elective/teacher',
+    method: 'put',
+    data: data
+  })
+}

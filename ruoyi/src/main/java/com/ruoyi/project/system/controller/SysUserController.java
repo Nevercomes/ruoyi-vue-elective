@@ -2,6 +2,8 @@ package com.ruoyi.project.system.controller;
 
 import java.util.List;
 
+import com.ruoyi.project.elective.teacher.mapper.ElectiveTeacherMapper;
+import com.ruoyi.project.elective.teacher.service.IElectiveTeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -50,6 +52,8 @@ public class SysUserController extends BaseController {
 
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private ElectiveTeacherMapper teacherMapper;
 
     /**
      * 获取用户列表
@@ -104,6 +108,17 @@ public class SysUserController extends BaseController {
             ajax.put("roleIds", roleService.selectRoleListByUserId(userId));
         }
         return ajax;
+    }
+
+    /**
+     * 根据用户获取Teacher
+     * @param userId
+     * @return
+     */
+    @PreAuthorize("@ss.hasPermi('elective:teacher:query')")
+    @GetMapping("/teacher/{userId}")
+    public AjaxResult getTeacher(@PathVariable Long userId) {
+        return AjaxResult.success(teacherMapper.selectTeacherByUserId(userId));
     }
 
     /**

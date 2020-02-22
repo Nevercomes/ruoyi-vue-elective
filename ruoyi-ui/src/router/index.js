@@ -25,17 +25,14 @@ import Layout from '@/layout'
  */
 
 // 公共路由
-export const constantRoutes = [
-  {
+export const constantRoutes = [{
     path: '/redirect',
     component: Layout,
     hidden: true,
-    children: [
-      {
-        path: '/redirect/:path*',
-        component: () => import('@/views/redirect')
-      }
-    ]
+    children: [{
+      path: '/redirect/:path*',
+      component: () => import('@/views/redirect')
+    }]
   },
   {
     path: '/login',
@@ -56,26 +53,40 @@ export const constantRoutes = [
     path: '',
     component: Layout,
     redirect: 'index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/index'),
-        name: '首页',
-        meta: { title: '首页', icon: 'dashboard', noCache: true, affix: true }
+    children: [{
+      path: 'index',
+      component: () => import('@/views/index'),
+      name: '首页',
+      meta: {
+        title: '首页',
+        icon: 'dashboard',
+        noCache: true,
+        affix: true
       }
-    ]
+    }]
   },
   {
     path: '/user',
     component: Layout,
     hidden: true,
     redirect: 'noredirect',
-    children: [
-      {
+    children: [{
         path: 'profile',
         component: () => import('@/views/system/user/profile/index'),
         name: 'Profile',
-        meta: { title: '个人中心', icon: 'user' }
+        meta: {
+          title: '个人中心',
+          icon: 'user'
+        }
+      },
+      {
+        path: 'profile/userId/:userId(\\d+)',
+        component: () => import('@/views/system/user/profile/index'),
+        name: 'Profile',
+        meta: {
+          title: '用户信息',
+          icon: 'user'
+        }
       }
     ]
   },
@@ -83,50 +94,56 @@ export const constantRoutes = [
     path: '/dict',
     component: Layout,
     hidden: true,
-    children: [
-      {
-        path: 'type/data/:dictId(\\d+)',
-        component: () => import('@/views/system/dict/data'),
-        name: 'Data',
-        meta: { title: '字典数据', icon: '' }
+    children: [{
+      path: 'type/data/:dictId(\\d+)',
+      component: () => import('@/views/system/dict/data'),
+      name: 'Data',
+      meta: {
+        title: '字典数据',
+        icon: ''
       }
-    ]
+    }]
   },
   {
     path: '/gen',
     component: Layout,
     hidden: true,
-    children: [
-      {
-        path: 'edit',
-        component: () => import('@/views/tool/gen/editTable'),
-        name: 'GenEdit',
-        meta: { title: '修改生成配置' }
+    children: [{
+      path: 'edit',
+      component: () => import('@/views/tool/gen/editTable'),
+      name: 'GenEdit',
+      meta: {
+        title: '修改生成配置'
       }
-    ]
+    }]
   },
   {
     path: '/select',
     component: Layout,
     hidden: true,
-    children: [
-      {
+    children: [{
         path: 'course/list/:openId(\\d+)',
         component: () => import('@/views/elective/select/list'),
         name: 'Select',
-        meta: { title: '选课列表' }
+        meta: {
+          title: '选课列表'
+        }
       },
       {
         path: 'record/list/:studentId(\\d+)',
         component: () => import('@/views/elective/record/select/index'),
         name: 'SelectRecord',
-        meta: { title: '选课记录' }
+        meta: {
+          title: '选课记录'
+        }
       },
       {
         path: 'record/course/student',
         component: () => import('@/views/elective/record/select/index'),
         name: 'SelectStudent',
-        meta: { title: '选课学生' }
+        meta: {
+          title: '选课学生'
+        }
       }
     ]
   },
@@ -134,31 +151,34 @@ export const constantRoutes = [
     path: '/config',
     component: Layout,
     hidden: true,
-    children: [
-      {
-        path: 'value/:templateId(\\d+)',
-        component: () => import('@/views/elective/config/value'),
-        name: 'SelectRecord',
-        meta: { title: '模板数据' }
+    children: [{
+      path: 'value/:templateId(\\d+)',
+      component: () => import('@/views/elective/config/value'),
+      name: 'SelectRecord',
+      meta: {
+        title: '模板数据'
       }
-    ]
+    }]
   },
   {
     path: '/course',
     component: Layout,
     hidden: true,
-    children: [
-      {
+    children: [{
         path: 'list/:teacherId(\\d+)',
         component: () => import('@/views/elective/course/index'),
         name: 'Course',
-        meta: { title: '课程列表' }
+        meta: {
+          title: '课程列表'
+        }
       },
       {
         path: 'info/:courseId(\\d+)',
         component: () => import('@/views/elective/course/info'),
         name: 'Course',
-        meta: { title: '课程详情' }
+        meta: {
+          title: '课程详情'
+        }
       }
     ]
   },
@@ -166,19 +186,21 @@ export const constantRoutes = [
     path: '/apply',
     component: Layout,
     hidden: true,
-    children: [
-      {
-        path: 'list/:teacherId(\\d+)',
-        component: () => import('@/views/elective/record/apply/index'),
-        name: 'Apply',
-        meta: { title: '申请列表' }
+    children: [{
+      path: 'list/:teacherId(\\d+)',
+      component: () => import('@/views/elective/record/apply/index'),
+      name: 'Apply',
+      meta: {
+        title: '申请列表'
       }
-    ]
+    }]
   }
 ]
 
 export default new Router({
   mode: 'history', // 去掉url中的#
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({
+    y: 0
+  }),
   routes: constantRoutes
 })

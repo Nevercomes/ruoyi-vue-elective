@@ -81,15 +81,24 @@ public class SysProfileController extends BaseController {
      * 头像上传
      */
     @Log(title = "用户头像", businessType = BusinessType.UPDATE)
-    @PostMapping("/avatar")
-    public AjaxResult avatar(@RequestParam("avatarfile") MultipartFile file) throws IOException {
+    @PostMapping(value = {"/avatar", "/avatar/{userId}"})
+    public AjaxResult avatar(@RequestParam("avatarfile") MultipartFile file, @PathVariable(value = "userId", required = false) Long userId) throws IOException {
         if (!file.isEmpty()) {
-            LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
+            SysUser user = new SysUser();
+            if (userId != null) {
+                user = userService.selectUserById(userId);
+            } else {
+                LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
+                user = loginUser.getUser();
+            }
+//            LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
             String avatar = FileUploadUtils.upload(RuoYiConfig.getAvatarPath(), file);
-            if (userService.updateUserAvatar(loginUser.getUsername(), avatar)) {
+            if (userService.updateUserAvatar(user.getUserName(), avatar)) {
                 AjaxResult ajax = AjaxResult.success();
                 ajax.put("imgUrl", avatar);
-                loginUser.getUser().setAvatar(avatar);
+                user.setAvatar(avatar);
+                LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
+                loginUser.setUser(user);
                 tokenService.setLoginUser(loginUser);
                 return ajax;
             }

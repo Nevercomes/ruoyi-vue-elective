@@ -98,5 +98,5 @@ public class ElectiveTeacher extends BaseEntity {
     /**
      * 专长
      */
-    private String special;
+    private String specialty;
 }
