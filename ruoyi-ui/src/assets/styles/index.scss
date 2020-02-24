@@ -124,6 +124,10 @@ aside {
   padding: 20px;
 }
 
+.mobile-container {
+	overflow: auto;
+}
+
 .components-container {
   margin: 30px 50px;
   position: relative;
@@ -188,4 +192,15 @@ aside {
 
 .multiselect--active {
   z-index: 1000 !important;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  margin: 0;
+  padding: 0;
+  list-style-type:none;
 }

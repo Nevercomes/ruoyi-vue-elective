@@ -112,6 +112,13 @@
     created() {
       this.getList();
     },
+    beforeRouteEnter(to, from, next) {
+      if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+        next({
+          path: '/mobile/select/student/open'
+        })
+      } else next()
+    },
     methods: {
       /** 查询开放选课列表 */
       getList() {

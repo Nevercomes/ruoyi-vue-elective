@@ -1,32 +1,36 @@
 <template>
   <div class="app-container">
     <el-row :gutter="25">
-      <el-col :span="8">
+      <el-col :span="8" :xs="24" class="mb-15">
         <el-card class="custom-card el-card">
           <div slot="header" class="clearfix">
             <h3>课程信息</h3>
           </div>
           <el-row class="card-item">
             <el-col :span="12">
-              <span class="item-label">课程</span>
-              <span class="item-value">{{course.name}}</span>
+              <el-col :span="12"><span class="item-label">课程</span></el-col>
+              <el-col :span="12"><span class="item-value">{{course.name}}</span></el-col>
             </el-col>
-            <el-col :span="12"><span class="item-label">上课时间</span>
-              <span class="item-value">{{course.classTime}}</span></el-col>
+            <el-col :span="12">
+              <el-col :span="12"><span class="item-label">上课时间</span></el-col>
+              <el-col :span="12"><span class="item-value">{{course.classTime}}</span></el-col>
+            </el-col>
           </el-row>
           <el-row class="card-item">
             <el-col :span="12">
-              <span class="item-label">教师</span>
-              <span class="item-value">{{course.teacherName}}</span>
+              <el-col :span="12"><span class="item-label">教师</span></el-col>
+              <el-col :span="12"><span class="item-value">{{course.teacherName}}</span></el-col>
             </el-col>
-            <el-col :span="12"><span class="item-label">上课地点</span>
-              <span class="item-value">{{course.classLocation}}</span></el-col>
+            <el-col :span="12">
+              <el-col :span="12"><span class="item-label">上课地点</span> </el-col>
+              <el-col :span="12"><span class="item-value">{{course.classLocation}}</span> </el-col>
+            </el-col>
           </el-row>
           <el-divider></el-divider>
           <div class="card-body">
             <el-row class="card-item">
-              <el-col :span="5"><span class="item-label">选课人数</span></el-col>
-              <el-col :span="19">
+              <el-col :span="5" :xs="6"><span class="item-label">选课人数</span></el-col>
+              <el-col :span="19" :xs="18">
                 <el-row>
                   <el-col :span="8" class="align-center"><span class="item-label-nomargin">年级</span></el-col>
                   <el-col :span="8" class="align-center"><span class="item-label-nomargin">可选</span></el-col>
@@ -41,26 +45,26 @@
               </el-col>
             </el-row>
             <el-row class="card-item">
-              <el-col :span="5">
+              <el-col :span="5" :xs="6">
                 <span class="item-label">课程简介</span>
               </el-col>
-              <el-col :span="19">
+              <el-col :span="19" :xs="18">
                 <span class="item-value">{{course.intro}}</span>
               </el-col>
             </el-row>
             <el-row class="card-item">
-              <el-col :span="5">
+              <el-col :span="5" :xs="6">
                 <span class="item-label">学习目标</span>
               </el-col>
-              <el-col :span="19">
+              <el-col :span="19" :xs="18">
                 <span class="item-value">{{course.objective}}</span>
               </el-col>
             </el-row>
             <el-row class="card-item">
-              <el-col :span="5">
+              <el-col :span="5" :xs="6">
                 <span class="item-label">特别说明</span>
               </el-col>
-              <el-col :span="19">
+              <el-col :span="19" :xs="18">
                 <span class="item-value">{{course.specialNote}}</span>
               </el-col>
             </el-row>
@@ -68,17 +72,20 @@
           <el-divider></el-divider>
         </el-card>
       </el-col>
-      <el-col :span="16">
+
+
+
+      <el-col :span="16" :xs="24">
         <el-card class="custom-card ">
           <div slot="header" class="clearfix">
             <h3>教师信息</h3>
           </div>
           <el-row>
-            <el-col :span="5">
+            <el-col :span="5" :xs="12">
               <el-image style="width: 120px; height: 120px; border-radius: 50%;" :src="getAvatarUrl(teacher.avatar)"
                 :fit="'contain'"></el-image>
             </el-col>
-            <el-col :span="18">
+            <el-col :span="18" :xs="12">
               <el-row class="card-item">
                 <span class="item-label">教师</span>
                 <span class="item-value">{{teacher.name}}</span>
@@ -99,12 +106,12 @@
           </el-row>
           <el-divider></el-divider>
           <el-row class="card-item">
-            <el-col :span="2"><span class="item-label">个人简介</span></el-col>
-            <el-col :span="22"><span class="item-value">{{teacher.intro}}</span></el-col>
+            <el-col :span="2" :xs="6"><span class="item-label">个人简介</span></el-col>
+            <el-col :span="22" :xs="18"><span class="item-value">{{teacher.intro}}</span></el-col>
           </el-row>
           <el-row class="card-item">
-            <el-col :span="2"><span class="item-label">教师专长</span></el-col>
-            <el-col :span="22"><span class="item-value">{{teacher.specialty}}</span></el-col>
+            <el-col :span="2" :xs="6"><span class="item-label">教师专长</span></el-col>
+            <el-col :span="22" :xs="18"><span class="item-value">{{teacher.specialty}}</span></el-col>
           </el-row>
         </el-card>
       </el-col>
@@ -195,6 +202,7 @@
   .custom-card {
     font-size: 14px;
     color: #606266;
+    margin-bottom: 15px;
   }
 
   .card-item {
@@ -234,4 +242,8 @@
   .card-footer-button {
     float: right;
   }
+  .mb-15 {
+    margin-bottom: 15px;
+  }
+  
 </style>

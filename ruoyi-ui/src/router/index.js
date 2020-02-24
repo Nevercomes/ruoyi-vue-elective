@@ -194,7 +194,45 @@ export const constantRoutes = [{
         title: '申请列表'
       }
     }]
-  }
+  },
+  {
+    path: '/mobile',
+    component: Layout,
+    hidden: true,
+    children: [{
+      path: '',
+      component: () => import('@/views-mobile/index'),
+      name: 'MobileIndex',
+      meta: {
+        title: '移动端首页'
+      }
+    },
+    {
+      path: 'select/student/open',
+      component: () => import('@/views-mobile/elective/select/index'),
+      name: 'MobileStudentOpen',
+      meta: {
+        title: '进入选课'
+      }
+    },
+    {
+      path: 'select/student/course/:openId(\\d+)',
+      component: () => import('@/views-mobile/elective/select/list'),
+      name: 'MobileSelectCourse',
+      meta: {
+        title: '选课列表'
+      }
+    },
+    {
+      path: 'select/record',
+      component: () => import('@/views-mobile/elective/record/select/index'),
+      name: 'MobileSelectRecord',
+      meta: {
+        title: '选课记录'
+      }
+    }
+    ]
+  },
 ]
 
 export default new Router({

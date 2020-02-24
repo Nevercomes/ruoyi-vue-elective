@@ -1,6 +1,6 @@
 <template>
-  <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
+  <div class="app-container mobile-container" ref="MobileContainer">
+    <!-- <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
       <el-form-item label="选课" prop="openId">
         <el-select v-model="queryParams.openId" placeholder="请选择选课" clearable size="small">
           <el-option v-for="item in openOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -22,77 +22,35 @@
       <el-form-item label="课程" prop="courseName">
         <el-input v-model="queryParams.courseName" placeholder="请输入课程名称" clearable size="small" @keyup.enter.native="handleQuery" />
       </el-form-item>
-      <!-- <el-form-item label="创建时间">
-        <el-date-picker v-model="dateRange" size="small" style="width: 240px" value-format="yyyy-MM-dd" type="daterange"
-          range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
-      </el-form-item> -->
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
-    </el-form>
+    </el-form> -->
 
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate" v-hasPermi="['elective:select:edit']">修改</el-button>
-      </el-col>
-      <!-- <el-col :span="1.5">
-        <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
-          v-hasPermi="['elective:select:remove']">删除</el-button>
-      </el-col> -->
-      <el-col :span="1.5">
-        <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport" v-hasPermi="['elective:select:export']">导出</el-button>
-      </el-col>
-    </el-row>
-
-    <el-table v-loading="loading" :data="selectList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="编号" align="center" prop="id" />
-      <el-table-column label="学生" align="center" prop="studentName" />
-      <el-table-column label="班级" align="center" prop="className" />
-      <el-table-column label="选课" align="center" prop="openName" :show-overflow-tooltip="true" />
-      <el-table-column label="课程" align="center" prop="courseName" :show-overflow-tooltip="true">
-        <template slot-scope="scope">
-          <router-link :to="'/course/info/' + scope.row.courseId" class="link-type">
-            <span>{{scope.row.courseName}}</span>
-          </router-link>
-        </template>
-      </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" v-hasPermi="['sys:role:staff']">
-        <template slot-scope="scope">
-          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['elective:select:edit']">修改</el-button>
-          <!-- <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['elective:select:remove']">删除</el-button> -->
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <pagination v-show="total>0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize"
-      @pagination="getList" />
-
-    <!-- 添加或修改select对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px">
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="学生" prop="studentId">
-          <el-select v-model="form.studentId" placeholder="请选择学生" :disabled="true">
-            <el-option v-for="item in studentList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="课程" prop="courseId">
-          <el-select v-model="form.courseId" placeholder="请选择课程">
-            <el-option v-for="item in canSelectList" :key="item.id" :label="item.id" :value="item.id"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
+    <mt-loadmore :top-method="loadTop" :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" :topPullText="''"
+      :bottomPullText="''" :bottomDropText="'释放加载'" :auto-fill="false" ref="loadmore">
+      <ul>
+        <li v-for="item in dataList" class="nl-crad-li">
+          <nl-card>
+            <nl-card-item :label="'学生'" :value="item.studentName"></nl-card-item>
+            <nl-card-item :label="'班级'" :value="item.className"></nl-card-item>
+            <nl-card-item :label="'选课'" :value="item.openName"></nl-card-item>
+            <nl-card-item>
+              <el-row class="card-item_box">
+                <el-col :span="6"><span class="card-item_laebl">课程</span></el-col>
+                <el-col :span="18">
+                  <router-link :to="'/course/info/' + item.courseId" class="link-type">
+                    <span class="card-item_vlaue">{{ item.courseName }}</span>
+                  </router-link>
+                </el-col>
+              </el-row>
+            </nl-card-item>
+            <nl-card-item :label="'创建时间'" :value="parseTime(item.createTime)"></nl-card-item>
+          </nl-card>
+        </li>
+      </ul>
+    </mt-loadmore>
   </div>
 </template>
 
@@ -116,11 +74,19 @@
   import {
     listOpen
   } from "@/api/elective/open/open"
+  import NlCard from "@/components/NaLo/nl-card"
+  import NlCardItem from "@/components/NaLo/nl-card-item"
 
   export default {
     name: "SelectRecord",
+    components: {
+      NlCard,
+      NlCardItem
+    },
     data() {
       return {
+        // 是否加载完数据
+        allLoaded: false,
         // 遮罩层
         loading: true,
         // 选中数组
@@ -132,7 +98,7 @@
         // 总条数
         total: 0,
         // select表格数据
-        selectList: [],
+        dataList: [],
         // 弹出层标题
         title: "",
         // 是否显示弹出层
@@ -178,47 +144,37 @@
         }
       };
     },
-    beforeRouteEnter(to, from_, next) {
-      if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
-        const studentId = from_.params && from_.params.studentId
-        const courseId = from_.query && from_.query.courseId
-        const gradeId = from_.query && from_.query.gradeId
-        next({
-          path: '/mobile/select/record',
-          query: {
-            studentId: studentId,
-            courseId: courseId,
-            gradeId: gradeId
-          }
-        })
-      } else next()
+    mounted() {
+      this.setHeight()
     },
     created() {
-      this.queryParams.studentId = this.$route.params && this.$route.params.studentId;
+      this.queryParams.studentId = this.$route.query && this.$route.query.studentId;
       this.queryParams.courseId = this.$route.query && this.$route.query.courseId
       this.queryParams.gradeId = this.$route.query && this.$route.query.gradeId
       this.getList();
-      listClazz().then(response => {
-        this.clazzOptions = response.data
-      })
-      listGrade().then(response => {
-        this.gradeOptions = response.data
-      })
-      listStudent().then(response => {
-        this.studentList = response.rows
-      })
-      listOpen().then(response => {
-        this.openOptions = response.rows
-      })
+      // listClazz().then(response => {
+      //   this.clazzOptions = response.data
+      // })
+      // listGrade().then(response => {
+      //   this.gradeOptions = response.data
+      // })
+      // listStudent().then(response => {
+      //   this.studentList = response.rows
+      // })
+      // listOpen().then(response => {
+      //   this.openOptions = response.rows
+      // })
     },
     methods: {
       /** 查询select列表 */
       getList() {
         this.loading = true;
-        listSelect(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-          this.selectList = response.rows;
+        this.allLoaded = false
+        listSelect(this.queryParams).then(response => {
+          this.dataList = this.dataList.concat(response.rows);
           this.total = response.total;
           this.loading = false;
+          this.calNoMore()
         });
       },
       // 取消按钮
@@ -250,6 +206,7 @@
       },
       /** 搜索按钮操作 */
       handleQuery() {
+        this.dataList = []
         this.queryParams.pageNum = 1;
         this.getList();
       },
@@ -337,7 +294,55 @@
         }).then(response => {
           this.download(response.msg);
         }).catch(function() {});
+      },
+      loadTop() {
+        this.getList()
+        this.$refs.loadmore.onTopLoaded();
+      },
+      loadBottom() {
+        this.queryParams.pageNum = this.queryParams.pageNum + 1
+        this.getList()
+        this.$refs.loadmore.onBottomLoaded();
+      },
+      setHeight() {
+        this.$refs.MobileContainer.style.height = (document.body.clientHeight - 86) + 'px'
+      },
+      calNoMore() {
+        if (this.total == 0) {
+          this.allLoaded = true
+        } else {
+          this.allLoaded = this.dataList.length >= this.total ? true : false
+        }
       }
     }
   };
 </script>
+<style scoped>
+  .nl-crad-li {
+    padding: 5px 0;
+  }
+
+  .card-item_box {
+    width: 100%;
+    padding: 6px 0;
+    display: flex;
+  }
+
+  .card-item_laebl {
+    color: #515a6e;
+    font-weight: bold;
+    min-width: 60px;
+    text-align: justify;
+    margin-right: 20;
+    vertical-align: middle;
+  }
+
+  .card-item_laebl:after {
+    content: '';
+    width: 100%;
+    display: inline-block;
+    overflow: hidden;
+    height: 0;
+  }
+
+</style>

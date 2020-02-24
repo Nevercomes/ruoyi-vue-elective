@@ -7,7 +7,7 @@
       <el-form-item label="上课教师" prop="teacherId">
         <el-select v-model="queryParams.teacherId" placeholder="请选择上课教师" clearable size="small">
           <el-option v-for="item in teacherList" :key="item.id" :label="item.name" :value="item.id" />
-        </el-select>
+        </el-select> 
       </el-form-item>
       <el-form-item label="上课时间" prop="classTimeId">
         <el-select v-model="queryParams.classTimeId" placeholder="请选择上课时间" clearable size="small">
@@ -318,6 +318,13 @@
           }]
         }
       };
+    },
+    beforeRouteEnter(to, from, next) {
+      if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+        next({
+          path: '/mobile/select/student/course'
+        })
+      } else next()
     },
     created() {
       this.openId = this.$route.params && this.$route.params.openId;

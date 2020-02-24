@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row :gutter="20">
-      <el-col :span="6" :xs="24">
+      <el-col :span="6" :xs="24" class="mb-15">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>个人信息</span>
@@ -113,3 +113,8 @@
     }
   };
 </script>
+<style>
+  .mb-15 {
+    margin-bottom: 15px;
+  }
+</style>

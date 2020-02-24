@@ -5,6 +5,7 @@ import Cookies from 'js-cookie'
 import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 
 import Element from 'element-ui'
+import Mint from 'mint-ui'
 import './assets/styles/element-variables.scss'
 
 import '@/assets/styles/index.scss' // global css
@@ -60,18 +61,6 @@ Vue.prototype.msgInfo = function(msg) {
   this.$message.info(msg);
 }
 
-Vue.prototype.getImageUrl = function(url) {
-  if (url && url.indexOf('http://') != -1) {
-    let _url = url.substring(7);
-    return 'https://images.weserv.nl/?url=' + _url;
-  }
-  if(url && url.indexOf('https://') != -1) {
-    let _url = url.substring(8)
-    return 'https://images.weserv.nl/?url=' + _url;
-  }
-  return url
-}
-
 // 全局组件挂载
 Vue.component('Pagination', Pagination)
 
@@ -89,6 +78,8 @@ Vue.use(permission)
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium' // set element-ui default size
 })
+
+Vue.use(Mint)
 
 Vue.config.productionTip = false
 
