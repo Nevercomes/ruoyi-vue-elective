@@ -230,6 +230,30 @@ export const constantRoutes = [{
       meta: {
         title: '选课记录'
       }
+    },
+    {
+      path: 'course',
+      component: () => import('@/views-mobile/elective/course/index'),
+      name: 'MobileCourse',
+      meta: {
+        title: '课程列表'
+      }
+    },
+    {
+      path: 'course/form',
+      component: () => import('@/views-mobile/elective/course/form'),
+      name: 'MobileCourseForm',
+      meta: {
+        title: '课程详情'
+      }
+    },
+    {
+      path: 'apply/record',
+      component: () => import('@/views-mobile/elective/record/apply/index'),
+      name: 'MobileApplyRecord',
+      meta: {
+        title: '申请记录'
+      }
     }
     ]
   },

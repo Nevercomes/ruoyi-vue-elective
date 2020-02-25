@@ -255,6 +255,8 @@
         this.$refs.loadmore.onTopLoaded();
       },
       loadBottom() {
+        this.calNoMore()
+        if (this.allLoaded) return
         this.queryParams.pageNum = this.queryParams.pageNum + 1
         this.getList()
         this.$refs.loadmore.onBottomLoaded();

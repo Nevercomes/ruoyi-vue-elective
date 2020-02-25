@@ -1,6 +1,6 @@
 <template>
-  <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
+  <div class="app-container mobile-container" ref="MobileContainer">
+    <!-- <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
       <el-form-item label="课程" prop="courseName">
         <el-input v-model="queryParams.courseName" placeholder="请输入申请课程" clearable size="small" @keyup.enter.native="handleQuery" />
       </el-form-item>
@@ -18,9 +18,9 @@
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
-    </el-form>
+    </el-form> -->
 
-    <el-row :gutter="10" class="mb8">
+    <!-- <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
           v-hasPermi="['elective:apply:remove', 'sys:role:teacher']">删除</el-button>
@@ -28,116 +28,27 @@
       <el-col :span="1.5">
         <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport" v-hasPermi="['elective:apply:export', 'sys:role:teacher']">导出</el-button>
       </el-col>
-    </el-row>
+    </el-row> -->
 
-    <el-table v-loading="loading" :data="applyList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="编号" align="center" prop="id" />
-      <el-table-column label="教师" align="center" prop="teacherName" />
-      <el-table-column label="课程" align="center" prop="courseName" />
-      <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat">
-        <template slot-scope="scope">
-          <el-tag v-if="scope.row.status == 0">{{statusFormat(scope.row.status)}}</el-tag>
-          <el-tag v-else-if="scope.row.status == 1" type="success">{{statusFormat(scope.row.status)}}</el-tag>
-          <el-tag v-else-if="scope.row.status == 2" type="danger">{{statusFormat(scope.row.status)}}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button size="mini" type="text" icon="el-icon-edit-outline" @click="handleCheck(scope.row)" v-hasPermi="['elective:check:add']">审核</el-button>
-          <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['elective:apply:remove']">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <pagination v-show="total>0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize"
-      @pagination="getList" />
-
-    <!-- 添加或修改申请记录对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="600px">
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="课程" prop="course.name">
-              <el-input v-model="form.course.name" placeholder="请输入课程名" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="教师" prop="course.teacherId">
-              <el-select v-model="form.course.teacherId" placeholder="请选择上课教师" :disabled="true">
-                <el-option v-for="item in teacherList" :key="item.id" :label="item.name" :value="item.id" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="学年学期" prop="course.semesterId">
-              <el-select v-model="form.course.semesterId" placeholder="请选择学年学期">
-                <el-option v-for="item in semesterOptions" :key="item.id" :label="item.label" :value="item.id" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="上课时间" prop="classTimeId">
-              <el-select v-model="form.course.classTimeId" placeholder="请选择上课时间">
-                <el-option v-for="item in classTimeOptions" :key="item.id" :label="item.label" :value="item.id" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="上课地点" prop="classLocation">
-              <el-input v-model="form.course.classLocation" placeholder="请输入上课地点" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="招生人数">
-              <el-row class="peo-el-row" v-for="(item, index) in form.course.peopleList" :key="index">
-                <el-col class="peo-el-col" :span="10">
-                  <el-form-item :prop="`course.peopleList.${index}.gradeId`" :rules="{required: true, message: '请选择招生年级', trigger: 'change'}">
-                    <el-select v-model="item.gradeId">
-                      <el-option v-for="grade in gradeOptions" :key="grade.deptId + index" :value="grade.deptId" :label="grade.deptName"></el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col class="peo-el-col" :span="10">
-                  <el-form-item :prop="`course.peopleList.${index}.initNum`" :rules="{required: true, message: '请输入招生人数', trigger: 'blur'}">
-                    <el-input v-model="item.initNum" placeholder="请输入招生人数" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="2">
-                  <i v-if="index != 0" class="el-icon-minus people-config-minus" @click.prevent="removePeople(item)"></i>
-                  <i v-else class="el-icon-plus people-config-plus" @click.prevent="addPeople"></i>
-                </el-col>
-              </el-row>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="课程简介" prop="intro">
-              <el-input v-model="form.course.intro" type="textarea" placeholder="请输入内容" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="目标" prop="objective">
-              <el-input v-model="form.course.objective" type="textarea" placeholder="请输入内容" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="特别声明" prop="specialNote">
-              <el-input v-model="form.course.specialNote" type="textarea" placeholder="请输入内容" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="success" @click="submitCheckForm('1')">通 过</el-button>
-        <el-button type="danger" @click="submitCheckForm('2')">退 回</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
+    <mt-loadmore :top-method="loadTop" :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" :topPullText="''"
+      :bottomPullText="''" :bottomDropText="'释放加载'" :auto-fill="false" ref="loadmore">
+      <ul>
+        <li v-for="item in dataList" class="nl-crad-li">
+          <router-link :to="{path: '/mobile/course/form', query: {courseId: item.id}}">
+            <nl-card :header="item.name">
+              <nl-card-item :label="'教师'" :value="item.teacherName"></nl-card-item>
+              <nl-card-item :label="'课程'" :value="item.courseName"></nl-card-item>
+              <nl-card-item :label="'创建时间'" :value="parseTime(item.createTime)"></nl-card-item>
+              <nl-card-item :label="'状态'">
+                <el-tag v-if="item.status == 0">{{statusFormat(item.status)}}</el-tag>
+                <el-tag v-else-if="item.status == 1" type="success">{{statusFormat(item.status)}}</el-tag>
+                <el-tag v-else-if="item.status == 2" type="danger">{{statusFormat(item.status)}}</el-tag>
+              </nl-card-item>
+            </nl-card>
+          </router-link>
+        </li>
+      </ul>
+    </mt-loadmore>
   </div>
 </template>
 
@@ -167,11 +78,19 @@
   import {
     addCheck
   } from "@/api/elective/record/check"
+  import NlCard from "@/components/NaLo/nl-card"
+  import NlCardItem from "@/components/NaLo/nl-card-item"
 
   export default {
-    name: "Apply",
+    name: "MobileApply",
+    components: {
+      NlCard,
+      NlCardItem
+    },
     data() {
       return {
+        // 底部数据是否全部加载
+        allLoaded: false,
         // 遮罩层
         loading: true,
         // 选中数组
@@ -183,7 +102,7 @@
         // 总条数
         total: 0,
         // 申请记录表格数据
-        applyList: [],
+        dataList: [],
         // 弹出层标题
         title: "",
         // 是否显示弹出层
@@ -228,31 +147,11 @@
         }
       };
     },
-    beforeRouteEnter(to, from, next) {
-      if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
-        next({
-          path: '/mobile/apply/record'
-        })
-      } else next()
+    mounted() {
+      this.setHeight()
     },
     created() {
-      // 当存在两级对象的时候 需要先在data里面声明出来
-      const teacherId = this.$route.params && this.$route.params.teacherId
-      if (teacherId) this.queryParams.teacherId = Number(teacherId)
-      this.reset()
       this.getList();
-      listTeacher().then(response => {
-        this.teacherList = response.rows;
-      })
-      listSemester().then(response => {
-        this.semesterOptions = response.data;
-      });
-      listClassTime().then(response => {
-        this.classTimeOptions = response.data;
-      });
-      listGrade().then(response => {
-        this.gradeOptions = response.data
-      })
       this.getDicts("elective_apply_status").then(response => {
         this.statusOptions = response.data;
       });
@@ -261,10 +160,12 @@
       /** 查询申请记录列表 */
       getList() {
         this.loading = true;
+        this.allLoaded = false
         listApply(this.queryParams).then(response => {
-          this.applyList = response.rows;
+          this.dataList = this.dataList.concat(response.rows);
           this.total = response.total;
           this.loading = false;
+          this.calNoMore()
         });
       },
       // 申请状态字典翻译
@@ -431,29 +332,34 @@
           gradeId: null,
           initNum: ''
         })
+      },
+      loadTop() {
+        this.getList()
+        this.$refs.loadmore.onTopLoaded();
+      },
+      loadBottom() {
+        this.calNoMore()
+        if (this.allLoaded) return
+        this.queryParams.pageNum = this.queryParams.pageNum + 1
+        this.getList()
+        this.$refs.loadmore.onBottomLoaded();
+      },
+      setHeight() {
+        this.$refs.MobileContainer.style.height = (document.body.clientHeight - 86) + 'px'
+      },
+      calNoMore() {
+        if (this.total == 0) {
+          this.allLoaded = true
+        } else {
+          this.allLoaded = this.dataList.length >= this.total ? true : false
+        }
       }
     }
   };
 </script>
 
 <style>
-  .people-config-minus {
-    color: red;
-    font-size: 20px;
-    cursor: pointer;
-  }
-
-  .people-config-plus {
-    color: #5cb6ff;
-    font-size: 20px;
-    cursor: pointer;
-  }
-
-  .peo-el-row {
-    margin-bottom: 20px;
-  }
-
-  .peo-el-row>.peo-el-col {
-    margin-right: 10px;
+  .nl-crad-li {
+    padding: 5px 0;
   }
 </style>

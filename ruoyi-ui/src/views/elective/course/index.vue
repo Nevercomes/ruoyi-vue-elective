@@ -159,7 +159,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-      </el-form>
+      </el-form> 
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
@@ -258,6 +258,13 @@
           }]
         }
       };
+    },
+    beforeRouteEnter(to, from, next) {
+      if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+        next({
+          path: '/mobile/course'
+        })
+      } else next()
     },
     created() {
       const teacherId = this.$route.params && this.$route.params.teacherId

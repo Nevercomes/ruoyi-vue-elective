@@ -10,7 +10,7 @@
             <nl-card-item :label="'结束时间'" :value="parseTime(item.closeTime)"></nl-card-item>
             <!-- <el-divider></el-divider> -->
             <router-link :to="'/mobile/select/student/course/' + item.id" class="link-type">
-              <el-button  class="card-footer-item" size="mini" type="primary" icon="el-icon-date" v-hasPermi="['elective:select:list']">进入选课</el-button>
+              <el-button class="card-footer-item" size="mini" type="primary" icon="el-icon-date" v-hasPermi="['elective:select:list']">进入选课</el-button>
               <div class="clearfix"></div>
             </router-link>
           </nl-card>
@@ -83,6 +83,8 @@
         this.$refs.loadmore.onTopLoaded();
       },
       loadBottom() {
+        this.calNoMore()
+        if (this.allLoaded) return
         this.queryParams.pageNum = this.queryParams.pageNum + 1
         this.getList()
         this.$refs.loadmore.onBottomLoaded();
@@ -109,5 +111,4 @@
   .card-footer-item {
     float: right;
   }
-
 </style>
