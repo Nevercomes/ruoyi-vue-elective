@@ -118,6 +118,6 @@ public class ElectiveCourseController extends BaseController {
     @Log(title = "课程", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids) {
-        return toAjax(electiveCourseService.deleteElectiveCourseByIds(ids));
+        return AjaxResult.success(electiveCourseService.deleteElectiveCourseByIds(ids));
     }
 }

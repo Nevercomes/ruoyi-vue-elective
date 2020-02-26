@@ -57,7 +57,7 @@ public class ElectiveStudentController extends BaseController {
     public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception {
         ExcelUtil<ElectiveStudent> util = new ExcelUtil<ElectiveStudent>(ElectiveStudent.class);
         List<ElectiveStudent> studentList = util.importExcel(file.getInputStream());
-        String message = electiveStudentService.importTeacher(studentList, updateSupport, SecurityUtils.getUsername());
+        String message = electiveStudentService.importStudent(studentList, updateSupport, SecurityUtils.getUsername());
         return AjaxResult.success(message);
     }
 

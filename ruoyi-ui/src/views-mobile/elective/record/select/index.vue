@@ -50,6 +50,7 @@
           </nl-card>
         </li>
       </ul>
+      <nl-nodata :show="total == 0"></nl-nodata>
     </mt-loadmore>
   </div>
 </template>
@@ -76,12 +77,14 @@
   } from "@/api/elective/open/open"
   import NlCard from "@/components/NaLo/nl-card"
   import NlCardItem from "@/components/NaLo/nl-card-item"
+  import NlNodata from "@/components/NaLo/nl-nodata"
 
   export default {
     name: "MobileSelectRecord",
     components: {
       NlCard,
-      NlCardItem
+      NlCardItem,
+      NlNodata
     },
     data() {
       return {
@@ -268,35 +271,8 @@
           }
         });
       },
-      /** 删除按钮操作 */
-      handleDelete(row) {
-        const ids = row.id || this.ids;
-        this.$confirm('是否确认删除select编号为"' + ids + '"的数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return delSelect(ids);
-        }).then(() => {
-          this.getList();
-          this.msgSuccess("删除成功");
-        }).catch(function() {});
-      },
-      /** 导出按钮操作 */
-      handleExport() {
-        const queryParams = this.queryParams;
-        this.$confirm('是否确认导出所有select数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return exportSelect(queryParams);
-        }).then(response => {
-          this.download(response.msg);
-        }).catch(function() {});
-      },
       loadTop() {
-        this.getList()
+        // this.getList()
         this.$refs.loadmore.onTopLoaded();
       },
       loadBottom() {

@@ -69,4 +69,6 @@ public interface IElectiveSelectRecordService
 
 
     List<ElectiveSelectStatistic> listStatistic(ElectiveSelectStatistic electiveSelectStatistic);
+
+    List<ElectiveSelectRecord> checkGrade(ElectiveSelectRecord electiveSelectRecord);
 }

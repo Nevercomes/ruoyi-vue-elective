@@ -165,7 +165,7 @@ public class ElectiveStudentServiceImpl implements IElectiveStudentService {
      * @return
      */
     @Override
-    public String importTeacher(List<ElectiveStudent> studentList, boolean updateSupport, String operName) {
+    public String importStudent(List<ElectiveStudent> studentList, boolean updateSupport, String operName) {
         if (StringUtils.isNull(studentList) || studentList.size() == 0) {
             throw new CustomException("导入学生数据不能为空！");
         }

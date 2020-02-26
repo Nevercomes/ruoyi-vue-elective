@@ -8,6 +8,7 @@ import com.ruoyi.framework.aspectj.lang.annotation.Excel;
 import com.ruoyi.framework.web.domain.BaseEntity;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * select对象 elective_select_record

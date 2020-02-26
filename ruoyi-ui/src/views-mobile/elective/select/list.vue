@@ -111,6 +111,7 @@
   import {
     addSelect
   } from "@/api/elective/record/select"
+  import {MessageBox} from 'mint-ui'
 
   import defaultAvatar from "@/assets/image/profile.jpg"
 
@@ -223,21 +224,35 @@
         let text = row.specialNote || '无'
         let that = this
         let hint = "亲爱的同学，感谢你选择本课！请你再次确认你的身体条件等是否符合本课要求等信息。若你一旦选择，本学期内将无法作任何调整。"
-        this.$confirm(hint, "温馨提示", {
-          confirmButtonText: '确定选课',
-          cancelButtonText: '不了，再看看',
-          type: 'warning'
-        }).then(function() {
-          that.select.courseId = row.id
-          addSelect(that.select).then(response => {
-            if (response.code === 200) {
-              that.msgSuccess("选课成功");
-              that.getList();
-            } else {
-              that.msgError(response.msg);
-            }
+        if (!this.isMobile()) {
+          this.$confirm(hint, "温馨提示", {
+            confirmButtonText: '确定选课',
+            cancelButtonText: '不了，再看看',
+            type: 'warning'
+          }).then(function() {
+            that.select.courseId = row.id
+            addSelect(that.select).then(response => {
+              if (response.code === 200) {
+                that.msgSuccess("选课成功");
+                that.getList();
+              } else {
+                that.msgError(response.msg);
+              }
+            })
           })
-        })
+        } else {
+          MessageBox.confirm(hint, '温馨提示').then(action => {
+            that.select.courseId = row.id
+            addSelect(that.select).then(response => {
+              if (response.code === 200) {
+                that.msgSuccess("选课成功");
+                that.getList();
+              } else {
+                that.msgError(response.msg);
+              }
+            })
+          })
+        }
       },
       gradeFormat(gradeId) {
         for (let i in this.gradeOptions) {
@@ -251,6 +266,8 @@
         else return defaultAvatar
       },
       loadTop() {
+        this.dataList = []
+        this.queryParams.pageNum = 1
         this.getList()
         this.$refs.loadmore.onTopLoaded();
       },

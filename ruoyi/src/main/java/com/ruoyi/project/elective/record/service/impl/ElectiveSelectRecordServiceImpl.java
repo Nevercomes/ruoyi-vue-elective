@@ -117,4 +117,9 @@ public class ElectiveSelectRecordServiceImpl implements IElectiveSelectRecordSer
     public List<ElectiveSelectStatistic> listStatistic(ElectiveSelectStatistic electiveSelectStatistic) {
         return electiveSelectRecordMapper.listStatistic(electiveSelectStatistic);
     }
+
+    @Override
+    public List<ElectiveSelectRecord> checkGrade(ElectiveSelectRecord electiveSelectRecord) {
+        return electiveSelectRecordMapper.checkGrade(electiveSelectRecord);
+    }
 }

@@ -264,7 +264,7 @@ public class SysUserServiceImpl implements ISysUserService {
             teacher.setName(user.getNickName());
             teacherMapper.updateElectiveTeacher(teacher);
         }
-        ElectiveStudent student = studentMapper.selectElectiveStudentById(user.getUserId());
+        ElectiveStudent student = studentMapper.selectStudentByUserId(user.getUserId());
         if (student != null) {
             student.setName(user.getNickName());
             studentMapper.updateElectiveStudent(student);

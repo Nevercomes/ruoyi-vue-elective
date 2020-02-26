@@ -66,7 +66,7 @@ public interface IElectiveStudentService {
      * @param username
      * @return
      */
-    String importTeacher(List<ElectiveStudent> studentList, boolean updateSupport, String username);
+    String importStudent(List<ElectiveStudent> studentList, boolean updateSupport, String username);
 
     /**
      * 查询导出数据时的学生数据

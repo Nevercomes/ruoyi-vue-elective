@@ -100,6 +100,17 @@
                              order by id desc
                              limit 1)-->
 
+    <select id="checkGrade" parameterType="ElectiveSelectRecord" resultMap="ElectiveSelectRecordResult">
+        select id
+        from elective_course_people
+        where course_id = #{courseId}
+              and grade_id = (select parent_id
+                              from sys_dept
+                              where sys_dept.dept_id = (select dept_id
+                                                        from elective_student
+                                                        where id = #{studentId}))
+    </select>
+
     <!-- TODO 有点复杂 一时半会写不好这个SQL -->
     <select id="listStatistic" parameterType="ElectiveSelectStatistic" resultMap="ElectiveSelectStatisticResult">
         select

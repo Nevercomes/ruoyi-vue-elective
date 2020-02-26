@@ -106,6 +106,11 @@ public class ElectiveSelectRecordController extends BaseController {
         query.setOpenId(electiveSelectRecord.getOpenId());
         List<ElectiveSelectRecord> list = electiveSelectRecordService.selectElectiveSelectRecordList(query);
         if (list == null || list.size() == 0) {
+            // 检查年级是否相符
+            list = electiveSelectRecordService.checkGrade(electiveSelectRecord);
+            if (list == null || list.size() == 0) {
+                throw new CustomException("抱歉，该课程为其它年级课程");
+            }
             // 检查课程是否有余量
             list = electiveSelectRecordService.listCanSelect(electiveSelectRecord);
             if (list == null || list.size() == 0) {

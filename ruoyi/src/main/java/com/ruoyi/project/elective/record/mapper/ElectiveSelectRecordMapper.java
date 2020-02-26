@@ -73,4 +73,11 @@ public interface ElectiveSelectRecordMapper
      * @return
      */
     List<ElectiveSelectStatistic> listStatistic(ElectiveSelectStatistic electiveSelectStatistic);
+
+    /**
+     * 检查是否有可选年级的课程
+     * @param electiveSelectRecord
+     * @return
+     */
+    List<ElectiveSelectRecord> checkGrade(ElectiveSelectRecord electiveSelectRecord);
 }

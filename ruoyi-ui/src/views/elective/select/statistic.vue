@@ -114,6 +114,13 @@
         }
       };
     },
+    beforeRouteEnter(to, from, next) {
+      if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+        next({
+          path: '/mobile/select/statistic'
+        })
+      } else next()
+    },
     created() {
       this.getList();
       listSemester().then(response => {

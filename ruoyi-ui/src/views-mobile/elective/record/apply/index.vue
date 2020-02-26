@@ -294,33 +294,7 @@
           }
         });
       },
-      /** 删除按钮操作 */
-      handleDelete(row) {
-        const ids = row.id || this.ids;
-        this.$confirm('是否确认删除申请记录编号为"' + ids + '"的数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return delApply(ids);
-        }).then(() => {
-          this.getList();
-          this.msgSuccess("删除成功");
-        }).catch(function() {});
-      },
-      /** 导出按钮操作 */
-      handleExport() {
-        const queryParams = this.queryParams;
-        this.$confirm('是否确认导出所有申请记录数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return exportApply(queryParams);
-        }).then(response => {
-          this.download(response.msg);
-        }).catch(function() {});
-      },
+      
       removePeople(people) {
         let index = this.form.course.peopleList.indexOf(people)
         if (index != -1) {
@@ -334,7 +308,7 @@
         })
       },
       loadTop() {
-        this.getList()
+        // this.getList()
         this.$refs.loadmore.onTopLoaded();
       },
       loadBottom() {

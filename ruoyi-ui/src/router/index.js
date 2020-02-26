@@ -254,6 +254,14 @@ export const constantRoutes = [{
       meta: {
         title: '申请记录'
       }
+    },
+    {
+      path: 'select/statistic',
+      component: () => import('@/views-mobile/elective/select/statistic'),
+      name: 'MobileStatistic',
+      meta: {
+        title: '选课统计'
+      }
     }
     ]
   },

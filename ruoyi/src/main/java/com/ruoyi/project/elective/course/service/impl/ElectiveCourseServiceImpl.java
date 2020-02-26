@@ -3,11 +3,16 @@ package com.ruoyi.project.elective.course.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ruoyi.common.exception.CustomException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.project.elective.course.domain.ElectiveCoursePeople;
 import com.ruoyi.project.elective.course.service.IElectiveCoursePeopleService;
 import com.ruoyi.project.elective.record.domain.ElectiveApplyRecord;
+import com.ruoyi.project.elective.record.domain.ElectiveSelectRecord;
 import com.ruoyi.project.elective.record.service.IElectiveApplyRecordService;
+import com.ruoyi.project.elective.record.service.IElectiveSelectRecordService;
+import com.ruoyi.project.system.domain.SysDept;
+import com.ruoyi.project.system.service.ISysDeptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.project.elective.course.mapper.ElectiveCourseMapper;
@@ -31,6 +36,10 @@ public class ElectiveCourseServiceImpl implements IElectiveCourseService {
     private IElectiveApplyRecordService applyRecordService;
     @Autowired
     private IElectiveCoursePeopleService coursePeopleService;
+    @Autowired
+    private IElectiveSelectRecordService selectRecordService;
+    @Autowired
+    private ISysDeptService sysDeptService;
 
     /**
      * 查询课程
@@ -109,6 +118,11 @@ public class ElectiveCourseServiceImpl implements IElectiveCourseService {
         // 获取删除的
         List<ElectiveCoursePeople> del = getDel(peopleNew, peopleOld);
         for (ElectiveCoursePeople p : del) {
+            // 如果已经有人选课则不可以删除该年级
+            if (p.getSelectNum() != null && p.getSelectNum() != 0) {
+                SysDept grade = sysDeptService.selectDeptById(p.getGradeId());
+                throw new CustomException(grade.getDeptName() + "已经有人选课，禁止删除该年级招生人数");
+            }
             electiveCoursePeopleService.deleteElectiveCoursePeopleById(p.getId());
         }
         // 获取修改的
@@ -126,8 +140,32 @@ public class ElectiveCourseServiceImpl implements IElectiveCourseService {
      * @return 结果
      */
     @Override
-    public int deleteElectiveCourseByIds(Long[] ids) {
-        return electiveCourseMapper.deleteElectiveCourseByIds(ids);
+    public String deleteElectiveCourseByIds(Long[] ids) {
+        int successNum = 0;
+        int failureNum = 0;
+        StringBuilder successMsg = new StringBuilder();
+        StringBuilder failureMsg = new StringBuilder();
+        for (Long id : ids) {
+            ElectiveCourse course = this.selectElectiveCourseById(id);
+            // 检查课程是否已经选课
+            ElectiveSelectRecord q = new ElectiveSelectRecord();
+            List<ElectiveSelectRecord> selectRecordList = selectRecordService.selectElectiveSelectRecordList(q);
+            if (selectRecordList != null && selectRecordList.size() > 0) {
+                failureNum++;
+                failureMsg.append("<br/>").append(failureNum).append("、课程").append(course.getName()).append(" 删除失败，已有学生选课");
+            } else {
+                successNum++;
+                successMsg.append("<br/>").append(successNum).append("、课程 ").append(course.getName()).append(" 删除成功");
+                electiveCourseMapper.deleteElectiveCourseById(id);
+            }
+        }
+        if (failureNum > 0) {
+            failureMsg.insert(0, "很抱歉，删除失败！共 " + failureNum + " 课程不允许删除：");
+            return failureMsg.toString();
+        } else {
+            successMsg.insert(0, "课程删除成功！共 " + successNum + " 条，数据如下：");
+            return successMsg.toString();
+        }
     }
 
     /**
@@ -146,6 +184,8 @@ public class ElectiveCourseServiceImpl implements IElectiveCourseService {
         for (ElectiveCoursePeople n : peopleNew) {
             for (ElectiveCoursePeople o : peopleOld) {
                 if (o.getId().equals(n.getId()) && (!o.getGradeId().equals(n.getGradeId()) || !o.getInitNum().equals(n.getInitNum()))) {
+                    // 旧的已选课人数进行传递
+                    n.setSelectNum(o.getSelectNum());
                     res.add(n);
                     break;
                 }

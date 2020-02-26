@@ -79,7 +79,7 @@
         this.resetForm("queryForm");
       },
       loadTop() {
-        this.getList()
+        // this.getList()
         this.$refs.loadmore.onTopLoaded();
       },
       loadBottom() {
