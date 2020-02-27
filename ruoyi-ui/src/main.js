@@ -7,6 +7,7 @@ import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 import Element from 'element-ui'
 import Mint from 'mint-ui'
 import './assets/styles/element-variables.scss'
+import 'mint-ui/lib/style.css'
 
 import '@/assets/styles/index.scss' // global css
 import '@/assets/styles/ruoyi.scss' // ruoyi css
@@ -59,6 +60,10 @@ Vue.prototype.msgError = function(msg) {
 
 Vue.prototype.msgInfo = function(msg) {
   this.$message.info(msg);
+}
+
+Vue.prototype.isMobile = function() {
+  return /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)
 }
 
 // 全局组件挂载

@@ -38,7 +38,7 @@
           if (valid) {
             updateTeacherProfile(this.teacher).then(response => {
               if (response.code === 200) {
-                this.msgSuccess("修改成功");
+                this.msgSuccess("修改成功"); 
               } else {
                 this.msgError(response.msg);
               }

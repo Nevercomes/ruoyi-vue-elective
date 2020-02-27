@@ -9,7 +9,7 @@
         <div class="head-container">
           <el-tree :data="deptOptions" :props="defaultProps" :expand-on-click-node="false" :filter-node-method="filterNode"
             ref="tree" default-expand-all @node-click="handleNodeClick" />
-        </div>
+        </div> 
       </el-col>
       <!--用户数据-->
       <el-col :span="20" :xs="24">

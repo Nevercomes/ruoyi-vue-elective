@@ -262,6 +262,14 @@ export const constantRoutes = [{
       meta: {
         title: '选课统计'
       }
+    },
+    {
+      path: 'user/profile',
+      component: () => import('@/views-mobile/system/user/profile/index'),
+      name: 'MobileUserProfile',
+      meta: {
+        title: '用户详情'
+      }
     }
     ]
   },

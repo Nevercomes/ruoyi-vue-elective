@@ -159,7 +159,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-      </el-form> 
+      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
@@ -398,9 +398,12 @@
           type: "warning"
         }).then(function() {
           return delCourse(ids);
-        }).then(() => {
+        }).then((response) => {
+          // this.msgSuccess("删除成功");
+          this.$alert(response.msg, "删除结果", {
+            dangerouslyUseHTMLString: true
+          });
           this.getList();
-          this.msgSuccess("删除成功");
         }).catch(function() {});
       },
       /** 导出按钮操作 */

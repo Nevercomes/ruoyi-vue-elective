@@ -74,7 +74,7 @@
           this.loading = false;
           this.calNoMore()
         });
-      },
+      }, 
       resetQuery() {
         this.resetForm("queryForm");
       },

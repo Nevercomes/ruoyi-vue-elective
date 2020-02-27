@@ -98,6 +98,9 @@
     listClazz,
     listGrade
   } from "@/api/elective/clazz/clazz"
+  import {
+    MessageBox
+  } from "mint-ui"
 
   export default {
     name: "MobileCourseForm",
@@ -150,7 +153,7 @@
       if (this.form.id) {
         this.isUpdate = true
         getCourse(this.form.id).then(response => {
-           this.form = response.data
+          this.form = response.data
         })
       }
       listSemester().then(response => {
@@ -242,18 +245,27 @@
         });
       },
       /** 删除按钮操作 */
-      handleDelete(row) {
-        const ids = row.id || this.ids;
-        this.$confirm('是否确认删除课程"' + row.name + '"的数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return delCourse(ids);
-        }).then(() => {
-          this.getList();
-          this.msgSuccess("删除成功");
-        }).catch(function() {});
+      handleDelete() {
+        const ids = this.form.id
+        if (!this.isMobile()) {
+          this.$confirm('是否确认删除课程"' + this.form.name + '"的数据项?', "警告", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }).then(function() {
+            return delCourse();
+          }).then(() => {
+            this.getList();
+            this.msgSuccess("删除成功");
+          }).catch(function() {});
+        } else {
+          MessageBox.confirm('是否确认删除课程"' + this.form.name + '"的数据项?', '警告').then(action => {
+            return delCourse(ids);
+          }).then(() => {
+            this.getList();
+            this.msgSuccess("删除成功");
+          }).catch(function() {});
+        }
       },
       removePeople(people) {
         let index = this.form.peopleList.indexOf(people)
@@ -267,6 +279,9 @@
           initNum: ''
         })
       },
+      setHeight() {
+        this.$refs.MobileContainer.style.height = (document.body.clientHeight - 86) + 'px'
+      }
     }
   };
 </script>
@@ -294,5 +309,4 @@
   .form-footer {
     float: right;
   }
-
 </style>

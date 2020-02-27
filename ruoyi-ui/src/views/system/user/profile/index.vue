@@ -91,6 +91,17 @@
         isTeacher: false
       };
     },
+    beforeRouteEnter(to, _from, next) {
+      const userId = _from.params && _from.params.userId
+      if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+        next({
+          path: '/mobile/user/profile',
+          query: {
+            userId: userId
+          }
+        })
+      } else next()
+    },
     created() {
       const userId = this.$route.params && this.$route.params.userId
       this.getUser(userId);
