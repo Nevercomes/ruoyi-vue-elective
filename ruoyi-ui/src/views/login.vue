@@ -34,7 +34,7 @@
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
-      <el-row>Copyright © 2018-2019 <a href="http://haitun158.com" target="_blank">卓越软件</a> All Rights Reserved.</el-row>
+      <!-- <el-row>Copyright © 2018-2019 <a href="http://haitun158.com" target="_blank">卓越软件</a> All Rights Reserved.</el-row> -->
       <el-row>Powered By 铸才网络科技</el-row>
     </div>
   </div>
