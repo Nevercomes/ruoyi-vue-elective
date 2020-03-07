@@ -2,6 +2,7 @@ package com.ruoyi.project.system.controller;
 
 import java.util.List;
 
+import com.ruoyi.project.elective.config.service.IElectiveConfigTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -32,6 +33,8 @@ import com.ruoyi.project.system.service.ISysDeptService;
 public class SysDeptController extends BaseController {
     @Autowired
     private ISysDeptService deptService;
+    @Autowired
+    private IElectiveConfigTemplateService configTemplateService;
 
     /**
      * 获取部门列表
@@ -76,8 +79,11 @@ public class SysDeptController extends BaseController {
     @Log(title = "部门管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@Validated @RequestBody SysDept dept) {
-        if (UserConstants.NOT_UNIQUE.equals(deptService.checkDeptNameUnique(dept))) {
-            return AjaxResult.error("新增部门'" + dept.getDeptName() + "'失败，部门名称已存在");
+//        if (UserConstants.NOT_UNIQUE.equals(deptService.checkDeptNameUnique(dept))) {
+//            return AjaxResult.error("新增部门'" + dept.getDeptName() + "'失败，部门名称已存在");
+//        }
+        if (dept.getParentId().equals(dept.getDeptId())) {
+            return AjaxResult.error("修改部门'" + dept.getDeptName() + "'失败，上级部门不能是自己");
         }
         dept.setCreateBy(SecurityUtils.getUsername());
         return toAjax(deptService.insertDept(dept));
@@ -90,9 +96,10 @@ public class SysDeptController extends BaseController {
     @Log(title = "部门管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody SysDept dept) {
-        if (UserConstants.NOT_UNIQUE.equals(deptService.checkDeptNameUnique(dept))) {
-            return AjaxResult.error("修改部门'" + dept.getDeptName() + "'失败，部门名称已存在");
-        } else if (dept.getParentId().equals(dept.getDeptId())) {
+//        if (UserConstants.NOT_UNIQUE.equals(deptService.checkDeptNameUnique(dept))) {
+//            return AjaxResult.error("修改部门'" + dept.getDeptName() + "'失败，部门名称已存在");
+//        } else
+        if (dept.getParentId().equals(dept.getDeptId())) {
             return AjaxResult.error("修改部门'" + dept.getDeptName() + "'失败，上级部门不能是自己");
         }
         dept.setUpdateBy(SecurityUtils.getUsername());

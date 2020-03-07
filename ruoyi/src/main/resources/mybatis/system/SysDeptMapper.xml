@@ -21,6 +21,7 @@
         <result property="updateBy" column="update_by"/>
         <result property="updateTime" column="update_time"/>
         <result property="type" column="type"/>
+        <result property="classId" column="class_id"/>
     </resultMap>
 
     <sql id="selectDeptVo">
@@ -28,7 +29,13 @@
             d.dept_id,
             d.parent_id,
             d.ancestors,
-            d.dept_name,
+            case d.type
+            when '3'
+                then (select label
+                      from elective_config_value
+                      where id = d.class_id)
+            else d.dept_name
+            end                              dept_name,
             d.order_num,
             d.leader,
             d.phone,
@@ -37,7 +44,11 @@
             d.del_flag,
             d.create_by,
             d.create_time,
-            d.type
+            d.type,
+            (select dept_name
+             from sys_dept
+             where dept_id = d.parent_id) as parent_name,
+            d.class_id
         from sys_dept d
     </sql>
 
@@ -115,6 +126,7 @@
         <if test="status != null">status,</if>
         <if test="createBy != null and createBy != ''">create_by,</if>
         <if test="type != null and type != ''">type,</if>
+        <if test="classId != null">class_id,</if>
         create_time
         )values(
         <if test="deptId != null and deptId != 0">#{deptId},</if>
@@ -128,6 +140,7 @@
         <if test="status != null">#{status},</if>
         <if test="createBy != null and createBy != ''">#{createBy},</if>
         <if test="type != null and type != ''">#{type},</if>
+        <if test="classId != null">#{classId},</if>
         sysdate()
         )
     </insert>
@@ -145,6 +158,7 @@
             <if test="status != null and status != ''">status = #{status},</if>
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
             <if test="type != null and type != ''">type = #{type},</if>
+            <if test="classId != null">class_id = #{classId},</if>
             update_time = sysdate()
         </set>
         where dept_id = #{deptId}

@@ -64,6 +64,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails createLoginUser(SysUser user) {
         LoginUser loginUser = new LoginUser(user, permissionService.getMenuPermission(user));
         SysDept dept = user.getDept();
+        if (dept.getDeptId().equals(100L)) {
+            loginUser.setSchoolId(-1L);
+            return loginUser;
+        }
         // 100L为顶级部门 若衣科技
         while (!dept.getParentId().equals(100L)) {
             dept = deptService.selectDeptById(dept.getParentId());

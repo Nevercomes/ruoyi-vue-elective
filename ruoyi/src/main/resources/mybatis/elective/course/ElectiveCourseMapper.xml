@@ -23,8 +23,10 @@
         <result property="specialNote" column="special_note"/>
         <result property="classTime" column="class_time"/>
         <result property="classTimeId" column="class_time_id"/>
+        <result property="classWeek" column="class_week"/>
+        <result property="classWeekId" column="class_week_id"/>
         <result property="classLocation" column="class_location"/>
-        <result property="schoolId" column="school_id" />
+        <result property="schoolId" column="school_id"/>
         <!--<collection property="peopleList" javaType="java.util.List" resultMap="PeopleResult"/>-->
     </resultMap>
 
@@ -55,21 +57,19 @@
             a.objective,
             a.special_note,
             a.class_time_id,
+            a.class_week_id,
             a.class_location,
             a.school_id,
             (select label
              from elective_config_value
              where id = a.class_time_id) as class_time,
+            (select label
+             from elective_config_value
+             where id = a.class_week_id) as class_week,
             et.name                      as teacher_name,
             et.avatar                    as teacher_avatar
-            <!--p.id                         as peo_id,
-            p.course_id,
-            p.grade_id,
-            p.select_num,
-            p.init_num-->
         from elective_course a
             left join elective_teacher et on et.id = a.teacher_id
-            <!--left join elective_course_people p on p.course_id = a.id-->
     </sql>
 
     <select id="selectElectiveCourseList" parameterType="ElectiveCourse" resultMap="ElectiveCourseResult">
@@ -84,7 +84,10 @@
             <if test="teacherId != null ">and teacher_id = #{teacherId}</if>
             <if test="semesterId != null">and semester_id = #{semesterId}</if>
             <if test="classTimeId != null">and class_time_id = #{classTimeId}</if>
-            <if test="gradeId != null">and a.id in (select course_id from elective_course_people where grade_id = #{gradeId})</if>
+            <if test="classWeekId != null">and class_week_id = #{classWeekId}</if>
+            <if test="gradeId != null">and a.id in (select course_id from elective_course_people where grade_id =
+                #{gradeId})
+            </if>
             <if test="loginTeacherId != null">and a.teacher_id = #{loginTeacherId}</if>
             <if test="onlyCan == true and loginStudentId != null">
                 and (select parent_id from sys_dept where sys_dept.dept_id =
@@ -107,7 +110,10 @@
             <if test="name != null  and name != ''">and a.name like concat('%', #{name}, '%')</if>
             <if test="teacherId != null ">and teacher_id = #{teacherId}</if>
             <if test="classTimeId != null">and class_time_id = #{classTimeId}</if>
-            <if test="gradeId != null">and a.id in (select course_id from elective_course_people where grade_id = #{gradeId})</if>
+            <if test="classWeekId != null">and class_week_id = #{classWeekId}</if>
+            <if test="gradeId != null">and a.id in (select course_id from elective_course_people where grade_id =
+                #{gradeId})
+            </if>
         </where>
     </select>
 
@@ -127,6 +133,7 @@
             <if test="objective != null  and objective != ''">objective,</if>
             <if test="specialNote != null  and specialNote != ''">special_note,</if>
             <if test="classTimeId != null">class_time_id,</if>
+            <if test="classWeekId != null">class_week_id,</if>
             <if test="classLocation != null  and classLocation != ''">class_location,</if>
             <if test="schoolId != null">school_id,</if>
         </trim>
@@ -144,6 +151,7 @@
             <if test="objective != null  and objective != ''">#{objective},</if>
             <if test="specialNote != null  and specialNote != ''">#{specialNote},</if>
             <if test="classTimeId != null">#{classTimeId},</if>
+            <if test="classWeekId != null">#{classWeekId},</if>
             <if test="classLocation != null  and classLocation != ''">#{classLocation},</if>
             <if test="schoolId != null">#{schoolId},</if>
         </trim>
@@ -162,6 +170,7 @@
             <if test="objective != null  and objective != ''">objective = #{objective},</if>
             <if test="specialNote != null  and specialNote != ''">special_note = #{specialNote},</if>
             <if test="classTimeId != null">class_time_id = #{classTimeId},</if>
+            <if test="classWeekId != null">class_week_id = #{classWeekId},</if>
             <if test="classLocation != null  and classLocation != ''">class_location = #{classLocation},</if>
         </trim>
         where id = #{id}

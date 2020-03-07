@@ -52,7 +52,7 @@
         where id = #{id}
     </select>
 
-    <select id="selectInUseTemplate" parameterType="String" resultMap="ElectiveConfigTemplateResult">
+    <select id="selectInUseTemplate" parameterType="ElectiveConfigTemplate" resultMap="ElectiveConfigTemplateResult">
         <include refid="selectElectiveConfigTemplateVo" />
         where type = #{type}
         and (school_id = #{schoolId} or school_id = 0)

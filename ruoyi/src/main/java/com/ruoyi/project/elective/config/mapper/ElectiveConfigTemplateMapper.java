@@ -62,8 +62,8 @@ public interface ElectiveConfigTemplateMapper extends BaseMapper<ElectiveConfigT
 
     /**
      *
-     * @param type
+     * @param electiveConfigTemplate
      * @return
      */
-    public ElectiveConfigTemplate selectInUseTemplate(String type);
+    public ElectiveConfigTemplate selectInUseTemplate(ElectiveConfigTemplate electiveConfigTemplate);
 }

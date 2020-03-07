@@ -51,12 +51,18 @@ public class ElectiveConfigValueController extends BaseController {
     }
 
     /**
-     * 查询模板内容列表
+     * 根据类别下可用的模板内容
      */
     @PreAuthorize("@ss.hasPermi('config:value:list')")
-    @GetMapping("/list/semester")
-    public AjaxResult listSemester(ElectiveConfigValue electiveConfigValue) {
-        ElectiveConfigTemplate template = electiveConfigTemplateService.selectInUseTemplate(ElectiveDict.CONFIG_TEMPLATE_SEMESTER);
+    @GetMapping("/list/inUserType/{type}")
+    public AjaxResult listSemester(@PathVariable("type") String type ) {
+        ElectiveConfigTemplate electiveConfigTemplate = new ElectiveConfigTemplate();
+        electiveConfigTemplate.setType(type);
+        ElectiveConfigTemplate template = electiveConfigTemplateService.selectInUseTemplate(electiveConfigTemplate);
+        if (template == null) {
+            return AjaxResult.success();
+        }
+        ElectiveConfigValue electiveConfigValue = new ElectiveConfigValue();
         electiveConfigValue.setTemplateId(template.getId());
         startPage();
         List<ElectiveConfigValue> list = electiveConfigValueService.selectElectiveConfigValueList(electiveConfigValue);
@@ -65,11 +71,55 @@ public class ElectiveConfigValueController extends BaseController {
 
     /**
      * 查询模板内容列表
+     * 已废弃
+     */
+    @PreAuthorize("@ss.hasPermi('config:value:list')")
+    @GetMapping("/list/semester")
+    public AjaxResult listSemester(ElectiveConfigValue electiveConfigValue) {
+        ElectiveConfigTemplate electiveConfigTemplate = new ElectiveConfigTemplate();
+        electiveConfigTemplate.setType(ElectiveDict.CONFIG_TEMPLATE_SEMESTER);
+        ElectiveConfigTemplate template = electiveConfigTemplateService.selectInUseTemplate(electiveConfigTemplate);
+        if (template == null) {
+            return AjaxResult.success();
+        }
+        electiveConfigValue.setTemplateId(template.getId());
+        startPage();
+        List<ElectiveConfigValue> list = electiveConfigValueService.selectElectiveConfigValueList(electiveConfigValue);
+        return AjaxResult.success(list);
+    }
+
+    /**
+     * 查询模板内容列表
+     * 已废弃
      */
     @PreAuthorize("@ss.hasPermi('config:value:list')")
     @GetMapping("/list/classTime")
     public AjaxResult listClassTime(ElectiveConfigValue electiveConfigValue) {
-        ElectiveConfigTemplate template = electiveConfigTemplateService.selectInUseTemplate(ElectiveDict.CONFIG_TEMPLATE_CLASSTIME);
+        ElectiveConfigTemplate electiveConfigTemplate = new ElectiveConfigTemplate();
+        electiveConfigTemplate.setType(ElectiveDict.CONFIG_TEMPLATE_CLASSTIME);
+        ElectiveConfigTemplate template = electiveConfigTemplateService.selectInUseTemplate(electiveConfigTemplate);
+        if (template == null) {
+            return AjaxResult.success();
+        }
+        electiveConfigValue.setTemplateId(template.getId());
+        startPage();
+        List<ElectiveConfigValue> list = electiveConfigValueService.selectElectiveConfigValueList(electiveConfigValue);
+        return AjaxResult.success(list);
+    }
+
+    /**
+     * 查询模板内容列表
+     * 已废弃
+     */
+    @PreAuthorize("@ss.hasPermi('config:value:list')")
+    @GetMapping("/list/week")
+    public AjaxResult listWeek(ElectiveConfigValue electiveConfigValue) {
+        ElectiveConfigTemplate electiveConfigTemplate = new ElectiveConfigTemplate();
+        electiveConfigTemplate.setType(ElectiveDict.CONFIG_TEMPLATE_WEEK);
+        ElectiveConfigTemplate template = electiveConfigTemplateService.selectInUseTemplate(electiveConfigTemplate);
+        if (template == null) {
+            return AjaxResult.success();
+        }
         electiveConfigValue.setTemplateId(template.getId());
         startPage();
         List<ElectiveConfigValue> list = electiveConfigValueService.selectElectiveConfigValueList(electiveConfigValue);

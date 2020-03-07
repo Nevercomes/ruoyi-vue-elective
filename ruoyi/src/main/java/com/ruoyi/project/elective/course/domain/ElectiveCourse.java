@@ -80,6 +80,11 @@ public class ElectiveCourse extends BaseEntity {
 
     private Long classTimeId;
 
+    private Long classWeekId;
+
+    @Excel(name = "上课星期")
+    private Long classWeek;
+
     private String classLocation;
 
     private List<ElectiveCoursePeople> peopleList;
@@ -113,4 +118,8 @@ public class ElectiveCourse extends BaseEntity {
     private boolean onlyCan;
 
     private Long openId;
+
+    public String getClassTime() {
+        return this.classWeek + this.classTime;
+    }
 }

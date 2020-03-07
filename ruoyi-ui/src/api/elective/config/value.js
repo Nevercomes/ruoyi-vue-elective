@@ -67,3 +67,10 @@ export function exportValue(query) {
     params: query
   })
 }
+
+export function listInUse(type) {
+  return request({
+    url: '/elective/config/value/list/inUserType/' + type,
+    method: 'get'
+  })
+}

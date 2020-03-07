@@ -14,6 +14,11 @@
           <el-option v-for="item in teacherList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
       </el-form-item>
+      <el-form-item label="上课星期" prop="classWeekId">
+        <el-select v-model="queryParams.classWeekId" placeholder="请选课上课星期" clearable size="small">
+          <el-option v-for="item in classWeekOptions" :key="item.id" :label="item.label" :value="item.id" />
+        </el-select>
+      </el-form-item>
       <el-form-item label="上课时间" prop="classTimeId">
         <el-select v-model="queryParams.classTimeId" placeholder="请选择上课时间" clearable size="small">
           <el-option v-for="item in classTimeOptions" :key="item.id" :label="item.label" :value="item.id" />
@@ -110,15 +115,22 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="上课时间" prop="classTimeId">
-              <el-select v-model="form.classTimeId" placeholder="请选择上课时间">
-                <el-option v-for="item in classTimeOptions" :key="item.id" :label="item.label" :value="item.id" />
+            <el-form-item label="上课地点" prop="classLocation">
+              <el-input v-model="form.classLocation" placeholder="请输入上课地点" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="上课星期" prop="classWeekId">
+              <el-select v-model="form.classWeekId" placeholder="请选择上课星期">
+                <el-option v-for="item in classWeekOptions" :key="item.id" :label="item.label" :value="item.id" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="上课地点" prop="classLocation">
-              <el-input v-model="form.classLocation" placeholder="请输入上课地点" />
+            <el-form-item label="上课时间" prop="classTimeId">
+              <el-select v-model="form.classTimeId" placeholder="请选择上课时间">
+                <el-option v-for="item in classTimeOptions" :key="item.id" :label="item.label" :value="item.id" />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -179,7 +191,8 @@
   } from "@/api/elective/course/course";
   import {
     listSemester,
-    listClassTime
+    listClassTime,
+    listInUse
   } from "@/api/elective/config/value"
   import {
     listTeacher
@@ -217,6 +230,8 @@
         semesterOptions: [],
         // 上课时间 字典值字典
         classTimeOptions: [],
+        // 上课星期 字典值字典
+        classWeekOptions:[],
         // 年级列表
         gradeOptions: [],
         // 教师列表
@@ -276,6 +291,9 @@
       listClassTime().then(response => {
         this.classTimeOptions = response.data;
       });
+      listInUse("2").then(response => {
+        this.classWeekOptions = response.data;
+      });
       listTeacher().then(response => {
         this.teacherList = response.rows;
       })
@@ -318,6 +336,7 @@
           objective: undefined,
           specialNote: undefined,
           classTimeId: undefined,
+          classWeekId: undefined,
           classLocation: undefined,
           peopleList: [{
             gradeId: null,

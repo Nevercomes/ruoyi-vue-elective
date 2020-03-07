@@ -118,11 +118,18 @@ public class ElectiveStudentServiceImpl implements IElectiveStudentService {
         SysUser user = new SysUser();
         user.setUserId(electiveStudent.getUserId());
         sysUserService.checkUserAllowed(user);
+        SysUser oldUser = sysUserMapper.selectUserById(electiveStudent.getUserId());
+        if (!oldUser.getUserName().equals(electiveStudent.getUserName())) {
+            if (sysUserService.checkUserNameUnique(user.getUserName()).equals(UserConstants.UNIQUE)) {
+                user.setUserName(electiveStudent.getUserName());
+            } else {
+                throw new CustomException("修改学生失败，登录名已经存在");
+            }
+        }
         user.setNickName(electiveStudent.getName());
         user.setRemark(electiveStudent.getRemark());
         user.setSex(electiveStudent.getSex());
         user.preUpdate();
-        sysUserMapper.updateUser(user);
         // 更新学生
         electiveStudent.preUpdate();
         return electiveStudentMapper.updateElectiveStudent(electiveStudent);

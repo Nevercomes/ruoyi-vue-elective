@@ -2,7 +2,9 @@ package com.ruoyi.project.elective.config.service.impl;
 
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.project.elective.config.domain.ElectiveConfigTemplate;
+import com.ruoyi.project.elective.config.domain.ElectiveConfigValue;
 import com.ruoyi.project.elective.config.mapper.ElectiveConfigTemplateMapper;
+import com.ruoyi.project.elective.config.mapper.ElectiveConfigValueMapper;
 import com.ruoyi.project.elective.config.service.IElectiveConfigTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ import java.util.List;
 public class ElectiveConfigTemplateServiceImpl implements IElectiveConfigTemplateService {
     @Autowired
     private ElectiveConfigTemplateMapper electiveConfigTemplateMapper;
+    @Autowired
+    private ElectiveConfigValueMapper electiveConfigValueMapper;
 
     /**
      * 查询配置模板
@@ -91,11 +95,11 @@ public class ElectiveConfigTemplateServiceImpl implements IElectiveConfigTemplat
     /**
      * 根据类型获取学校使用中的模板
      * 若有多个status为1 则按照sort去最前面的一个
-     * @param type
+     * @param electiveConfigTemplate
      * @return
      */
     @Override
-    public ElectiveConfigTemplate selectInUseTemplate(String type) {
-        return electiveConfigTemplateMapper.selectInUseTemplate(type);
+    public ElectiveConfigTemplate selectInUseTemplate(ElectiveConfigTemplate electiveConfigTemplate) {
+        return electiveConfigTemplateMapper.selectInUseTemplate(electiveConfigTemplate);
     }
 }

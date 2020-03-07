@@ -45,8 +45,14 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="名称" prop="deptName">
+            <!-- 年级 -->
+            <el-form-item label="名称" prop="deptName" v-if="form.type == 2">
               <el-input v-model="form.deptName" placeholder="请输入名称" />
+            </el-form-item>
+            <el-form-item label="班级" prop="classId" v-if="form.type == 3" :rules="{required: true, message: '班级不能为空', trigger: ['blur','change']}">
+              <el-select v-model="form.classId" placeholder="请选择班级">
+                <el-option v-for="item in clazzOptions" :key="item.id" :label="item.label" :value="item.id"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -87,6 +93,9 @@
     addDept,
     updateDept
   } from "@/api/elective/clazz/clazz";
+  import {
+    listInUse
+  } from "@/api/elective/config/value.js"
   import Treeselect from "@riophae/vue-treeselect";
   import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
@@ -111,6 +120,8 @@
         statusOptions: [],
         // 类型数据字典
         typeOptions: [],
+        // 班级选项
+        clazzOptions: [],
         // 查询参数
         queryParams: {
           deptName: undefined,
@@ -151,6 +162,9 @@
       this.getDicts("sys_dept_type").then(response => {
         this.typeOptions = response.data;
       });
+      listInUse("4").then(response => {
+        this.clazzOptions = response.data
+      });
     },
     methods: {
       /** 查询部门列表 */
@@ -184,7 +198,8 @@
           deptName: undefined,
           orderNum: undefined,
           status: "0",
-          type: "0"
+          type: "0",
+          classId: undefined
         };
         this.resetForm("form");
       },
@@ -205,7 +220,7 @@
             this.form.type = '3'
         }
         this.open = true;
-        this.title = "添加部门";
+        this.title = "添加班级";
       },
       /** 修改按钮操作 */
       handleUpdate(row) {
@@ -214,7 +229,7 @@
         getDept(row.deptId).then(response => {
           this.form = response.data;
           this.open = true;
-          this.title = "修改部门";
+          this.title = "修改班级";
         });
       },
       /** 提交按钮 */

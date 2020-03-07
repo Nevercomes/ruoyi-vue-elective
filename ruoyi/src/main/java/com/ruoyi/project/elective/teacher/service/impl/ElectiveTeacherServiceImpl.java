@@ -117,6 +117,14 @@ public class ElectiveTeacherServiceImpl implements IElectiveTeacherService {
         SysUser user = new SysUser();
         user.setUserId(electiveTeacher.getUserId());
         sysUserService.checkUserAllowed(user);
+        SysUser oldUser = sysUserMapper.selectUserById(electiveTeacher.getUserId());
+        if (!oldUser.getUserName().equals(electiveTeacher.getUserName())) {
+            if (sysUserService.checkUserNameUnique(user.getUserName()).equals(UserConstants.UNIQUE)) {
+                user.setUserName(electiveTeacher.getUserName());
+            } else {
+                throw new CustomException("修改学生失败，登录名已经存在");
+            }
+        }
         user.setNickName(electiveTeacher.getName());
         user.setEmail(electiveTeacher.getEmail());
         user.setPhonenumber(electiveTeacher.getPhonenumber());

@@ -38,6 +38,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				AND status = #{status}
 			</if>
 		</where>
+		order by dict_sort asc
 	</select>
 	
 	<select id="selectDictDataByType" parameterType="SysDictData" resultMap="SysDictDataResult">

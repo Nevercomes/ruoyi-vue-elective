@@ -71,8 +71,11 @@ public class ElectiveClazzController extends BaseController {
     @PostMapping
     public AjaxResult add(@Validated @RequestBody SysDept dept) {
         String typeName = electiveClazzService.getTypeName(dept.getType());
-        if (UserConstants.NOT_UNIQUE.equals(electiveClazzService.checkDeptNameUnique(dept))) {
-            return AjaxResult.error(StringUtils.format("新增{}'{}'失败，{}名称已存在", typeName, dept.getDeptName(), typeName));
+//        if (UserConstants.NOT_UNIQUE.equals(electiveClazzService.checkDeptNameUnique(dept))) {
+//            return AjaxResult.error(StringUtils.format("新增{}'{}'失败，{}名称已存在", typeName, dept.getDeptName(), typeName));
+//        }
+        if (dept.getParentId().equals(dept.getDeptId())) {
+            return AjaxResult.error(StringUtils.format("修改{}'{}'失败，上级不能是自己", typeName, dept.getDeptName()));
         }
         dept.setCreateBy(SecurityUtils.getUsername());
         return toAjax(electiveClazzService.insertDept(dept));
@@ -86,9 +89,10 @@ public class ElectiveClazzController extends BaseController {
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody SysDept dept) {
         String typeName = electiveClazzService.getTypeName(dept.getType());
-        if (UserConstants.NOT_UNIQUE.equals(electiveClazzService.checkDeptNameUnique(dept))) {
-            return AjaxResult.error(StringUtils.format("修改{}'{}'失败，{}名称已存在", typeName, dept.getDeptName(), typeName));
-        } else if (dept.getParentId().equals(dept.getDeptId())) {
+//        if (UserConstants.NOT_UNIQUE.equals(electiveClazzService.checkDeptNameUnique(dept))) {
+//            return AjaxResult.error(StringUtils.format("修改{}'{}'失败，{}名称已存在", typeName, dept.getDeptName(), typeName));
+//        } else
+        if (dept.getParentId().equals(dept.getDeptId())) {
             return AjaxResult.error(StringUtils.format("修改{}'{}'失败，上级不能是自己", typeName, dept.getDeptName()));
         }
         dept.setUpdateBy(SecurityUtils.getUsername());

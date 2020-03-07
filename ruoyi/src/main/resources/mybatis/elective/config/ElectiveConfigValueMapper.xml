@@ -26,7 +26,6 @@
         <where>
             template_id = #{templateId}
             <if test="label != null  and label != ''">and label like concat('%', #{label}, '%')</if>
-            <if test="sort != null ">and sort = #{sort}</if>
             order by sort asc
         </where>
     </select>

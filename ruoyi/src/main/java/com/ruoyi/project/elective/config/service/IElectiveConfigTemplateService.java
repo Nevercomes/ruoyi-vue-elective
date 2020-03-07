@@ -65,5 +65,6 @@ public interface IElectiveConfigTemplateService {
      * @param type
      * @return
      */
-    public ElectiveConfigTemplate selectInUseTemplate(String type);
+    public ElectiveConfigTemplate selectInUseTemplate(ElectiveConfigTemplate electiveConfigTemplate);
+
 }

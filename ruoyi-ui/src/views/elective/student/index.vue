@@ -89,7 +89,7 @@
               <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['elective:student:edit']">修改</el-button>
               <el-button v-if="scope.row.userId !== 1" size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
                 v-hasPermi="['elective:student:remove']">删除</el-button>
-              <el-button size="mini" type="text" icon="el-icon-key" @click="handleResetPwd(scope.row)" v-hasPermi="['system:user:resetPwd']">重置</el-button>
+              <el-button size="mini" type="text" icon="el-icon-key" @click="handleResetPwd(scope.row)" v-hasPermi="['system:user:resetPwd']">重置密码</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -115,7 +115,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="登录名称" prop="userName">
-              <el-input v-model="form.userName" placeholder="请输入登录名称" :disabled="form.id != undefined" />
+              <el-input v-model="form.userName" placeholder="请输入登录名称" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
