@@ -120,7 +120,7 @@ public class ElectiveStudentServiceImpl implements IElectiveStudentService {
         sysUserService.checkUserAllowed(user);
         SysUser oldUser = sysUserMapper.selectUserById(electiveStudent.getUserId());
         if (!oldUser.getUserName().equals(electiveStudent.getUserName())) {
-            if (sysUserService.checkUserNameUnique(user.getUserName()).equals(UserConstants.UNIQUE)) {
+            if (sysUserService.checkUserNameUnique(electiveStudent.getUserName()).equals(UserConstants.UNIQUE)) {
                 user.setUserName(electiveStudent.getUserName());
             } else {
                 throw new CustomException("修改学生失败，登录名已经存在");
@@ -132,6 +132,7 @@ public class ElectiveStudentServiceImpl implements IElectiveStudentService {
         user.preUpdate();
         // 更新学生
         electiveStudent.preUpdate();
+        sysUserMapper.updateUser(user);
         return electiveStudentMapper.updateElectiveStudent(electiveStudent);
     }
 

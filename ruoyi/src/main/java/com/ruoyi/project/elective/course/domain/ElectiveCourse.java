@@ -83,13 +83,18 @@ public class ElectiveCourse extends BaseEntity {
     private Long classWeekId;
 
     @Excel(name = "上课星期")
-    private Long classWeek;
+    private String classWeek;
 
     private String classLocation;
 
     private List<ElectiveCoursePeople> peopleList;
 
     private String enrollPeo;
+
+    /**
+     * 特别声明公告的阅读时间
+     */
+    private Integer noteTime;
 
     public String getEnrollPeo() {
         IElectiveClazzService clazzService = SpringUtils.getBean(IElectiveClazzService.class);

@@ -27,6 +27,7 @@
         <result property="classWeekId" column="class_week_id"/>
         <result property="classLocation" column="class_location"/>
         <result property="schoolId" column="school_id"/>
+        <result property="noteTime" column="note_time"/>
         <!--<collection property="peopleList" javaType="java.util.List" resultMap="PeopleResult"/>-->
     </resultMap>
 
@@ -60,6 +61,7 @@
             a.class_week_id,
             a.class_location,
             a.school_id,
+            a.note_time,
             (select label
              from elective_config_value
              where id = a.class_time_id) as class_time,
@@ -136,6 +138,7 @@
             <if test="classWeekId != null">class_week_id,</if>
             <if test="classLocation != null  and classLocation != ''">class_location,</if>
             <if test="schoolId != null">school_id,</if>
+            <if test="noteTime != null">note_time,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
@@ -154,6 +157,7 @@
             <if test="classWeekId != null">#{classWeekId},</if>
             <if test="classLocation != null  and classLocation != ''">#{classLocation},</if>
             <if test="schoolId != null">#{schoolId},</if>
+            <if test="noteTime != null">#{noteTime},</if>
         </trim>
     </insert>
 
@@ -171,6 +175,7 @@
             <if test="specialNote != null  and specialNote != ''">special_note = #{specialNote},</if>
             <if test="classTimeId != null">class_time_id = #{classTimeId},</if>
             <if test="classWeekId != null">class_week_id = #{classWeekId},</if>
+            <if test="noteTime != null">note_time = #{noteTime},</if>
             <if test="classLocation != null  and classLocation != ''">class_location = #{classLocation},</if>
         </trim>
         where id = #{id}

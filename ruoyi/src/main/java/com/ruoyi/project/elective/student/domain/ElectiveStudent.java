@@ -56,10 +56,17 @@ public class ElectiveStudent extends BaseEntity {
      */
     private String status;
 
-    /**
-     * 班级(部门)Id
-     */
     private Long deptId;
+
+    /**
+     * 班级id
+     */
+    private Long classId;
+
+    /**
+     * 年级id
+     */
+    private Long gradeId;
 
     /**
      * 年级名
@@ -72,7 +79,6 @@ public class ElectiveStudent extends BaseEntity {
      */
     @Excel(name = "班级")
     private String className;
-
 
 
 

@@ -90,6 +90,7 @@
             <if test="openTime != null ">open_time,</if>
             <if test="closeTime != null ">close_time,</if>
             <if test="status != null and status != ''">status,</if>
+            <if test="schoolId != null">school_id,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
@@ -102,6 +103,7 @@
             <if test="openTime != null ">#{openTime},</if>
             <if test="closeTime != null ">#{closeTime},</if>
             <if test="status != null and status != ''">#{status},</if>
+            <if test="schoolId != null">#{schoolId},</if>
         </trim>
     </insert>
 
