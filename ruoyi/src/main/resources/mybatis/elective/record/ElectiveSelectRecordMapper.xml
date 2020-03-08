@@ -33,12 +33,19 @@
             a.student_id,
             a.course_id,
             a.open_id,
-            s.name                      as student_name,
-            c.name                      as course_name,
-            (select dept_name
-             from sys_dept
-             where dept_id = s.dept_id) as class_name,
-            o.name                      as open_name
+            s.name as student_name,
+            c.name as course_name,
+            concat((select dept_name
+                    from sys_dept
+                    where dept_id = (select td.parent_id
+                                     from sys_dept td
+                                     where td.dept_id = s.dept_id)), (select label
+                                                                      from elective_config_value
+                                                                      where id = (select td.class_id
+                                                                                  from sys_dept td
+                                                                                  where td.dept_id = s.dept_id)))
+                   as class_name,
+            o.name as open_name
         from elective_select_record a
             left join elective_course c on c.id = a.course_id
             left join elective_student s on s.id = a.student_id
@@ -73,24 +80,24 @@
 
     <select id="listCanSelect" parameterType="ElectiveSelectRecord" resultMap="ElectiveSelectRecordResult">
         select
-        c.name as course_name,
-        c.id as course_id
+            c.name as course_name,
+            c.id   as course_id
         from elective_course_people p
-        inner join elective_course c on p.course_id = c.id
+            inner join elective_course c on p.course_id = c.id
         where c.school_id = #{schoolId}
         <if test=" courseId != null">
             and c.id = #{courseId}
         </if>
-        and (p.init_num - p.select_num) &gt; 0
-        and p.grade_id = (select parent_id
-        from sys_dept
-        where sys_dept.dept_id = (select elective_student.dept_id
-        from elective_student
-        where elective_student.id = #{studentId}))
-        and c.status = '1'
-        and c.semester_id = (select semester_id
-        from elective_open_select
-        where elective_open_select.id = #{openId})
+              and (p.init_num - p.select_num) &gt; 0
+              and p.grade_id = (select parent_id
+                                from sys_dept
+                                where sys_dept.dept_id = (select elective_student.dept_id
+                                                          from elective_student
+                                                          where elective_student.id = #{studentId}))
+              and c.status = '1'
+              and c.semester_id = (select semester_id
+                                   from elective_open_select
+                                   where elective_open_select.id = #{openId})
     </select>
     <!--and c.semester_id = (select semester_id
                              from elective_open_select

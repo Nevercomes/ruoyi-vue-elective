@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
-      <el-form-item label="教姓名" prop="name">
+      <el-form-item label="姓名" prop="name">
         <el-input v-model="queryParams.name" placeholder="请输入教师姓名" clearable size="small" @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="登录名称" prop="userName">
@@ -89,7 +89,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="登录名称" prop="userName">
-              <el-input v-model="form.userName" placeholder="请输入登录名称" :disabled="form.id != undefined" />
+              <el-input v-model="form.userName" placeholder="请输入登录名称"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">

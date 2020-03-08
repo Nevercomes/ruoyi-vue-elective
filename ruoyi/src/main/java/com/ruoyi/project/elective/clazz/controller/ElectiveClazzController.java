@@ -1,13 +1,12 @@
-package com.ruoyi.project.elective.claszz.controller;
+package com.ruoyi.project.elective.clazz.controller;
 
-import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.Log;
 import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
 import com.ruoyi.framework.web.controller.BaseController;
 import com.ruoyi.framework.web.domain.AjaxResult;
-import com.ruoyi.project.elective.claszz.service.IElectiveClazzService;
+import com.ruoyi.project.elective.clazz.service.IElectiveClazzService;
 import com.ruoyi.project.system.domain.SysDept;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;

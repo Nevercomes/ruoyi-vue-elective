@@ -14,7 +14,7 @@
       <!--学生数据-->
       <el-col :span="20" :xs="24">
         <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
-          <el-form-item label="学生姓名" prop="name">
+          <el-form-item label="姓名" prop="name">
             <el-input v-model="queryParams.name" placeholder="请输入学生姓名" clearable size="small" style="width: 240px"
               @keyup.enter.native="handleQuery" />
           </el-form-item>
@@ -35,27 +35,27 @@
 
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
-            <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd" v-hasPermi="['system:user:add']">新增</el-button>
+            <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd" v-hasPermi="['elective:student:add']">新增</el-button>
           </el-col>
           <el-col :span="1.5">
             <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate"
-              v-hasPermi="['system:user:edit']">修改</el-button>
+              v-hasPermi="['elective:student:edit']">修改</el-button>
           </el-col>
           <el-col :span="1.5">
             <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
-              v-hasPermi="['system:user:remove']">删除</el-button>
+              v-hasPermi="['elective:student:remove']">删除</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button type="info" icon="el-icon-upload2" size="mini" @click="handleImport" v-hasPermi="['system:user:import']">导入</el-button>
+            <el-button type="info" icon="el-icon-upload2" size="mini" @click="handleImport" v-hasPermi="['elective:student:import']">导入</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport" v-hasPermi="['system:user:export']">导出</el-button>
+            <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport" v-hasPermi="['elective:student:export']">导出</el-button>
           </el-col>
         </el-row>
 
         <el-table v-loading="loading" :data="studentList" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="40" align="center" />
-          <el-table-column label="编号" align="center" prop="userId" />
+          <el-table-column label="编号" align="center" prop="id" />
           <el-table-column label="姓名" align="center" prop="name">
             <template slot-scope="scope">
               <router-link :to="'/user/profile/userId/' + scope.row.userId" class="link-type">
@@ -530,13 +530,13 @@
       },
       /** 删除按钮操作 */
       handleDelete(row) {
-        const userIds = row.userId || this.ids;
-        this.$confirm('是否确认删除学生编号为"' + userIds + '"的数据项?', "警告", {
+        const ids = row.id || this.ids;
+        this.$confirm('是否确认删除学生编号为"' + ids + '"的数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         }).then(function() {
-          return delStudent(userIds);
+          return delStudent(ids);
         }).then(() => {
           this.getList();
           this.msgSuccess("删除成功");

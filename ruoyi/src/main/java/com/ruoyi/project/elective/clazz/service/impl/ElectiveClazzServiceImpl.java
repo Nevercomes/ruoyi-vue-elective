@@ -1,19 +1,16 @@
-package com.ruoyi.project.elective.claszz.service.impl;
+package com.ruoyi.project.elective.clazz.service.impl;
 
 import com.ruoyi.common.constant.ElectiveDict;
 import com.ruoyi.common.exception.CustomException;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.framework.redis.RedisCache;
 import com.ruoyi.framework.web.domain.TreeSelect;
-import com.ruoyi.framework.web.domain.server.Sys;
-import com.ruoyi.project.elective.claszz.service.IElectiveClazzService;
+import com.ruoyi.project.elective.clazz.service.IElectiveClazzService;
 import com.ruoyi.project.system.domain.SysDept;
-import com.ruoyi.project.system.mapper.SysDeptMapper;
 import com.ruoyi.project.system.service.ISysDeptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

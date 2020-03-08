@@ -1,12 +1,10 @@
 package com.ruoyi.project.elective.course.domain;
 
 import com.ruoyi.common.utils.spring.SpringUtils;
-import com.ruoyi.project.elective.claszz.service.IElectiveClazzService;
+import com.ruoyi.project.elective.clazz.service.IElectiveClazzService;
 import com.ruoyi.project.system.domain.SysDept;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.framework.aspectj.lang.annotation.Excel;
 import com.ruoyi.framework.web.domain.BaseEntity;
 
@@ -52,7 +50,7 @@ public class ElectiveCourse extends BaseEntity {
     /**
      * 学期
      */
-    @Excel(name = "学期")
+    @Excel(name = "学年学期")
     private String semester;
 
     private Long semesterId;
@@ -72,12 +70,6 @@ public class ElectiveCourse extends BaseEntity {
      */
     private String specialNote;
 
-    /**
-     * 上课时间
-     */
-    @Excel(name = "上课时间")
-    private String classTime;
-
     private Long classTimeId;
 
     private Long classWeekId;
@@ -85,10 +77,17 @@ public class ElectiveCourse extends BaseEntity {
     @Excel(name = "上课星期")
     private String classWeek;
 
+    /**
+     * 上课时间
+     */
+    @Excel(name = "上课时间")
+    private String classTime;
+
     private String classLocation;
 
     private List<ElectiveCoursePeople> peopleList;
 
+    @Excel(name = "选课情况")
     private String enrollPeo;
 
     /**
@@ -105,7 +104,7 @@ public class ElectiveCourse extends BaseEntity {
             ElectiveCoursePeople peo = peopleList.get(i);
             for (SysDept dept : gList) {
                 if (peo.getGradeId().equals(dept.getDeptId())) {
-                    res.append(dept.getDeptName()).append("（").append(peo.getInitNum()).append("）人");
+                    res.append(dept.getDeptName()).append("（").append(peo.getSelectNum()).append("/").append(peo.getInitNum()).append("）人");
                     if (i != peopleList.size() - 1)
                         res.append("；\n");
                     break;

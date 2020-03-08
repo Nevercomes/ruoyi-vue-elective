@@ -6,7 +6,7 @@
           <el-option v-for="item in semesterOptions" :key="item.id" :label="item.label" :value="item.id" />
         </el-select>
       </el-form-item>
-	  <el-form-item label="课程" prop="name">
+      <el-form-item label="课程" prop="name">
         <el-input v-model="queryParams.name" placeholder="请输入课程名" clearable size="small" @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="教师" prop="teacherId" v-hasPermi="['sys:role:staff']">
@@ -64,7 +64,7 @@
       <el-table-column label="学年学期" align="center" prop="semester" :show-overflow-tooltip="true" />
       <el-table-column label="上课时间" align="center" prop="classTime" :show-overflow-tooltip="true" />
       <el-table-column label="上课地点" align="center" prop="classLocation" :show-overflow-tooltip="true" />
-      <el-table-column label="计划招生" align="center" prop="enrollPeo" :show-overflow-tooltip="true" />
+      <el-table-column label="选课情况" align="center" prop="enrollPeo" :show-overflow-tooltip="true" />
       <!-- TODO 用标签来表示状态 -->
       <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat">
         <template slot-scope="scope">
@@ -84,6 +84,8 @@
           <!-- <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['elective:check:add']">审核</el-button> -->
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['elective:course:edit']">修改</el-button>
           <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['elective:course:remove']">删除</el-button>
+          <el-button v-if="scope.row.status == 1" size="mini" type="text" icon="el-icon-circle-plus-outline" @click="handleReAdd(scope.row)"
+            v-hasPermi="['elective:course:add']">续开</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -144,8 +146,8 @@
                   </el-form-item>
                 </el-col>
                 <el-col class="peo-el-col" :span="10">
-                  <el-form-item :prop="`peopleList.${index}.initNum`" :rules="{required: true, message: '请输入招生人数', trigger: 'blur'}">
-                    <el-input v-model="item.initNum" placeholder="请输入招生人数" />
+                  <el-form-item :prop="`peopleList.${index}.initNum`" :rules="{validator: checkPeople, trigger: 'blur'}">
+                    <el-input type="number" v-model="item.initNum" placeholder="请输入招生人数" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="2">
@@ -168,6 +170,16 @@
           <el-col :span="24">
             <el-form-item label="特别声明" prop="specialNote">
               <el-input v-model="form.specialNote" type="textarea" placeholder="请输入内容" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="声明显示" prop="noteTime" v-if="form.specialNote">
+              <el-radio-group v-model="form.noteTime">
+                <el-radio :label="0">不特别显示</el-radio>
+                <el-radio :label="3">3秒</el-radio>
+                <el-radio :label="5">5秒</el-radio>
+                <el-radio :label="10">10秒</el-radio>
+              </el-radio-group>
             </el-form-item>
           </el-col>
         </el-row>
@@ -205,6 +217,25 @@
   export default {
     name: "Course",
     data() {
+      var checkPeople = (rule, value, callback) => {
+        if (!value) {
+          return callback(new Error('招生人数不能为空'));
+        }
+        try {
+          value = Number(value)
+        } catch {
+          callback(new Error('招生人数请输入数字值'));
+        }
+        if (!Number.isInteger(value)) {
+          callback(new Error('招生人数请输入数字值'));
+        } else {
+          if (value <= 0) {
+            callback(new Error('招生人数必须大于0'));
+          } else {
+            callback();
+          }
+        }
+      };
       return {
         // 遮罩层
         loading: true,
@@ -231,7 +262,7 @@
         // 上课时间 字典值字典
         classTimeOptions: [],
         // 上课星期 字典值字典
-        classWeekOptions:[],
+        classWeekOptions: [],
         // 年级列表
         gradeOptions: [],
         // 教师列表
@@ -271,7 +302,8 @@
             message: "学年学期不能为空",
             trigger: "blur"
           }]
-        }
+        },
+        checkPeople: checkPeople
       };
     },
     beforeRouteEnter(to, from, next) {
@@ -283,7 +315,7 @@
     },
     created() {
       const teacherId = this.$route.params && this.$route.params.teacherId
-      if(teacherId) this.queryParams.teacherId = Number(teacherId)
+      if (teacherId) this.queryParams.teacherId = Number(teacherId)
       this.getList();
       listSemester().then(response => {
         this.semesterOptions = response.data;
@@ -340,8 +372,9 @@
           classLocation: undefined,
           peopleList: [{
             gradeId: null,
-            initNum: ''
-          }]
+            initNum: 0
+          }],
+          noteTime: 0
         };
         this.resetForm("form");
       },
@@ -374,10 +407,23 @@
         const id = row.id || this.ids
         getCourse(id).then(response => {
           this.form = response.data;
-          if(this.form.peopleList == undefined || this.form.peopleList.length == 0)
+          if (this.form.peopleList == undefined || this.form.peopleList.length == 0)
             this.form.peopleList.push({})
           this.open = true;
           this.title = "修改课程";
+        });
+      },
+      handleReAdd(row) {
+        this.reset();
+        const id = row.id
+        getCourse(id).then(response => {
+          this.form = response.data;
+          this.form.id = undefined
+          this.form.status = undefined
+          if (this.form.peopleList == undefined || this.form.peopleList.length == 0)
+            this.form.peopleList.push({})
+          this.open = true;
+          this.title = "续开课程";
         });
       },
       /** 提交按钮 */
@@ -469,8 +515,8 @@
   .peo-el-row {
     margin-bottom: 20px;
   }
-  .peo-el-row > .peo-el-col {
+
+  .peo-el-row>.peo-el-col {
     margin-right: 10px;
   }
-
 </style>

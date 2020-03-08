@@ -93,6 +93,7 @@ public class ElectiveTeacher extends BaseEntity {
     /**
      * 学科
      */
+    @Excel(name = "学科")
     private String subject;
 
     /**

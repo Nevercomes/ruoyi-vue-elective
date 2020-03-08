@@ -29,7 +29,7 @@
             a.result,
             (select name
              from elective_teacher t, elective_apply_record ar
-             where ar.id = a.id and t.id = ar.teacher_id) as teacher_name,
+             where ar.id = a.apply_id and t.id = ar.teacher_id) as teacher_name,
             c.name as course_name
         from elective_check_record a
             left join elective_course c on c.id = a.course_id

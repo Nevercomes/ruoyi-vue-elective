@@ -148,7 +148,7 @@ public class ElectiveStudentServiceImpl implements IElectiveStudentService {
         // 同时批量删除user
         Long[] userIds = new Long[ids.length];
         for (int i = 0; i < ids.length; i++) {
-            userIds[i] = selectElectiveStudentById(ids[i]).getUserId();
+            userIds[i] = this.selectElectiveStudentById(ids[i]).getUserId();
         }
         electiveStudentMapper.deleteElectiveStudentByIds(ids);
         return sysUserService.deleteUserByIds(userIds);

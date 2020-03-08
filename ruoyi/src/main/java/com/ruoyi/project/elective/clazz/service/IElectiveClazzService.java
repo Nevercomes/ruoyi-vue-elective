@@ -1,4 +1,4 @@
-package com.ruoyi.project.elective.claszz.service;
+package com.ruoyi.project.elective.clazz.service;
 
 import com.ruoyi.framework.web.domain.TreeSelect;
 import com.ruoyi.project.system.domain.SysDept;

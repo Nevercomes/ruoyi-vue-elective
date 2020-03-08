@@ -78,8 +78,11 @@ public class ElectiveCourseController extends BaseController {
     @GetMapping("/export")
     public AjaxResult export(ElectiveCourse electiveCourse) {
         List<ElectiveCourse> list = electiveCourseService.selectElectiveCourseList(electiveCourse);
+        for (ElectiveCourse course : list) {
+            course.setEnrollPeo(course.getEnrollPeo());
+        }
         ExcelUtil<ElectiveCourse> util = new ExcelUtil<ElectiveCourse>(ElectiveCourse.class);
-        return util.exportExcel(list, "course");
+        return util.exportExcel(list, "课程列表");
     }
 
     /**
