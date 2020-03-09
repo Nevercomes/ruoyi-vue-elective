@@ -74,6 +74,13 @@
             left join elective_teacher et on et.id = a.teacher_id
     </sql>
 
+    <sql id="selectElectiveCoursePlain">
+        select
+            id,
+            name
+        from elective_course
+    </sql>
+
     <select id="selectElectiveCourseList" parameterType="ElectiveCourse" resultMap="ElectiveCourseResult">
         <include refid="selectElectiveCourseVo"/>
         <where>
@@ -98,6 +105,11 @@
                 (select p.grade_id from elective_course_people p where p.course_id = a.id )
             </if>
         </where>
+    </select>
+
+    <select id="selectPlainList" parameterType="ElectiveCourse" resultMap="ElectiveCourseResult">
+        <include refid="selectElectiveCoursePlain"/>
+        where school_id = #{schoolId}
     </select>
 
     <select id="selectElectiveCourseById" parameterType="Long" resultMap="ElectiveCourseResult">

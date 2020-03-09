@@ -1,6 +1,7 @@
 package com.ruoyi.project.elective.course.service;
 
 import com.ruoyi.project.elective.course.domain.ElectiveCoursePeople;
+import com.ruoyi.project.elective.record.domain.ElectiveSelectRecord;
 
 import java.util.List;
 
@@ -69,8 +70,10 @@ public interface IElectiveCoursePeopleService {
 
     /**
      * 统计选课人数
+     *
      * @param electiveCoursePeople
      * @return
      */
     List<ElectiveCoursePeople> listStatistic(ElectiveCoursePeople electiveCoursePeople);
+
 }

@@ -179,6 +179,11 @@ public class ElectiveCourseServiceImpl implements IElectiveCourseService {
         return electiveCourseMapper.deleteElectiveCourseById(id);
     }
 
+    @Override
+    public List<ElectiveCourse> selectPlainList(ElectiveCourse electiveCourse) {
+        return electiveCourseMapper.selectPlainList(electiveCourse);
+    }
+
     private List<ElectiveCoursePeople> getUpdate(List<ElectiveCoursePeople> peopleNew, List<ElectiveCoursePeople> peopleOld) {
         List<ElectiveCoursePeople> res = new ArrayList<>();
         for (ElectiveCoursePeople n : peopleNew) {

@@ -125,7 +125,7 @@
             (select t.name
              from elective_teacher t
              where t.id = c.teacher_id) as teacher_name,
-            count()                     as select_num
+            count(1)                     as select_num
         from elective_course c
             left join elective_open_select o on c.semester_id = o.semester_id
             left join elective_course_people p on p.course_id = c.id

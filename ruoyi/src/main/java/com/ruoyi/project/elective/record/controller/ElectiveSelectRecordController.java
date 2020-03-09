@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ruoyi.common.exception.CustomException;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.project.elective.course.mapper.ElectiveCoursePeopleMapper;
 import com.ruoyi.project.elective.record.domain.ElectiveSelectStatistic;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 public class ElectiveSelectRecordController extends BaseController {
     @Autowired
     private IElectiveSelectRecordService electiveSelectRecordService;
+    @Autowired
+    private ElectiveCoursePeopleMapper electiveCoursePeopleMapper;
 
     /**
      * 查询选课记录列表
@@ -55,6 +58,16 @@ public class ElectiveSelectRecordController extends BaseController {
     public TableDataInfo listCanSelect(ElectiveSelectRecord electiveSelectRecord) {
         startPage();
         List<ElectiveSelectRecord> list = electiveSelectRecordService.listCanSelect(electiveSelectRecord);
+        // 添加学生已经选择的课程
+        List<ElectiveSelectRecord> selectedList = electiveSelectRecordService.selectElectiveSelectRecordList(electiveSelectRecord);
+        for (ElectiveSelectRecord record : selectedList) {
+            for (ElectiveSelectRecord canSelect : list) {
+                if (record.getCourseId().equals(canSelect)) {
+                    break;
+                }
+            }
+            list.add(record);
+        }
         return getDataTable(list);
     }
 
@@ -123,12 +136,20 @@ public class ElectiveSelectRecordController extends BaseController {
     }
 
     /**
-     * 修改选课记录
+     * 修改选课记录 为什么没有放在事物中操作？
      */
     @PreAuthorize("@ss.hasPermi('elective:select:edit')")
     @Log(title = "选课记录", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ElectiveSelectRecord electiveSelectRecord) {
+        // 判断是否做出了修改
+        ElectiveSelectRecord old = electiveSelectRecordService.selectElectiveSelectRecordById(electiveSelectRecord.getId());
+        if (electiveSelectRecord.getCourseId().equals(old.getCourseId())) {
+            return AjaxResult.error("修改失败，新课程与旧课程相同");
+        } else {
+            electiveCoursePeopleMapper.minusOneSelectNum(old);
+            electiveCoursePeopleMapper.addOneSelectNum(electiveSelectRecord);
+        }
         return toAjax(electiveSelectRecordService.updateElectiveSelectRecord(electiveSelectRecord));
     }
 

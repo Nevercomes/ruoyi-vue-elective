@@ -18,6 +18,7 @@
         <result property="deptId" column="dept_id"/>
         <result property="className" column="class_name"/>
         <result property="gradeName" column="grade_name"/>
+        <result property="gradeId" column="grade_id"/>
         <result property="name" column="name"/>
         <result property="status" column="status"/>
     </resultMap>
@@ -45,7 +46,8 @@
                                                                       where id = (select td.class_id
                                                                                   from sys_dept td
                                                                                   where td.dept_id = a.dept_id)))
-                as class_name
+                as class_name,
+            d.parent_id as grade_id
         from elective_student a
             inner join sys_user u on u.user_id = a.user_id
             inner join sys_dept d on d.dept_id = a.dept_id

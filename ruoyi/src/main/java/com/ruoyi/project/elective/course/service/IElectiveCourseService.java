@@ -58,4 +58,11 @@ public interface IElectiveCourseService {
      * @return 结果
      */
     public int deleteElectiveCourseById(Long id);
+
+    /**
+     * 选取用于搜索的courseList plain
+     * @param electiveCourse
+     * @return
+     */
+    List<ElectiveCourse> selectPlainList(ElectiveCourse electiveCourse);
 }

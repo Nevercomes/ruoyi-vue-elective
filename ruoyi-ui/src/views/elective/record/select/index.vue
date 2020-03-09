@@ -84,7 +84,7 @@
         </el-form-item>
         <el-form-item label="课程" prop="courseId">
           <el-select v-model="form.courseId" placeholder="请选择课程">
-            <el-option v-for="item in canSelectList" :key="item.id" :label="item.id" :value="item.id"></el-option>
+            <el-option v-for="item in canSelectList" :key="item.courseId" :label="item.courseName" :value="item.courseId"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -272,9 +272,13 @@
       },
       /** 修改按钮操作 */
       handleUpdate(row) {
+        console.log(row)
         this.reset();
         const id = row.id || this.ids
-        listCanSelect(row.studentId).then(response => {
+        listCanSelect({
+          studentId: row.studentId,
+          openId: row.openId
+        }).then(response => {
           this.canSelectList = response.rows
         });
         getSelect(id).then(response => {

@@ -58,4 +58,10 @@ public interface ElectiveCourseMapper {
      * @return 结果
      */
     public int deleteElectiveCourseByIds(Long[] ids);
+
+    /**
+     *
+     * @param electiveCourse
+     */
+    List<ElectiveCourse> selectPlainList(ElectiveCourse electiveCourse);
 }

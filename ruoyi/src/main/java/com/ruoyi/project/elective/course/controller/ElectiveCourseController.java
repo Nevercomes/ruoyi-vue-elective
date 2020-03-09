@@ -5,8 +5,12 @@ import java.util.List;
 
 import com.ruoyi.common.constant.ElectiveDict;
 import com.ruoyi.common.exception.CustomException;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.project.elective.course.domain.ElectiveCoursePeople;
 import com.ruoyi.project.elective.open.domain.ElectiveOpenSelect;
 import com.ruoyi.project.elective.open.service.IElectiveOpenSelectService;
+import com.ruoyi.project.elective.student.domain.ElectiveStudent;
+import com.ruoyi.project.elective.student.service.IElectiveStudentService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +43,8 @@ public class ElectiveCourseController extends BaseController {
     private IElectiveCourseService electiveCourseService;
     @Autowired
     private IElectiveOpenSelectService openSelectService;
+    @Autowired
+    private IElectiveStudentService studentService;
 
     /**
      * 查询课程列表
@@ -48,6 +54,17 @@ public class ElectiveCourseController extends BaseController {
     public TableDataInfo list(ElectiveCourse electiveCourse) {
         startPage();
         List<ElectiveCourse> list = electiveCourseService.selectElectiveCourseList(electiveCourse);
+        return getDataTable(list);
+    }
+
+    /**
+     * 查询课程列表
+     */
+    @PreAuthorize("@ss.hasPermi('elective:course:list')")
+    @GetMapping("/list/plain")
+    public TableDataInfo listPlain(ElectiveCourse electiveCourse) {
+        startPage();
+        List<ElectiveCourse> list = electiveCourseService.selectPlainList(electiveCourse);
         return getDataTable(list);
     }
 
@@ -67,6 +84,18 @@ public class ElectiveCourseController extends BaseController {
         }
         startPage();
         List<ElectiveCourse> list = electiveCourseService.selectElectiveCourseList(electiveCourse);
+        // 对是否可选进行判断
+        ElectiveStudent student = studentService.selectElectiveStudentById(SecurityUtils.getStudentId());
+        if (student != null) {
+            for (ElectiveCourse course : list) {
+                List<ElectiveCoursePeople> peopleList = course.getPeopleList();
+                for (ElectiveCoursePeople people : peopleList) {
+                    if (people.getGradeId().equals(student.getGradeId())) {
+                        course.setCanSelect(true);
+                    }
+                }
+            }
+        }
         return getDataTable(list);
     }
 

@@ -126,4 +126,9 @@ public class ElectiveCourse extends BaseEntity {
     public String getClassTime() {
         return this.classWeek + this.classTime;
     }
+
+    /**
+     * 学生是否可选的标记
+     */
+    private boolean canSelect;
 }
