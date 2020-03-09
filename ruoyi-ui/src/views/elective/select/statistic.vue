@@ -11,6 +11,11 @@
           <el-option v-for="grade in gradeOptions" :key="grade.deptId" :value="grade.deptId" :label="grade.deptName"></el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="课程" prop="courseId">
+        <el-select v-model="queryParams.courseId" placeholder="请选择课程" clearable size="small">
+          <el-option v-for="item in courseOptions" :key="item.id" :label="item.name" :value="item.id" />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -61,7 +66,8 @@
     updateCourse,
     exportCourse,
     listStatistic,
-    exportStatistic
+    exportStatistic,
+    listCoursePlainList
   } from "@/api/elective/course/course";
   import {
     listSemester,
@@ -91,6 +97,8 @@
         total: 0,
         // 课程表格数据
         courseList: [],
+        // 用于搜索的课程
+        courseOptions: [],
         // 弹出层标题
         title: "",
         // 是否显示弹出层
@@ -110,7 +118,8 @@
         // 查询参数
         queryParams: {
           semesterId: undefined,
-          gradeId: undefined
+          gradeId: undefined,
+          courseId: undefined
         }
       };
     },
@@ -128,6 +137,9 @@
       });
       listGrade().then(response => {
         this.gradeOptions = response.data
+      })
+      listCoursePlainList().then(response => {
+        this.courseOptions = response.rows
       })
     },
     methods: {

@@ -59,6 +59,11 @@ export default {
             response => {
               if (response.code === 200) {
                 this.msgSuccess("修改成功");
+                setTimeout(() => {
+                  this.$store.dispatch('LogOut').then(() => {
+                    location.reload()
+                  })
+                }, 1000)
               } else {
                 this.msgError(response.msg);
               }

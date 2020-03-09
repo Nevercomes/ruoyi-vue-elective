@@ -1,7 +1,7 @@
 <template>
   <div>
     <img v-bind:src="options.img" @click="editCropper()" title="点击上传头像" class="img-circle img-lg" />
-    <el-dialog :title="title" :visible.sync="open" width="400px">
+    <el-dialog :title="title" :visible.sync="open" width="800px">
       <el-row>
         <el-col :xs="24" :md="12" :style="{height: '350px'}">
           <vue-cropper ref="cropper" :img="options.img" :info="true" :autoCrop="options.autoCrop" :autoCropWidth="options.autoCropWidth"

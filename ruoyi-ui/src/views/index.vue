@@ -3,7 +3,7 @@
     <div class="flex-col-center height-100">
       <el-image style="width: 80%; height: 50%; margin-top: 5%;" :src="logoUrl" :fit="'contain'"></el-image>
       <h2>新桥小学选课系统欢迎您</h2>
-      <div style="color: #97a8be; margin-top: 20px;">点击左上角可展开关闭功能菜单</div> 
+      <div style="color: #97a8be; margin-top: 20px;">点击左上角可展开或关闭功能菜单</div> 
     </div>
   </div>
 </template>

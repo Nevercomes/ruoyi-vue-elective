@@ -85,11 +85,21 @@
           </div>
           <el-divider></el-divider>
           <el-row class="card-footer" justify="end">
-            <el-button class="card-footer-button" type="primary" @click="selectCourse(item)" v-hasPermi="['elective:select:course:add']">我要选课</el-button>
+            <el-button v-if="item.canSelect" class="card-footer-button" type="primary" @click="handleSelectCourse(item)"
+              v-hasPermi="['elective:select:course:add']">我要选课</el-button>
+            <el-button v-else disabled="true" class="card-footer-button" type="primary" v-hasPermi="['elective:select:course:add']">年级不符</el-button>
           </el-row>
         </el-card>
       </div>
     </mt-loadmore>
+
+    <el-dialog :title="title" :visible.sync="open" width="300px">
+      <span>{{course.specialNote}}</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" :disabled="!countZero" @click="selectCourse">{{countdown}}</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -111,7 +121,9 @@
   import {
     addSelect
   } from "@/api/elective/record/select"
-  import {MessageBox} from 'mint-ui'
+  import {
+    MessageBox
+  } from 'mint-ui'
 
   import defaultAvatar from "@/assets/image/profile.jpg"
 
@@ -166,11 +178,15 @@
         },
         // 表单参数
         form: {},
+        // 当前选中的课程
+        course: {},
         // 选课选项
         select: {
           oepnId: undefined,
           courseId: undefined
         },
+        countdown: '确定',
+        countZero: true
       };
     },
     mounted() {
@@ -220,39 +236,41 @@
         this.resetForm("queryForm");
         this.handleQuery();
       },
-      selectCourse(row) {
-        let text = row.specialNote || '无'
+      handleSelectCourse(row) {
+        // 弹出特别说明的限制关闭时间的弹窗(dialog模拟)
+        this.course = row
+        if(row.specialNote && row.noteTime && row.noteTime > 0) {
+          this.open = true
+          this.title = '特别说明'
+          this.countZero = false
+          let time = row.noteTime
+          let timer = setInterval(() => {
+            time = time - 1
+            this.countdown = time + 's确定'
+            if(time == 0) {
+              this.countdown = '确定'
+              this.countZero = true
+              clearInterval(timer)
+            }
+          }, 1000)
+        } else {
+          this.selectCourse()
+        }
+      },
+      selectCourse() {
         let that = this
         let hint = "亲爱的同学，感谢你选择本课！请你再次确认你的身体条件等是否符合本课要求等信息。若你一旦选择，本学期内将无法作任何调整。"
-        if (!this.isMobile()) {
-          this.$confirm(hint, "温馨提示", {
-            confirmButtonText: '确定选课',
-            cancelButtonText: '不了，再看看',
-            type: 'warning'
-          }).then(function() {
-            that.select.courseId = row.id
-            addSelect(that.select).then(response => {
-              if (response.code === 200) {
-                that.msgSuccess("选课成功");
-                that.getList();
-              } else {
-                that.msgError(response.msg);
-              }
-            })
+        MessageBox.confirm(hint, '温馨提示').then(action => {
+          that.select.courseId = that.course.id
+          addSelect(that.select).then(response => {
+            if (response.code === 200) {
+              that.msgSuccess("选课成功");
+              that.getList();
+            } else {
+              that.msgError(response.msg);
+            }
           })
-        } else {
-          MessageBox.confirm(hint, '温馨提示').then(action => {
-            that.select.courseId = row.id
-            addSelect(that.select).then(response => {
-              if (response.code === 200) {
-                that.msgSuccess("选课成功");
-                that.getList();
-              } else {
-                that.msgError(response.msg);
-              }
-            })
-          })
-        }
+        })
       },
       gradeFormat(gradeId) {
         for (let i in this.gradeOptions) {

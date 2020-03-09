@@ -7,7 +7,7 @@
       <el-form-item label="上课教师" prop="teacherId">
         <el-select v-model="queryParams.teacherId" placeholder="请选择上课教师" clearable size="small">
           <el-option v-for="item in teacherList" :key="item.id" :label="item.name" :value="item.id" />
-        </el-select> 
+        </el-select>
       </el-form-item>
       <el-form-item label="上课时间" prop="classTimeId">
         <el-select v-model="queryParams.classTimeId" placeholder="请选择上课时间" clearable size="small">
@@ -32,7 +32,8 @@
       <el-card class="course-card el-card" v-for="(item, index) in courseList" :key="index">
         <el-row>
           <el-col :span="12">
-            <el-image style="width: 120px; height: 120px; border-radius: 50%;" :src="getAvatarUrl(item.teacherAvatar)" :fit="'contain'"></el-image>
+            <el-image style="width: 120px; height: 120px; border-radius: 50%;" :src="getAvatarUrl(item.teacherAvatar)"
+              :fit="'contain'"></el-image>
             <!-- <img :src="item.teacherAvatar" style="width: 120px; height: 120px; border-radius: 50%;" /> -->
           </el-col>
           <el-col :span="12">
@@ -65,9 +66,12 @@
                 <el-col :span="8" class="align-center"><span class="item-label-nomargin">剩余</span></el-col>
               </el-row>
               <el-row class="card-item" v-for="peo in item.peopleList" :key="peo.id">
-                <el-col :span="8" class="align-center" :class="peo.initNum == peo.selectNum ? 'forbid-select' : ''"><span class="item-value">{{gradeFormat(peo.gradeId)}}</span></el-col>
-                <el-col :span="8" class="align-center" :class="peo.initNum == peo.selectNum ? 'forbid-select' : ''"><span class="item-value">{{peo.initNum}}</span></el-col>
-                <el-col :span="8" class="align-center" :class="peo.initNum == peo.selectNum ? 'forbid-select' : ''"><span class="item-value">{{peo.initNum - peo.selectNum}}</span>
+                <el-col :span="8" class="align-center" :class="peo.initNum == peo.selectNum ? 'forbid-select' : ''"><span
+                    class="item-value">{{gradeFormat(peo.gradeId)}}</span></el-col>
+                <el-col :span="8" class="align-center" :class="peo.initNum == peo.selectNum ? 'forbid-select' : ''"><span
+                    class="item-value">{{peo.initNum}}</span></el-col>
+                <el-col :span="8" class="align-center" :class="peo.initNum == peo.selectNum ? 'forbid-select' : ''"><span
+                    class="item-value">{{peo.initNum - peo.selectNum}}</span>
                 </el-col>
               </el-row>
             </el-col>
@@ -99,7 +103,9 @@
         </div>
         <el-divider></el-divider>
         <el-row class="card-footer" justify="end">
-          <el-button class="card-footer-button" type="primary" @click="selectCourse(item)" v-hasPermi="['elective:select:course:add']">我要选课</el-button>
+          <el-button v-if="item.canSelect" class="card-footer-button" type="primary" @click="handleSelectCourse(item)"
+            v-hasPermi="['elective:select:course:add']">我要选课</el-button>
+          <el-button v-else disabled="true" class="card-footer-button" type="primary" v-hasPermi="['elective:select:course:add']">年级不符</el-button>
         </el-row>
       </el-card>
     </div>
@@ -131,85 +137,13 @@
     <pagination v-show="total>0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize"
       @pagination="getList" />
 
-    <!-- 添加或修改课程对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="600px">
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="课程名" prop="name">
-              <el-input v-model="form.name" placeholder="请输入课程名" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="上课教师" prop="teacherId">
-              <el-select v-model="form.teacherId" placeholder="请选择上课教师" :disabled="form.id != undefined">
-                <el-option v-for="item in teacherList" :key="item.id" :label="item.name" :value="item.id" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="学年学期" prop="semesterId">
-              <el-select v-model="form.semesterId" placeholder="请选择学年学期">
-                <el-option v-for="item in semesterOptions" :key="item.id" :label="item.label" :value="item.id" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="上课时间" prop="classTimeId">
-              <el-select v-model="form.classTimeId" placeholder="请选择上课时间">
-                <el-option v-for="item in classTimeOptions" :key="item.id" :label="item.label" :value="item.id" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="上课地点" prop="classLocation">
-              <el-input v-model="form.classLocation" placeholder="请输入上课地点" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="招生人数">
-              <el-row class="peo-el-row" v-for="(item, index) in form.peopleList" :key="index">
-                <el-col class="peo-el-col" :span="10">
-                  <el-form-item :prop="`peopleList.${index}.gradeId`" :rules="{required: true, message: '请选择招生年级', trigger: 'change'}">
-                    <el-select v-model="item.gradeId">
-                      <el-option v-for="grade in gradeOptions" :key="grade.deptId + index" :value="grade.deptId" :label="grade.deptName"></el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col class="peo-el-col" :span="10">
-                  <el-form-item :prop="`peopleList.${index}.initNum`" :rules="{required: true, message: '请输入招生人数', trigger: 'blur'}">
-                    <el-input v-model="item.initNum" placeholder="请输入招生人数" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="2">
-                  <i v-if="index != 0" class="el-icon-minus people-config-minus" @click.prevent="removePeople(item)"></i>
-                  <i v-else class="el-icon-plus people-config-plus" @click.prevent="addPeople"></i>
-                </el-col>
-              </el-row>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="课程简介" prop="intro">
-              <el-input v-model="form.intro" type="textarea" placeholder="请输入内容" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="目标" prop="objective">
-              <el-input v-model="form.objective" type="textarea" placeholder="请输入内容" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="特别声明" prop="specialNote">
-              <el-input v-model="form.specialNote" type="textarea" placeholder="请输入内容" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
+    <el-dialog :title="title" :visible.sync="open" width="450px">
+      <span>{{course.specialNote}}</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" :disabled="!countZero" @click="selectCourse">{{countdown}}</el-button>
+      </span>
     </el-dialog>
+
   </div>
 </template>
 
@@ -289,6 +223,8 @@
         },
         // 表单参数
         form: {},
+        // 当前选中的课程
+        course: {},
         // 选课选项
         select: {
           oepnId: undefined,
@@ -316,7 +252,9 @@
             message: "学年学期不能为空",
             trigger: "blur"
           }]
-        }
+        },
+        countdown: '确定',
+        countZero: true
       };
     },
     beforeRouteEnter(to, from, next) {
@@ -380,6 +318,7 @@
           specialNote: undefined,
           classTimeId: undefined,
           classLocation: undefined,
+          noteTime: undefined,
           peopleList: [{
             gradeId: null,
             initNum: ''
@@ -398,115 +337,44 @@
         this.resetForm("queryForm");
         this.handleQuery();
       },
-      // 多选框选中数据
-      handleSelectionChange(selection) {
-        this.ids = selection.map(item => item.id)
-        this.single = selection.length != 1
-        this.multiple = !selection.length
-      },
-      /** 新增按钮操作 */
-      handleAdd() {
-        this.reset();
-        this.open = true;
-        this.title = "添加课程";
-      },
-      /** 修改按钮操作 */
-      handleUpdate(row) {
-        this.reset();
-        const id = row.id || this.ids
-        getCourse(id).then(response => {
-          this.form = response.data;
-          if (this.form.peopleList == undefined || this.form.peopleList.length == 0)
-            this.form.peopleList.push({})
-          this.open = true;
-          this.title = "修改课程";
-        });
-      },
-      /** 提交按钮 */
-      submitForm: function() {
-        this.$refs["form"].validate(valid => {
-          if (valid) {
-            if (this.form.id != undefined) {
-              updateCourse(this.form).then(response => {
-                if (response.code === 200) {
-                  this.msgSuccess("修改成功");
-                  this.open = false;
-                  this.getList();
-                } else {
-                  this.msgError(response.msg);
-                }
-              });
-            } else {
-              addCourse(this.form).then(response => {
-                if (response.code === 200) {
-                  this.msgSuccess("新增成功");
-                  this.open = false;
-                  this.getList();
-                } else {
-                  this.msgError(response.msg);
-                }
-              });
+      handleSelectCourse(row) {
+        // 弹出特别说明的限制关闭时间的弹窗(dialog模拟)
+        this.course = row
+        if(row.specialNote && row.noteTime && row.noteTime > 0) {
+          this.open = true
+          this.title = '特别说明'
+          this.countZero = false
+          let time = row.noteTime
+          let timer = setInterval(() => {
+            time = time - 1
+            this.countdown = time + 's确定'
+            if(time == 0) {
+              this.countdown = '确定'
+              this.countZero = true
+              clearInterval(timer)
             }
-          }
-        });
+          }, 1000)
+        } else {
+          this.selectCourse()
+        }
       },
-      selectCourse(row) {
-        let text = row.specialNote || '无'
+      selectCourse() { 
         let that = this
         let hint = "亲爱的同学，感谢你选择本课！请你再次确认你的身体条件等是否符合本课要求等信息。若你一旦选择，本学期内将无法作任何调整。"
         this.$confirm(hint, "温馨提示", {
-          confirmButtonText: '确定选课',
-          cancelButtonText: '不了，再看看',
+          confirmButtonText: '是的，我要学习本课',
+          cancelButtonText: '不了，我还没想好',
           type: 'warning'
         }).then(function() {
-          that.select.courseId = row.id
+          that.select.courseId = that.course.id
           addSelect(that.select).then(response => {
             if (response.code === 200) {
-              that.msgSuccess("选课成功");
+              that.msgSuccess("恭喜你，已完成选课！");
               that.getList();
             } else {
               that.msgError(response.msg);
             }
           })
-        })
-      },
-      /** 删除按钮操作 */
-      handleDelete(row) {
-        const ids = row.id || this.ids;
-        this.$confirm('是否确认删除课程编号为"' + ids + '"的数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return delCourse(ids);
-        }).then(() => {
-          this.getList();
-          this.msgSuccess("删除成功");
-        }).catch(function() {});
-      },
-      /** 导出按钮操作 */
-      handleExport() {
-        const queryParams = this.queryParams;
-        this.$confirm('是否确认导出所有课程数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return exportCourse(queryParams);
-        }).then(response => {
-          this.download(response.msg);
-        }).catch(function() {});
-      },
-      removePeople(people) {
-        let index = this.form.peopleList.indexOf(people)
-        if (index != -1) {
-          this.form.peopleList.splice(index, 1)
-        }
-      },
-      addPeople() {
-        this.form.peopleList.push({
-          gradeId: null,
-          initNum: ''
         })
       },
       gradeFormat(gradeId) {
@@ -516,11 +384,8 @@
             return g.deptName
         }
       },
-      // getImageUrl(url) {
-      //   return this.getImageUrl(url)
-      // },
       getAvatarUrl(url) {
-        if(url) return url
+        if (url) return url
         else return defaultAvatar
       }
     }
@@ -598,5 +463,4 @@
   .forbid-select {
     opacity: 0.5;
   }
-
 </style>

@@ -2,7 +2,7 @@
   <div class="login">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
       <el-image style="width: 164px; height: 60px; margin: 0 auto; display: block;" :src="loginLogo"></el-image>
-      <h3 class="title">卓越校园</h3>
+      <h3 class="title">智慧校园</h3>
       <el-form-item prop="username">
         <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">
           <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
@@ -167,6 +167,8 @@
     margin: 10px auto 20px auto;
     text-align: center;
     color: #707070;
+    font-family: '华文隶书';
+    font-size: 20px;
   }
 
   .login-form {
@@ -229,8 +231,8 @@
     display: block;
     text-align: center;
     margin: 0px auto;
-    font-size: 15px;
-    opacity: 0.4;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: '华文隶书';
   }
-
 </style>

@@ -75,3 +75,10 @@ export function exportStatistic(query) {
     params: query
   })
 }
+
+export function listCoursePlainList() {
+  return request({
+    url: '/elective/course/list/plain',
+    method: 'get'
+  })
+}
