@@ -105,7 +105,7 @@
         <el-row class="card-footer" justify="end">
           <el-button v-if="item.canSelect" class="card-footer-button" type="primary" @click="handleSelectCourse(item)"
             v-hasPermi="['elective:select:course:add']">我要选课</el-button>
-          <el-button v-else disabled="true" class="card-footer-button" type="primary" v-hasPermi="['elective:select:course:add']">年级不符</el-button>
+          <el-button v-else :disabled="true" class="card-footer-button" type="primary" v-hasPermi="['elective:select:course:add']">年级不符</el-button>
         </el-row>
       </el-card>
     </div>
@@ -359,6 +359,7 @@
         }
       },
       selectCourse() { 
+        this.open = false
         let that = this
         let hint = "亲爱的同学，感谢你选择本课！请你再次确认你的身体条件等是否符合本课要求等信息。若你一旦选择，本学期内将无法作任何调整。"
         this.$confirm(hint, "温馨提示", {

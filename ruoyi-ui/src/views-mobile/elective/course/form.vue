@@ -44,7 +44,7 @@
                 </el-form-item>
               </el-col>
               <el-col class="peo-el-col" :span="10">
-                <el-form-item :prop="`peopleList.${index}.initNum`" :rules="{required: true, message: '请输入招生人数', trigger: 'blur'}">
+                <el-form-item :prop="`peopleList.${index}.initNum`" :rules="{validator: checkPeople, trigger: 'blur'}">
                   <el-input v-model="item.initNum" placeholder="请输入招生人数" />
                 </el-form-item>
               </el-col>
@@ -105,6 +105,25 @@
   export default {
     name: "MobileCourseForm",
     data() {
+		var checkPeople = (rule, value, callback) => {
+		  if (!value) {
+		    return callback(new Error('招生人数不能为空'));
+		  }
+		  try {
+		    value = Number(value)
+		  } catch {
+		    callback(new Error('招生人数请输入数字值'));
+		  }
+		  if (!Number.isInteger(value)) {
+		    callback(new Error('招生人数请输入数字值'));
+		  } else {
+		    if (value <= 0) {
+		      callback(new Error('招生人数必须大于0'));
+		    } else {
+		      callback();
+		    }
+		  }
+		};
       return {
         // 课程状态字典值
         statusOptions: [],
@@ -141,7 +160,8 @@
             trigger: "blur"
           }]
         },
-        isUpdate: false
+        isUpdate: false,
+		checkPeople: checkPeople
       };
     },
     mounted() {

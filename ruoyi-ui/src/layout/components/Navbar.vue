@@ -6,6 +6,9 @@
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
+        <span class="right-menu-item welcome" v-hasPermi="['sys:role:student']">欢迎您，{{userName}}同学</span>
+        <span class="right-menu-item welcome" v-hasPermi="['sys:role:teacher']">欢迎您，{{userName}}老师</span>
+        <span class="right-menu-item welcome" v-hasPermi="['sys:role:staff']">欢迎您，{{userName}}</span>
         <search id="header-search" class="right-menu-item" />
 
         <!-- <el-tooltip content="下载源码" effect="dark" placement="bottom">
@@ -14,9 +17,9 @@
 
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
 
-        <el-tooltip content="布局大小" effect="dark" placement="bottom">
+        <!-- <el-tooltip content="布局大小" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
-        </el-tooltip>
+        </el-tooltip> -->
 
       </template>
 
@@ -52,6 +55,9 @@
   import Search from '@/components/HeaderSearch'
   import RuoYi from '@/components/RuoYi'
   import {MessageBox} from "mint-ui"
+  import {
+    getUserProfile
+  } from "@/api/system/user"
 
   export default {
     components: {
@@ -79,6 +85,16 @@
           })
         }
       }
+    },
+    data() {
+      return {
+        userName: 'kakaxi'
+      }
+    },
+    mounted() {
+      getUserProfile().then(response => {
+        this.userName = response.data.nickName
+      })
     },
     methods: {
       toggleSideBar() {
@@ -163,6 +179,10 @@
             background: rgba(0, 0, 0, .025)
           }
         }
+      }
+
+      .welcome {
+        font-size: 16px;
       }
 
       .avatar-container {

@@ -258,6 +258,7 @@
         }
       },
       selectCourse() {
+        this.open = false
         let that = this
         let hint = "亲爱的同学，感谢你选择本课！请你再次确认你的身体条件等是否符合本课要求等信息。若你一旦选择，本学期内将无法作任何调整。"
         MessageBox.confirm(hint, '温馨提示').then(action => {

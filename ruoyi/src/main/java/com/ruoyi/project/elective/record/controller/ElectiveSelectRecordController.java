@@ -61,12 +61,15 @@ public class ElectiveSelectRecordController extends BaseController {
         // 添加学生已经选择的课程
         List<ElectiveSelectRecord> selectedList = electiveSelectRecordService.selectElectiveSelectRecordList(electiveSelectRecord);
         for (ElectiveSelectRecord record : selectedList) {
+            boolean flag = false;
             for (ElectiveSelectRecord canSelect : list) {
-                if (record.getCourseId().equals(canSelect)) {
+                if (record.getCourseId().equals(canSelect.getCourseId())) {
+                    flag = true;
                     break;
                 }
             }
-            list.add(record);
+            if (!flag)
+                list.add(record);
         }
         return getDataTable(list);
     }
@@ -127,11 +130,11 @@ public class ElectiveSelectRecordController extends BaseController {
             // 检查课程是否有余量
             list = electiveSelectRecordService.listCanSelect(electiveSelectRecord);
             if (list == null || list.size() == 0) {
-                throw new CustomException("抱歉，无可选余量");
+                throw new CustomException("抱歉，该课程已无可选余量");
             }
             return toAjax(electiveSelectRecordService.insertElectiveSelectRecord(electiveSelectRecord));
         } else {
-            throw new CustomException("抱歉，您已经选课");
+            throw new CustomException("抱歉，您已经选课，不能再选其它课程");
         }
     }
 

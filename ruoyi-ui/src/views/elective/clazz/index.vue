@@ -262,7 +262,7 @@
       },
       /** 删除按钮操作 */
       handleDelete(row) {
-        this.$confirm('是否确认删除名称为"' + row.deptName + '"的数据项?', "警告", {
+        this.$confirm('是否确认删除名称为"' + row.deptName + '"的数据项?这将同时删除所有的下级和学生数据', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"

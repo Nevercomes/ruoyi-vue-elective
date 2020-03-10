@@ -127,7 +127,7 @@
                 <el-option v-for="item in classWeekOptions" :key="item.id" :label="item.label" :value="item.id" />
               </el-select>
             </el-form-item>
-          </el-col>
+          </el-col> 
           <el-col :span="12">
             <el-form-item label="上课时间" prop="classTimeId">
               <el-select v-model="form.classTimeId" placeholder="请选择上课时间">
