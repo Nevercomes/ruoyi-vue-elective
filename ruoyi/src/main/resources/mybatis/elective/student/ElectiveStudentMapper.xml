@@ -46,7 +46,7 @@
                                                                       where id = (select td.class_id
                                                                                   from sys_dept td
                                                                                   where td.dept_id = a.dept_id)))
-                as class_name,
+                        as class_name,
             d.parent_id as grade_id
         from elective_student a
             inner join sys_user u on u.user_id = a.user_id
@@ -85,33 +85,33 @@
 
     <select id="selectExportList" parameterType="ElectiveStudent" resultMap="ElectiveStudentResult">
         select
-            a.id,
-            a.create_by,
-            a.create_time,
-            a.update_by,
-            a.update_time,
-            a.user_id,
-            a.dept_id,
-            a.name,
-            u.user_name,
-            u.remark,
-            u.sex,
-            u.status,
-            concat((select dept_name
-                    from sys_dept
-                    where dept_id = (select td.parent_id
-                                     from sys_dept td
-                                     where td.dept_id = a.dept_id)), (select label
-                                                                      from elective_config_value
-                                                                      where id = (select td.class_id
-                                                                                  from sys_dept td
-                                                                                  where td.dept_id = a.dept_id)))
-                        as class_name,
-            g.dept_name as grade_name
+        a.id,
+        a.create_by,
+        a.create_time,
+        a.update_by,
+        a.update_time,
+        a.user_id,
+        a.dept_id,
+        a.name,
+        u.user_name,
+        u.remark,
+        u.sex,
+        u.status,
+        concat((select dept_name
+        from sys_dept
+        where dept_id = (select td.parent_id
+        from sys_dept td
+        where td.dept_id = a.dept_id)), (select label
+        from elective_config_value
+        where id = (select td.class_id
+        from sys_dept td
+        where td.dept_id = a.dept_id)))
+        as class_name,
+        g.dept_name as grade_name
         from elective_student a
-            inner join sys_user u on u.user_id = a.user_id
-            inner join sys_dept d on d.dept_id = a.dept_id
-            inner join sys_dept g on g.dept_id = d.parent_id
+        inner join sys_user u on u.user_id = a.user_id
+        inner join sys_dept d on d.dept_id = a.dept_id
+        inner join sys_dept g on g.dept_id = d.parent_id
         <where>
             1 = 1
             <if test="name != null and name != ''">
@@ -184,6 +184,13 @@
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
+    </delete>
+
+    <delete id="deleteStudentByDeptId" parameterType="Long">
+        delete from elective_student
+        where dept_id = #{deptId} or dept_id in (select dept_id
+                                                 from sys_dept
+                                                 where parent_id = #{deptId})
     </delete>
 
 </mapper>

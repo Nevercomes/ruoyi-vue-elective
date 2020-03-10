@@ -72,4 +72,6 @@ public interface ElectiveStudentMapper {
      * @return
      */
     ElectiveStudent selectStudentByUserId(Long userId);
+
+    void deleteStudentByDeptId(Long deptId);
 }

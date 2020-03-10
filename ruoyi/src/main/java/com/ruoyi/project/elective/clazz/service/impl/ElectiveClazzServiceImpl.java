@@ -7,6 +7,7 @@ import com.ruoyi.framework.redis.RedisCache;
 import com.ruoyi.framework.web.domain.TreeSelect;
 import com.ruoyi.project.elective.clazz.service.IElectiveClazzService;
 import com.ruoyi.project.system.domain.SysDept;
+import com.ruoyi.project.system.mapper.SysDeptMapper;
 import com.ruoyi.project.system.service.ISysDeptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,8 @@ public class ElectiveClazzServiceImpl implements IElectiveClazzService {
 
     @Autowired
     private ISysDeptService sysDeptService;
+    @Autowired
+    private SysDeptMapper sysDeptMapper;
 
     public static final String GRADE_CACHE_KEY = "gradeCache-";
 
@@ -115,6 +118,11 @@ public class ElectiveClazzServiceImpl implements IElectiveClazzService {
             redisCache.setCacheList(CLAZZ_CACHE_KEY + SecurityUtils.getSchoolId(), list);
         }
         return list;
+    }
+
+    @Override
+    public void deleteDeptByParent(Long deptId) {
+        sysDeptMapper.deleteDeptByParent(deptId);
     }
 
     /**

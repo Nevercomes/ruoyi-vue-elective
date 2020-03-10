@@ -243,6 +243,11 @@ public class ElectiveStudentServiceImpl implements IElectiveStudentService {
         return electiveStudentMapper.selectExportList(electiveStudent);
     }
 
+    @Override
+    public void deleteStudentByDeptId(Long deptId) {
+        electiveStudentMapper.deleteStudentByDeptId(deptId);
+    }
+
     private Long getDeptId(List<SysDept> list, String name) {
         if (StringUtils.isEmpty(name)) {
             return null;

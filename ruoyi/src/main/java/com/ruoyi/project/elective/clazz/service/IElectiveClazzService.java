@@ -117,4 +117,9 @@ public interface IElectiveClazzService {
      */
     List<SysDept> getClassList();
 
+    /**
+     * 根据parentId删除dept
+     * @param deptId
+     */
+    void deleteDeptByParent(Long deptId);
 }

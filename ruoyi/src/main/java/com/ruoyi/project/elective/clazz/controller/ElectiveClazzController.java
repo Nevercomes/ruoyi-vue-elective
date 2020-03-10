@@ -7,6 +7,7 @@ import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
 import com.ruoyi.framework.web.controller.BaseController;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.project.elective.clazz.service.IElectiveClazzService;
+import com.ruoyi.project.elective.student.service.IElectiveStudentService;
 import com.ruoyi.project.system.domain.SysDept;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,6 +26,8 @@ public class ElectiveClazzController extends BaseController {
 
     @Autowired
     private IElectiveClazzService electiveClazzService;
+    @Autowired
+    private IElectiveStudentService electiveStudentService;
 
     /**
      * 获取班级列表
@@ -105,12 +108,15 @@ public class ElectiveClazzController extends BaseController {
     @Log(title = "部门管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{deptId}")
     public AjaxResult remove(@PathVariable Long deptId) {
-        if (electiveClazzService.hasChildByDeptId(deptId)) {
-            return AjaxResult.error("存在下级,不允许删除");
-        }
-        if (electiveClazzService.checkDeptExistUser(deptId)) {
-            return AjaxResult.error("存在用户,不允许删除");
-        }
+//        if (electiveClazzService.hasChildByDeptId(deptId)) {
+//            return AjaxResult.error("存在下级,不允许删除");
+//        }
+//        if (electiveClazzService.checkDeptExistUser(deptId)) {
+//            return AjaxResult.error("存在用户,不允许删除");
+//        }
+        // 删除班级和学生
+        electiveStudentService.deleteStudentByDeptId(deptId);
+        electiveClazzService.deleteDeptByParent(deptId);
         return toAjax(electiveClazzService.deleteDeptById(deptId));
     }
 

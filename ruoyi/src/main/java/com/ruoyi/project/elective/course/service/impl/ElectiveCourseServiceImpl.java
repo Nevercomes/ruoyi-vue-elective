@@ -149,6 +149,7 @@ public class ElectiveCourseServiceImpl implements IElectiveCourseService {
             ElectiveCourse course = this.selectElectiveCourseById(id);
             // 检查课程是否已经选课
             ElectiveSelectRecord q = new ElectiveSelectRecord();
+            q.setCourseId(course.getId());
             List<ElectiveSelectRecord> selectRecordList = selectRecordService.selectElectiveSelectRecordList(q);
             if (selectRecordList != null && selectRecordList.size() > 0) {
                 failureNum++;

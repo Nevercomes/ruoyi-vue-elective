@@ -194,4 +194,9 @@
         where dept_id = #{deptId}
     </delete>
 
+    <delete id="deleteDeptByParent" parameterType="Long">
+        delete from sys_dept
+        where parent_id = #{deptId}
+    </delete>
+
 </mapper> 

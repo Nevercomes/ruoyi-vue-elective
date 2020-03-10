@@ -74,4 +74,10 @@ public interface IElectiveStudentService {
      * @return
      */
     List<ElectiveStudent> selectExportList(ElectiveStudent electiveStudent);
+
+    /**
+     * 根据班级或年级Id删除学生
+     * @param deptId
+     */
+    void deleteStudentByDeptId(Long deptId);
 }
