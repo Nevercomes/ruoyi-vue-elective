@@ -70,6 +70,16 @@
             <el-input v-model="form.specialNote" type="textarea" placeholder="请输入内容" />
           </el-form-item>
         </el-col>
+        <el-col :span="24">
+          <el-form-item label="声明显示" prop="noteTime" v-if="form.specialNote">
+            <el-radio-group v-model="form.noteTime">
+              <el-radio :label="0">不特别显示</el-radio>
+              <el-radio :label="3">3秒</el-radio>
+              <el-radio :label="5">5秒</el-radio>
+              <el-radio :label="10">10秒</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
       </el-row>
     </el-form>
     <div slot="footer" class="form-footer">
@@ -105,25 +115,25 @@
   export default {
     name: "MobileCourseForm",
     data() {
-		var checkPeople = (rule, value, callback) => {
-		  if (!value) {
-		    return callback(new Error('招生人数不能为空'));
-		  }
-		  try {
-		    value = Number(value)
-		  } catch {
-		    callback(new Error('招生人数请输入数字值'));
-		  }
-		  if (!Number.isInteger(value)) {
-		    callback(new Error('招生人数请输入数字值'));
-		  } else {
-		    if (value <= 0) {
-		      callback(new Error('招生人数必须大于0'));
-		    } else {
-		      callback();
-		    }
-		  }
-		};
+      var checkPeople = (rule, value, callback) => {
+        if (!value) {
+          return callback(new Error('招生人数不能为空'));
+        }
+        try {
+          value = Number(value)
+        } catch {
+          callback(new Error('招生人数请输入数字值'));
+        }
+        if (!Number.isInteger(value)) {
+          callback(new Error('招生人数请输入数字值'));
+        } else {
+          if (value <= 0) {
+            callback(new Error('招生人数必须大于0'));
+          } else {
+            callback();
+          }
+        }
+      };
       return {
         // 课程状态字典值
         statusOptions: [],
@@ -161,7 +171,7 @@
           }]
         },
         isUpdate: false,
-		checkPeople: checkPeople
+        checkPeople: checkPeople
       };
     },
     mounted() {
@@ -214,7 +224,8 @@
           peopleList: [{
             gradeId: null,
             initNum: ''
-          }]
+          }],
+          noteTime: 0
         };
         this.resetForm("form");
       },
