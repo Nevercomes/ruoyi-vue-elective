@@ -281,7 +281,7 @@
         }
       },
       getAvatarUrl(url) {
-        if (url) return url
+        if (url) return process.env.VUE_APP_BASE_API + url
         else return defaultAvatar
       },
       loadTop() {

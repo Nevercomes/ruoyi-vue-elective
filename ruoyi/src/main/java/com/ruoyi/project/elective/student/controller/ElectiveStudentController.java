@@ -1,9 +1,11 @@
 package com.ruoyi.project.elective.student.controller;
 
+import java.io.File;
 import java.util.List;
 
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.file.FileUtils;
 import com.ruoyi.project.elective.teacher.domain.ElectiveTeacher;
 import com.ruoyi.project.system.service.ISysUserService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -55,6 +57,13 @@ public class ElectiveStudentController extends BaseController {
     @Log(title = "学生管理", businessType = BusinessType.IMPORT)
     @PostMapping("/importData")
     public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception {
+        // 测试结果是文件是正确且有内容的
+//        String path = "D:/JiXie/";
+//        String fileName = file.getOriginalFilename();
+//        String substring = fileName.substring(fileName.lastIndexOf("."));
+//        File uploadFile = new File(path + System.currentTimeMillis() + substring);
+//        file.transferTo(uploadFile);
+
         ExcelUtil<ElectiveStudent> util = new ExcelUtil<ElectiveStudent>(ElectiveStudent.class);
         List<ElectiveStudent> studentList = util.importExcel(file.getInputStream());
         String message = electiveStudentService.importStudent(studentList, updateSupport, SecurityUtils.getUsername());
