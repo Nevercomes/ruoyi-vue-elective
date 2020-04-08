@@ -44,7 +44,7 @@
   import {
     getCodeImg
   } from "@/api/login";
-  import Cookies from "js-cookie";
+  import Cookies from "js-cookie"; 
   import {
     encrypt,
     decrypt

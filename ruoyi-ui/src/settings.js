@@ -2,7 +2,7 @@ module.exports = {
   title: '新桥小学选课系统',
 
   /**
-   * 是否系统布局配置
+   * 是否系统布局配置 
    */
   showSettings: false,
 
