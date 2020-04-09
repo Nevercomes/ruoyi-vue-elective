@@ -21,10 +21,10 @@
         <result property="intro" column="intro"/>
         <result property="objective" column="objective"/>
         <result property="specialNote" column="special_note"/>
-        <result property="classTime" column="class_time"/>
-        <result property="classTimeId" column="class_time_id"/>
-        <result property="classWeek" column="class_week"/>
-        <result property="classWeekId" column="class_week_id"/>
+        <!--<result property="classTime" column="class_time"/>-->
+        <!--<result property="classTimeId" column="class_time_id"/>-->
+        <!--<result property="classWeek" column="class_week"/>-->
+        <!--<result property="classWeekId" column="class_week_id"/>-->
         <result property="classLocation" column="class_location"/>
         <result property="schoolId" column="school_id"/>
         <result property="noteTime" column="note_time"/>
@@ -53,23 +53,15 @@
             a.semester_id,
             (select label
              from elective_config_value
-             where id = a.semester_id)   as semester,
+             where id = a.semester_id) as semester,
             a.intro,
             a.objective,
             a.special_note,
-            a.class_time_id,
-            a.class_week_id,
             a.class_location,
             a.school_id,
             a.note_time,
-            (select label
-             from elective_config_value
-             where id = a.class_time_id) as class_time,
-            (select label
-             from elective_config_value
-             where id = a.class_week_id) as class_week,
-            et.name                      as teacher_name,
-            et.avatar                    as teacher_avatar
+            et.name                    as teacher_name,
+            et.avatar                  as teacher_avatar
         from elective_course a
             left join elective_teacher et on et.id = a.teacher_id
     </sql>
@@ -92,8 +84,9 @@
             <if test="status != null  and status != ''">and a.status = #{status}</if>
             <if test="teacherId != null ">and teacher_id = #{teacherId}</if>
             <if test="semesterId != null">and semester_id = #{semesterId}</if>
-            <if test="classTimeId != null">and class_time_id = #{classTimeId}</if>
-            <if test="classWeekId != null">and class_week_id = #{classWeekId}</if>
+            <if test="classTimeId != null">and #{classTimeId} in (select time_id from elective_course_time where course_id = a.id)</if>
+            <if test="classWeekId != null">and #{classWeekId} in (select week_id from elective_course_time where
+                course_id = a.id)</if>
             <if test="gradeId != null">and a.id in (select course_id from elective_course_people where grade_id =
                 #{gradeId})
             </if>

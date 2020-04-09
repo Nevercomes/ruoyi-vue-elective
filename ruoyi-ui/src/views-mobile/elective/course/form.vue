@@ -22,15 +22,32 @@
           </el-form-item>
         </el-col>
         <el-col :span="24">
-          <el-form-item label="上课时间" prop="classTimeId">
-            <el-select v-model="form.classTimeId" placeholder="请选择上课时间">
-              <el-option v-for="item in classTimeOptions" :key="item.id" :label="item.label" :value="item.id" />
-            </el-select>
+          <el-form-item label="上课地点" prop="classLocation">
+            <el-input v-model="form.classLocation" placeholder="请输入上课地点" />
           </el-form-item>
         </el-col>
         <el-col :span="24">
-          <el-form-item label="上课地点" prop="classLocation">
-            <el-input v-model="form.classLocation" placeholder="请输入上课地点" />
+          <el-form-item label="上课时间">
+            <el-row class="peo-el-row" v-for="(item, index) in form.timeList" :key="index">
+              <el-col class="peo-el-col" :span="10">
+                <el-form-item :prop="`timeList.${index}.weekId`" :rules="{required: true, message: '请选择上课星期', trigger: 'change'}">
+                  <el-select v-model="item.weekId">
+                    <el-option v-for="week in classWeekOptions" :key="week.id + index" :value="week.id" :label="week.label"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col class="peo-el-col" :span="10">
+                <el-form-item :prop="`timeList.${index}.timeId`" :rules="{required: true, message: '请选择上课时间', trigger: 'change'}">
+                  <el-select v-model="item.timeId">
+                    <el-option v-for="time in classTimeOptions" :key="time.id + index" :value="time.id" :label="time.label"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="2">
+                <i v-if="index != 0" class="el-icon-minus people-config-minus" @click.prevent="removeTime(item)"></i>
+                <i v-else class="el-icon-plus people-config-plus" @click.prevent="addTime"></i>
+              </el-col>
+            </el-row>
           </el-form-item>
         </el-col>
         <el-col :span="24">
@@ -187,6 +204,10 @@
         this.isUpdate = true
         getCourse(this.form.id).then(response => {
           this.form = response.data
+          if (this.form.peopleList == undefined || this.form.peopleList.length == 0)
+            this.form.peopleList.push({})
+          if (this.form.timeList == undefined || this.form.timeList.length == 0)
+            this.form.timeList.push({})
         })
       }
       listSemester().then(response => {
@@ -228,6 +249,10 @@
             gradeId: null,
             initNum: ''
           }],
+          timeList: [{
+            weekId: null,
+            timeId: null
+          }],
           noteTime: 0
         };
         this.resetForm("form");
@@ -266,6 +291,8 @@
           this.form = response.data;
           if (this.form.peopleList == undefined || this.form.peopleList.length == 0)
             this.form.peopleList.push({})
+          if (this.form.timeList == undefined || this.form.timeList.length == 0)
+            this.form.timeList.push({})
           this.open = true;
           this.title = "修改课程";
         });
@@ -331,6 +358,18 @@
         this.form.peopleList.push({
           gradeId: null,
           initNum: ''
+        })
+      },
+      removeTime(time) {
+        let index = this.form.timeList.indexOf(time)
+        if (index != -1) {
+          this.form.timeList.splice(index, 1)
+        }
+      },
+      addTime() {
+        this.form.timeList.push({
+          weekId: null,
+          timeId: null
         })
       },
       setHeight() {

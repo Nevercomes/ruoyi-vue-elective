@@ -7,6 +7,8 @@ import com.ruoyi.common.constant.ElectiveDict;
 import com.ruoyi.common.exception.CustomException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.project.elective.course.domain.ElectiveCoursePeople;
+import com.ruoyi.project.elective.course.domain.ElectiveCourseTime;
+import com.ruoyi.project.elective.course.mapper.ElectiveCourseTimeMapper;
 import com.ruoyi.project.elective.course.service.IElectiveCoursePeopleService;
 import com.ruoyi.project.elective.record.domain.ElectiveApplyRecord;
 import com.ruoyi.project.elective.record.domain.ElectiveSelectRecord;
@@ -41,6 +43,8 @@ public class ElectiveCourseServiceImpl implements IElectiveCourseService {
     private IElectiveSelectRecordService selectRecordService;
     @Autowired
     private ISysDeptService sysDeptService;
+    @Autowired
+    private ElectiveCourseTimeMapper courseTimeMapper;
 
     /**
      * 查询课程
@@ -53,6 +57,7 @@ public class ElectiveCourseServiceImpl implements IElectiveCourseService {
         ElectiveCourse course = electiveCourseMapper.selectElectiveCourseById(id);
         if (course != null) {
             course.setPeopleList(coursePeopleService.selectElectiveCoursePeopleList(new ElectiveCoursePeople(id)));
+            course.setTimeList(courseTimeMapper.selectElectiveCourseTimeList(new ElectiveCourseTime(id)));
         }
         return course;
     }
@@ -68,6 +73,7 @@ public class ElectiveCourseServiceImpl implements IElectiveCourseService {
         List<ElectiveCourse> list = electiveCourseMapper.selectElectiveCourseList(electiveCourse);
         for (ElectiveCourse course : list) {
             course.setPeopleList(coursePeopleService.selectElectiveCoursePeopleList(new ElectiveCoursePeople(course.getId())));
+            course.setTimeList(courseTimeMapper.selectElectiveCourseTimeList(new ElectiveCourseTime(course.getId())));
         }
         return list;
     }
@@ -88,6 +94,12 @@ public class ElectiveCourseServiceImpl implements IElectiveCourseService {
         for (ElectiveCoursePeople people : peopleList) {
             people.setCourseId(electiveCourse.getId());
             electiveCoursePeopleService.insertElectiveCoursePeople(people);
+        }
+        // 插入上课时间
+        List<ElectiveCourseTime> timeList = electiveCourse.getTimeList();
+        for (ElectiveCourseTime time : timeList) {
+            time.setCourseId(electiveCourse.getId());
+            courseTimeMapper.insertElectiveCourseTime(time);
         }
         // 插入申请记录
         ElectiveApplyRecord applyRecord = new ElectiveApplyRecord();
@@ -110,14 +122,22 @@ public class ElectiveCourseServiceImpl implements IElectiveCourseService {
         int res = electiveCourseMapper.updateElectiveCourse(electiveCourse);
         List<ElectiveCoursePeople> peopleNew = electiveCourse.getPeopleList();
         List<ElectiveCoursePeople> peopleOld = electiveCoursePeopleService.selectElectiveCoursePeopleListByCourseId(electiveCourse.getId());
+        List<ElectiveCourseTime> timeNew = electiveCourse.getTimeList();
+        List<ElectiveCourseTime> timeOld = courseTimeMapper.selectElectiveCourseTimeList(new ElectiveCourseTime(electiveCourse.getId()));
         // 获取新增的
         List<ElectiveCoursePeople> add = getAdd(peopleNew, peopleOld);
+        List<ElectiveCourseTime> addTime = getAddTime(timeNew, timeOld);
         for (ElectiveCoursePeople p : add) {
             p.setCourseId(electiveCourse.getId());
             electiveCoursePeopleService.insertElectiveCoursePeople(p);
         }
+        for (ElectiveCourseTime t : addTime) {
+            t.setCourseId(electiveCourse.getId());
+            courseTimeMapper.insertElectiveCourseTime(t);
+        }
         // 获取删除的
         List<ElectiveCoursePeople> del = getDel(peopleNew, peopleOld);
+        List<ElectiveCourseTime> delTime = getDelTime(timeNew, timeOld);
         for (ElectiveCoursePeople p : del) {
             // 如果已经有人选课则不可以删除该年级
             if (p.getSelectNum() != null && p.getSelectNum() != 0) {
@@ -126,10 +146,17 @@ public class ElectiveCourseServiceImpl implements IElectiveCourseService {
             }
             electiveCoursePeopleService.deleteElectiveCoursePeopleById(p.getId());
         }
+        for (ElectiveCourseTime t : delTime) {
+            courseTimeMapper.deleteElectiveCourseTimeById(t.getId());
+        }
         // 获取修改的
         List<ElectiveCoursePeople> update = getUpdate(peopleNew, peopleOld);
+        List<ElectiveCourseTime> updateTime = getUpdateTime(timeNew, timeOld);
         for (ElectiveCoursePeople p : update) {
             electiveCoursePeopleService.updateElectiveCoursePeople(p);
+        }
+        for (ElectiveCourseTime t : updateTime) {
+            courseTimeMapper.updateElectiveCourseTime(t);
         }
         return res;
     }
@@ -219,11 +246,39 @@ public class ElectiveCourseServiceImpl implements IElectiveCourseService {
         return res;
     }
 
+    private List<ElectiveCourseTime> getUpdateTime(List<ElectiveCourseTime> timeNew, List<ElectiveCourseTime> timeOld) {
+        List<ElectiveCourseTime> res = new ArrayList<>();
+        for (ElectiveCourseTime n : timeNew) {
+            for (ElectiveCourseTime o : timeOld) {
+                if (o.getId().equals(n.getId()) && (!o.getWeekId().equals(n.getWeekId()) || !o.getTimeId().equals(n.getTimeId()))) {
+                    res.add(n);
+                    break;
+                }
+            }
+        }
+        return res;
+    }
+
     private List<ElectiveCoursePeople> getDel(List<ElectiveCoursePeople> peopleNew, List<ElectiveCoursePeople> peopleOld) {
         List<ElectiveCoursePeople> res = new ArrayList<>();
         for (ElectiveCoursePeople o : peopleOld) {
             boolean flag = false;
             for (ElectiveCoursePeople n : peopleNew) {
+                if (o.getId().equals(n.getId())) {
+                    flag = true;
+                    break;
+                }
+            }
+            if (!flag)
+                res.add(o);
+        }
+        return res;
+    }
+    private List<ElectiveCourseTime> getDelTime(List<ElectiveCourseTime> timeNew, List<ElectiveCourseTime> timeOld) {
+        List<ElectiveCourseTime> res = new ArrayList<>();
+        for (ElectiveCourseTime o : timeOld) {
+            boolean flag = false;
+            for (ElectiveCourseTime n : timeNew) {
                 if (o.getId().equals(n.getId())) {
                     flag = true;
                     break;
@@ -240,6 +295,22 @@ public class ElectiveCourseServiceImpl implements IElectiveCourseService {
         for (ElectiveCoursePeople n : peopleNew) {
             boolean flag = false;
             for (ElectiveCoursePeople o : peopleOld) {
+                if (o.getId().equals(n.getId())) {
+                    flag = true;
+                    break;
+                }
+            }
+            if (!flag)
+                res.add(n);
+        }
+        return res;
+    }
+
+    private List<ElectiveCourseTime> getAddTime(List<ElectiveCourseTime> timeNew, List<ElectiveCourseTime> timeOld) {
+        List<ElectiveCourseTime> res = new ArrayList<>();
+        for (ElectiveCourseTime n : timeNew) {
+            boolean flag = false;
+            for (ElectiveCourseTime o : timeOld) {
                 if (o.getId().equals(n.getId())) {
                     flag = true;
                     break;

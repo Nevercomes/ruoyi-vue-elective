@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.elective.course.mapper.ElectiveCourseTimeMapper">
+
+    <resultMap type="ElectiveCourseTime" id="ElectiveCourseTimeResult">
+        <result property="id" column="id"/>
+        <result property="courseId" column="course_id"/>
+        <result property="weekId" column="week_id"/>
+        <result property="timeId" column="time_id"/>
+        <result property="weekName" column="week_name"/>
+        <result property="timeName" column="time_name"/>
+    </resultMap>
+
+    <sql id="selectElectiveCourseTimeVo">
+        select
+            id,
+            course_id,
+            week_id,
+            time_id,
+            (select label from elective_config_value where id = week_id) as week_name,
+            (select label from elective_config_value where id = time_id) as time_name
+        from elective_course_time
+    </sql>
+
+    <select id="selectElectiveCourseTimeList" parameterType="ElectiveCourseTime" resultMap="ElectiveCourseTimeResult">
+        <include refid="selectElectiveCourseTimeVo"/>
+        <where>
+            <if test="courseId != null ">and course_id = #{courseId}</if>
+            <if test="weekId != null ">and week_id = #{weekId}</if>
+            <if test="timeId != null ">and time_id = #{timeId}</if>
+        </where>
+    </select>
+
+    <select id="selectElectiveCourseTimeById" parameterType="Long" resultMap="ElectiveCourseTimeResult">
+        <include refid="selectElectiveCourseTimeVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertElectiveCourseTime" parameterType="ElectiveCourseTime" useGeneratedKeys="true" keyProperty="id">
+        insert into elective_course_time
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="courseId != null ">course_id,</if>
+            <if test="weekId != null ">week_id,</if>
+            <if test="timeId != null ">time_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="courseId != null ">#{courseId},</if>
+            <if test="weekId != null ">#{weekId},</if>
+            <if test="timeId != null ">#{timeId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateElectiveCourseTime" parameterType="ElectiveCourseTime">
+        update elective_course_time
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="courseId != null ">course_id = #{courseId},</if>
+            <if test="weekId != null ">week_id = #{weekId},</if>
+            <if test="timeId != null ">time_id = #{timeId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteElectiveCourseTimeById" parameterType="Long">
+        delete from elective_course_time
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteElectiveCourseTimeByIds" parameterType="String">
+        delete from elective_course_time where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

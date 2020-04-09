@@ -70,30 +70,44 @@ public class ElectiveCourse extends BaseEntity {
      */
     private String specialNote;
 
-    private Long classTimeId;
-
-    private Long classWeekId;
-
-    @Excel(name = "上课星期")
-    private String classWeek;
-
-    /**
-     * 上课时间
-     */
-    @Excel(name = "上课时间")
-    private String classTime;
-
+    @Excel(name = "上课地点")
     private String classLocation;
 
     private List<ElectiveCoursePeople> peopleList;
+
+    private List<ElectiveCourseTime> timeList;
 
     @Excel(name = "选课情况")
     private String enrollPeo;
 
     /**
+     * 上课时间
+     */
+    @Excel(name = "上课时间")
+    private String courseTime;
+
+    /**
      * 特别声明公告的阅读时间
      */
     private Integer noteTime;
+
+    /**
+     * 用于检索年级课程
+     */
+    private Long gradeId;
+
+    private boolean onlyCan;
+
+    private Long openId;
+
+    private Long classTimeId;
+
+    private Long classWeekId;
+
+    /**
+     * 学生是否可选的标记
+     */
+    private boolean canSelect;
 
     public String getEnrollPeo() {
         IElectiveClazzService clazzService = SpringUtils.getBean(IElectiveClazzService.class);
@@ -114,21 +128,15 @@ public class ElectiveCourse extends BaseEntity {
         return res.toString();
     }
 
-    /**
-     * 用于检索年级课程
-     */
-    private Long gradeId;
-
-    private boolean onlyCan;
-
-    private Long openId;
-
-    public String getClassTime() {
-        return this.classWeek + this.classTime;
+    public String getCourseTime() {
+        StringBuilder res = new StringBuilder();
+        if (timeList == null) return null;
+        for (int i = 0; i < timeList.size(); i++) {
+            ElectiveCourseTime ct = timeList.get(i);
+            res.append(ct.getWeekName()).append(ct.getTimeName());
+            if (i != timeList.size() - 1)
+                res.append("；\n");
+        }
+        return res.toString();
     }
-
-    /**
-     * 学生是否可选的标记
-     */
-    private boolean canSelect;
 }

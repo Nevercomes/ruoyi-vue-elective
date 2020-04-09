@@ -109,6 +109,7 @@ public class ElectiveCourseController extends BaseController {
         List<ElectiveCourse> list = electiveCourseService.selectElectiveCourseList(electiveCourse);
         for (ElectiveCourse course : list) {
             course.setEnrollPeo(course.getEnrollPeo());
+            course.setCourseTime(course.getCourseTime());
         }
         ExcelUtil<ElectiveCourse> util = new ExcelUtil<ElectiveCourse>(ElectiveCourse.class);
         return util.exportExcel(list, "课程列表");

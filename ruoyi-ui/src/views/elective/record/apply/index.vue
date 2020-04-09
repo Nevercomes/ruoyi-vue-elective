@@ -84,15 +84,32 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="上课时间" prop="classTimeId">
-              <el-select v-model="form.course.classTimeId" placeholder="请选择上课时间">
-                <el-option v-for="item in classTimeOptions" :key="item.id" :label="item.label" :value="item.id" />
-              </el-select>
+            <el-form-item label="上课地点" prop="classLocation">
+              <el-input v-model="form.classLocation" placeholder="请输入上课地点" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="上课地点" prop="classLocation">
-              <el-input v-model="form.course.classLocation" placeholder="请输入上课地点" />
+          <el-col :span="24">
+            <el-form-item label="上课时间">
+              <el-row class="peo-el-row" v-for="(item, index) in form.course.timeList" :key="index">
+                <el-col class="peo-el-col" :span="10">
+                  <el-form-item :prop="`course.timeList.${index}.weekId`" :rules="{required: true, message: '请选择上课星期', trigger: 'change'}">
+                    <el-select v-model="item.weekId">
+                      <el-option v-for="week in classWeekOptions" :key="week.id + index" :value="week.id" :label="week.label"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col class="peo-el-col" :span="10">
+                  <el-form-item :prop="`course.timeList.${index}.timeId`" :rules="{required: true, message: '请选择上课时间', trigger: 'change'}">
+                    <el-select v-model="item.timeId">
+                      <el-option v-for="time in classTimeOptions" :key="time.id + index" :value="time.id" :label="time.label"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="2">
+                  <i v-if="index != 0" class="el-icon-minus people-config-minus" @click.prevent="removeTime(item)"></i>
+                  <i v-else class="el-icon-plus people-config-plus" @click.prevent="addTime"></i>
+                </el-col>
+              </el-row>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -137,7 +154,7 @@
       <div slot="footer" class="dialog-footer">
         <el-button v-if="dialogType == 'REAPPLY'" type="primary" @click="submitReApplyForm">确 定</el-button>
         <el-button v-if="dialogType == 'CHECK'" type="success" @click="submitCheckForm('1')">通 过</el-button>
-        <el-button v-if="dialogType == ''" type="danger" @click="submitCheckForm('2')">退 回</el-button>
+        <el-button v-if="dialogType == 'CHECK'" type="danger" @click="submitCheckForm('2')">退 回</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -155,7 +172,8 @@
   } from "@/api/elective/record/apply";
   import {
     listSemester,
-    listClassTime
+    listClassTime,
+    listInUse
   } from "@/api/elective/config/value"
   import {
     listTeacher
@@ -199,6 +217,8 @@
         semesterOptions: [],
         // 上课时间 字典值字典
         classTimeOptions: [],
+        // 上课星期 字典值字典
+        classWeekOptions: [],
         // 年级列表
         gradeOptions: [],
         // 查询参数
@@ -254,6 +274,9 @@
       listClassTime().then(response => {
         this.classTimeOptions = response.data;
       });
+      listInUse("2").then(response => {
+        this.classWeekOptions = response.data;
+      });
       listGrade().then(response => {
         this.gradeOptions = response.data
       })
@@ -302,7 +325,11 @@
             peopleList: [{
               gradeId: null,
               initNum: ''
-            }]
+            }],
+            timeList: [{
+              weekId: null,
+              timeId: null
+            }],
           }
         };
         this.resetForm("form");
@@ -348,6 +375,10 @@
         this.form.courseId = courseId
         getCourse(courseId).then(response => {
           this.form.course = response.data;
+          if (this.form.course.peopleList == undefined || this.form.course.peopleList.length == 0)
+            this.form.course.peopleList.push({})
+          if (this.form.course.timeList == undefined || this.form.course.timeList.length == 0)
+            this.form.course.timeList.push({})
           this.open = true;
           this.title = "审核课程";
         });
@@ -463,7 +494,19 @@
           gradeId: null,
           initNum: ''
         })
-      }
+      },
+      removeTime(time) {
+        let index = this.form.course.timeList.indexOf(time)
+        if (index != -1) {
+          this.form.course.timeList.splice(index, 1)
+        }
+      },
+      addTime() {
+        this.form.course.timeList.push({
+          weekId: null,
+          timeId: null
+        })
+      },
     }
   };
 </script>
