@@ -36,10 +36,10 @@
       <el-col :span="1.5">
         <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate" v-hasPermi="['elective:select:edit']">修改</el-button>
       </el-col>
-      <!-- <el-col :span="1.5">
+      <el-col :span="1.5">
         <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
           v-hasPermi="['elective:select:remove']">删除</el-button>
-      </el-col> -->
+      </el-col>
       <el-col :span="1.5">
         <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport" v-hasPermi="['elective:select:export']">导出</el-button>
       </el-col>
@@ -68,7 +68,7 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" v-hasPermi="['sys:role:staff']">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['elective:select:edit']">修改</el-button>
-          <!-- <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['elective:select:remove']">删除</el-button> -->
+          <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['elective:select:remove']">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -328,7 +328,7 @@
       /** 删除按钮操作 */
       handleDelete(row) {
         const ids = row.id || this.ids;
-        this.$confirm('是否确认删除select编号为"' + ids + '"的数据项?', "警告", {
+        this.$confirm('是否确认删除选课记录编号为"' + ids + '"的数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"

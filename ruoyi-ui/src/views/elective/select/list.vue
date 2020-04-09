@@ -47,7 +47,7 @@
             </el-row>
             <el-row class="card-item">
               <span class="item-label">上课时间</span>
-              <span class="item-value">{{item.classTime}}</span>
+              <span class="item-value">{{item.courseTime}}</span>
             </el-row>
             <el-row class="card-item">
               <span class="item-label">上课地点</span>

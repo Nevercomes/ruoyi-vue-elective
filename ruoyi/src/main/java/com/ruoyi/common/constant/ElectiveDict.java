@@ -45,4 +45,9 @@ public class ElectiveDict {
      */
     public static final String COURSE_STATUS_APPLYING = "0";
 
+    /**
+     * 课程状态-已退回
+     */
+    public static final String COURSE_STATUS_DENY = "2";
+
 }

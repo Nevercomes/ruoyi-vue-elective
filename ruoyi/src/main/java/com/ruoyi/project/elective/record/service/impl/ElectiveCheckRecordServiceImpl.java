@@ -1,19 +1,23 @@
 package com.ruoyi.project.elective.record.service.impl;
 
-import java.util.List;
-
+import com.ruoyi.common.constant.ElectiveDict;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.project.elective.course.domain.ElectiveCourse;
-import com.ruoyi.project.elective.course.mapper.ElectiveCourseMapper;
 import com.ruoyi.project.elective.course.service.IElectiveCourseService;
 import com.ruoyi.project.elective.record.domain.ElectiveApplyRecord;
+import com.ruoyi.project.elective.record.domain.ElectiveCheckRecord;
+import com.ruoyi.project.elective.record.domain.ElectiveSelectRecord;
+import com.ruoyi.project.elective.record.mapper.ElectiveCheckRecordMapper;
 import com.ruoyi.project.elective.record.service.IElectiveApplyRecordService;
+import com.ruoyi.project.elective.record.service.IElectiveCheckRecordService;
+import com.ruoyi.project.elective.record.service.IElectiveSelectRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.project.elective.record.mapper.ElectiveCheckRecordMapper;
-import com.ruoyi.project.elective.record.domain.ElectiveCheckRecord;
-import com.ruoyi.project.elective.record.service.IElectiveCheckRecordService;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * checkService业务层处理
@@ -29,6 +33,8 @@ public class ElectiveCheckRecordServiceImpl implements IElectiveCheckRecordServi
     private IElectiveCourseService courseService;
     @Autowired
     private IElectiveApplyRecordService applyRecordService;
+    @Autowired
+    private IElectiveSelectRecordService selectRecordService;
 
     /**
      * 查询check
@@ -65,6 +71,21 @@ public class ElectiveCheckRecordServiceImpl implements IElectiveCheckRecordServi
         ElectiveCourse course = electiveCheckRecord.getCourse();
         course.setStatus(electiveCheckRecord.getResult());
         courseService.updateElectiveCourse(course);
+        // 如果状态为退回则删除所有的已选课
+        if (ElectiveDict.COURSE_STATUS_DENY.equals(electiveCheckRecord.getResult())) {
+            // 检查课程是否已经选课
+            ElectiveSelectRecord q = new ElectiveSelectRecord();
+            q.setCourseId(course.getId());
+            List<ElectiveSelectRecord> selectRecordList = selectRecordService.selectElectiveSelectRecordList(q);
+            if (selectRecordList != null && selectRecordList.size() > 0) {
+//                selectRecordService.deleteElectiveSelectRecordByIds((Long[]) selectRecordList.stream().map(ElectiveSelectRecord::getId).toArray());
+                Long[] sIds = new Long[selectRecordList.size()];
+                for (int i = 0; i < selectRecordList.size(); i++) {
+                    sIds[i] = selectRecordList.get(i).getId();
+                }
+                selectRecordService.deleteElectiveSelectRecordByIds(sIds);
+            }
+        }
         // 更新申请状态
         ElectiveApplyRecord applyRecord = new ElectiveApplyRecord();
         applyRecord.setId(electiveCheckRecord.getApplyId());

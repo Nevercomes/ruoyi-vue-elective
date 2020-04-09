@@ -41,6 +41,7 @@
             c.school_id = #{schoolId}
             <if test="teacherId != null ">and a.teacher_id = #{teacherId}</if>
             <if test="courseId != null ">and a.course_id = #{courseId}</if>
+            <if test="semesterId != null ">and c.semester_id = #{semesterId}</if>
             <if test="courseName != null and courseName != ''">and c.name like concat('%', #{courseName}, '%')</if>
             <if test="status != null and status != ''">and a.status = #{status}</if>
             <if test="loginTeacherId != null">and a.teacher_id  = #{loginTeacherId}</if>

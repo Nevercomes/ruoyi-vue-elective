@@ -1,7 +1,9 @@
 package com.ruoyi.project.elective.course.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.ruoyi.common.constant.ElectiveDict;
 import com.ruoyi.common.exception.CustomException;
@@ -163,12 +165,12 @@ public class ElectiveCourseServiceImpl implements IElectiveCourseService {
 
     /**
      * 批量删除课程
+     * 新的业务逻辑为可以删除课程，但会删除相关的选课记录
      *
      * @param ids 需要删除的课程ID
      * @return 结果
      */
-    @Override
-    public String deleteElectiveCourseByIds(Long[] ids) {
+    public String deleteElectiveCourseByIds_old(Long[] ids) {
         int successNum = 0;
         int failureNum = 0;
         StringBuilder successMsg = new StringBuilder();
@@ -195,6 +197,33 @@ public class ElectiveCourseServiceImpl implements IElectiveCourseService {
             successMsg.insert(0, "课程删除成功！共 " + successNum + " 条，数据如下：");
             return successMsg.toString();
         }
+    }
+
+    /**
+     * 批量删除课程
+     *
+     * @param ids 需要删除的课程ID
+     * @return 结果
+     */
+    @Override
+    @Transactional
+    public int deleteElectiveCourseByIds(Long[] ids) {
+        for (Long id : ids) {
+            ElectiveCourse course = this.selectElectiveCourseById(id);
+            // 检查课程是否已经选课
+            ElectiveSelectRecord q = new ElectiveSelectRecord();
+            q.setCourseId(course.getId());
+            List<ElectiveSelectRecord> selectRecordList = selectRecordService.selectElectiveSelectRecordList(q);
+            if (selectRecordList != null && selectRecordList.size() > 0) {
+//                selectRecordService.deleteElectiveSelectRecordByIds((Long[]) selectRecordList.stream().map(ElectiveSelectRecord::getId).toArray());
+                Long[] sIds = new Long[selectRecordList.size()];
+                for (int i = 0; i < selectRecordList.size(); i++) {
+                    sIds[i] = selectRecordList.get(i).getId();
+                }
+                selectRecordService.deleteElectiveSelectRecordByIds(sIds);
+            }
+        }
+        return electiveCourseMapper.deleteElectiveCourseByIds(ids);
     }
 
     /**

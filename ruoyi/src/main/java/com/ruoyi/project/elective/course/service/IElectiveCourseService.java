@@ -49,7 +49,7 @@ public interface IElectiveCourseService {
      * @param ids 需要删除的课程ID
      * @return 结果
      */
-    public String deleteElectiveCourseByIds(Long[] ids);
+    public int deleteElectiveCourseByIds(Long[] ids);
 
     /**
      * 删除课程信息

@@ -1,6 +1,11 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
+      <el-form-item label="学年学期" prop="semesterId">
+        <el-select v-model="queryParams.semesterId" placeholder="请选择学年学期" clearable size="small">
+          <el-option v-for="item in semesterOptions" :key="item.id" :label="item.label" :value="item.id" />
+        </el-select>
+      </el-form-item>
       <el-form-item label="课程" prop="courseName">
         <el-input v-model="queryParams.courseName" placeholder="请输入申请课程" clearable size="small" @keyup.enter.native="handleQuery" />
       </el-form-item>
@@ -188,6 +193,9 @@
   import {
     addCheck
   } from "@/api/elective/record/check"
+  import {
+    inTime
+  } from '@/utils/semester.js'
 
   export default {
     name: "Apply",
@@ -221,13 +229,16 @@
         classWeekOptions: [],
         // 年级列表
         gradeOptions: [],
+        // 异步加载的查询参数，学期
+        querySemesterId: undefined,
         // 查询参数
         queryParams: {
           pageNum: 1,
           pageSize: 10,
           teacherId: undefined,
           courseName: undefined,
-          status: undefined
+          status: undefined,
+          semesterId: this.querySemesterId,
         },
         // 表单参数
         form: {},
@@ -264,7 +275,22 @@
       const teacherId = this.$route.params && this.$route.params.teacherId
       if (teacherId) this.queryParams.teacherId = Number(teacherId)
       this.reset()
-      this.getList();
+      listSemester().then(response => {
+        this.semesterOptions = response.data;
+        // 按名字处理学年学期（就很离谱）
+        // forEach无法通过break终止循环
+        for(let i in this.semesterOptions) {
+          const s = this.semesterOptions[i]
+          if(inTime(s.label)) {
+            this.querySemesterId = s.id
+            this.queryParams.semesterId = s.id
+            break;
+          }
+        }
+        this.getList();
+      }).catch(() => {
+        this.getList()
+      });
       listTeacher().then(response => {
         this.teacherList = response.rows;
       })
@@ -428,7 +454,7 @@
           if (valid) {
             this.form.result = result;
             let text = '通过';
-            if (result == '2') '退回';
+            if (result == '2') text = '退回';
             addCheck(this.form).then(response => {
               if (response.code === 200) {
                 this.msgSuccess(text + "成功");

@@ -14,7 +14,7 @@
             </el-col>
             <el-col :span="12">
               <el-col :span="12"><span class="item-label">上课时间</span></el-col>
-              <el-col :span="12"><span class="item-value">{{course.classTime}}</span></el-col>
+              <el-col :span="12"><span class="item-value">{{course.courseTime}}</span></el-col>
             </el-col>
           </el-row>
           <el-row class="card-item">

@@ -230,6 +230,9 @@
     listClazz,
     listGrade
   } from "@/api/elective/clazz/clazz"
+  import {
+    inTime
+  } from '@/utils/semester.js'
 
   export default {
     name: "Course",
@@ -284,6 +287,8 @@
         gradeOptions: [],
         // 教师列表
         teacherList: [],
+        // 异步加载的默认参数，学期
+        querySemesterId: undefined,
         // 查询参数
         queryParams: {
           pageNum: 1,
@@ -291,7 +296,7 @@
           name: undefined,
           status: "1",
           teacherId: undefined,
-          semesterId: undefined,
+          semesterId: this.querySemesterId,
           classTimeId: undefined,
           gradeId: undefined
         },
@@ -333,9 +338,21 @@
     created() {
       const teacherId = this.$route.params && this.$route.params.teacherId
       if (teacherId) this.queryParams.teacherId = Number(teacherId)
-      this.getList();
       listSemester().then(response => {
         this.semesterOptions = response.data;
+        // 按名字处理学年学期（就很离谱）
+        // forEach无法通过break终止循环
+        for(let i in this.semesterOptions) {
+          const s = this.semesterOptions[i]
+          if(inTime(s.label)) {
+            this.querySemesterId = s.id
+            this.queryParams.semesterId = s.id
+            break;
+          }
+        }
+        this.getList();
+      }).catch(() => {
+        this.getList()
       });
       listClassTime().then(response => {
         this.classTimeOptions = response.data;

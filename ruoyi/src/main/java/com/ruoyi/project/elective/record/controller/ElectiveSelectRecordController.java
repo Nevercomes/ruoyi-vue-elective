@@ -150,8 +150,8 @@ public class ElectiveSelectRecordController extends BaseController {
         if (electiveSelectRecord.getCourseId().equals(old.getCourseId())) {
             return AjaxResult.error("修改失败，新课程与旧课程相同");
         } else {
-            electiveCoursePeopleMapper.minusOneSelectNum(old);
-            electiveCoursePeopleMapper.addOneSelectNum(electiveSelectRecord);
+//            electiveCoursePeopleMapper.minusOneSelectNum(old);
+//            electiveCoursePeopleMapper.addOneSelectNum(electiveSelectRecord);
         }
         return toAjax(electiveSelectRecordService.updateElectiveSelectRecord(electiveSelectRecord));
     }

@@ -59,7 +59,7 @@ public class ElectiveSelectRecordServiceImpl implements IElectiveSelectRecordSer
         electiveSelectRecord.preInsert();
         int res = electiveSelectRecordMapper.insertElectiveSelectRecord(electiveSelectRecord);
         // 插入记录成功 则设置select数+1
-        coursePeopleMapper.addOneSelectNum(electiveSelectRecord);
+//        coursePeopleMapper.addOneSelectNum(electiveSelectRecord);
         return res;
     }
 

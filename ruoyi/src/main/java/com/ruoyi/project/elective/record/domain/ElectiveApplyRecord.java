@@ -46,4 +46,9 @@ public class ElectiveApplyRecord extends BaseEntity {
 
     private ElectiveCourse course;
 
+    /**
+     * 用于检索学期id
+     */
+    private Long semesterId;
+
 }
