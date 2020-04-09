@@ -85,6 +85,8 @@
     <div slot="footer" class="form-footer">
       <el-button v-if="isUpdate" type="danger" @click="handleDelete(item)">删 除</el-button>
       <el-button type="primary" @click="submitForm">保 存</el-button>
+      <el-button v-if="form.status == 1" type="success" @click="handleReAdd(item)">续 开</el-button>
+      <el-button v-if="form.status == 2" type="success" @click="handleReApply(item)">重 申</el-button>
     </div>
     <div class="clearfix"></div>
   </div>
@@ -95,7 +97,8 @@
     getCourse,
     delCourse,
     addCourse,
-    updateCourse
+    updateCourse,
+    reApply
   } from "@/api/elective/course/course";
   import {
     listSemester,
@@ -235,6 +238,26 @@
         this.open = true;
         this.title = "添加课程";
       },
+      handleReAdd(row) {
+        this.form.id = undefined
+        this.form.status = undefined
+        addCourse(this.form).then(response => {
+          if (response.code === 200) {
+            this.msgSuccess("续开成功");
+          } else {
+            this.msgError(response.msg);
+          }
+        });
+      },
+      handleReApply(row) {
+        reApply(this.form).then(res => {
+          if (res.code === 200) {
+            this.msgSuccess("重新申请成功");
+          } else {
+            this.msgError(res.msg);
+          }
+        })
+      },
       /** 修改按钮操作 */
       handleUpdate(row) {
         this.reset();
@@ -255,8 +278,8 @@
               updateCourse(this.form).then(response => {
                 if (response.code === 200) {
                   this.msgSuccess("修改成功");
-                  this.open = false;
-                  this.getList();
+                  // this.open = false;
+                  // this.getList();
                 } else {
                   this.msgError(response.msg);
                 }
@@ -265,8 +288,8 @@
               addCourse(this.form).then(response => {
                 if (response.code === 200) {
                   this.msgSuccess("新增成功");
-                  this.open = false;
-                  this.getList();
+                  // this.open = false;
+                  // this.getList();
                 } else {
                   this.msgError(response.msg);
                 }

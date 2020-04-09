@@ -144,6 +144,16 @@ public class ElectiveCourseController extends BaseController {
     }
 
     /**
+     * 重新申请课程
+     */
+    @PreAuthorize("@ss.hasPermi('elective:course:edit')")
+    @Log(title = "课程", businessType = BusinessType.UPDATE)
+    @PostMapping("reApply")
+    public AjaxResult reApply(@RequestBody ElectiveCourse electiveCourse) {
+        return toAjax(electiveCourseService.reApply(electiveCourse));
+    }
+
+    /**
      * 删除课程
      */
     @PreAuthorize("@ss.hasPermi('elective:course:remove')")

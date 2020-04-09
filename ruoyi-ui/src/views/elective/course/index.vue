@@ -44,9 +44,9 @@
       <el-col :span="1.5">
         <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd" v-hasPermi="['elective:course:add']">新增</el-button>
       </el-col>
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate" v-hasPermi="['elective:course:edit']">修改</el-button>
-      </el-col>
+      </el-col> -->
       <el-col :span="1.5">
         <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
           v-hasPermi="['elective:course:remove']">删除</el-button>
@@ -82,10 +82,13 @@
         <template slot-scope="scope">
           <!-- TODO 课程审核  -->
           <!-- <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['elective:check:add']">审核</el-button> -->
-          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['elective:course:edit']">修改</el-button>
+          <el-button v-if="scope.row.status != 1" size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['elective:course:edit']">修改</el-button>
+          <el-button v-if="scope.row.status == 1" size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['sys:role:staff']">修改</el-button>
           <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['elective:course:remove']">删除</el-button>
           <el-button v-if="scope.row.status == 1" size="mini" type="text" icon="el-icon-circle-plus-outline" @click="handleReAdd(scope.row)"
             v-hasPermi="['elective:course:add']">续开</el-button>
+          <el-button v-if="scope.row.status == 2" size="mini" type="text" icon="el-icon-circle-plus-outline" @click="handleReApply(scope.row)"
+            v-hasPermi="['elective:apply:add']">重申</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -127,7 +130,7 @@
                 <el-option v-for="item in classWeekOptions" :key="item.id" :label="item.label" :value="item.id" />
               </el-select>
             </el-form-item>
-          </el-col> 
+          </el-col>
           <el-col :span="12">
             <el-form-item label="上课时间" prop="classTimeId">
               <el-select v-model="form.classTimeId" placeholder="请选择上课时间">
@@ -199,7 +202,8 @@
     delCourse,
     addCourse,
     updateCourse,
-    exportCourse
+    exportCourse,
+    reApply
   } from "@/api/elective/course/course";
   import {
     listSemester,
@@ -219,7 +223,7 @@
     data() {
       var checkPeople = (rule, value, callback) => {
         if (!value) {
-          return callback(new Error('招生人数不能为空'));
+          callback(new Error('招生人数不能为空'));
         }
         try {
           value = Number(value)
@@ -374,7 +378,8 @@
             gradeId: null,
             initNum: 0
           }],
-          noteTime: 0
+          noteTime: 0,
+          reApply: undefined
         };
         this.resetForm("form");
       },
@@ -426,11 +431,31 @@
           this.title = "续开课程";
         });
       },
+      handleReApply(row) {
+        this.reset()
+        const courseId = row.id
+        getCourse(courseId).then(response => {
+          this.form = response.data;
+          this.form.reApply = true
+          this.open = true;
+          this.title = "重新申请课程";
+        });
+      },
       /** 提交按钮 */
       submitForm: function() {
         this.$refs["form"].validate(valid => {
           if (valid) {
-            if (this.form.id != undefined) {
+            if (this.form.reApply) {
+              reApply(this.form).then(res => {
+                if (res.code === 200) {
+                  this.msgSuccess("重新申请成功");
+                  this.open = false;
+                  this.getList();
+                } else {
+                  this.msgError(res.msg);
+                }
+              })
+            } else if (this.form.id != undefined) {
               updateCourse(this.form).then(response => {
                 if (response.code === 200) {
                   this.msgSuccess("修改成功");

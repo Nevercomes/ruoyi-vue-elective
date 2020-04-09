@@ -2,7 +2,10 @@ package com.ruoyi.project.elective.record.service.impl;
 
 import java.util.List;
 
+import com.ruoyi.common.constant.ElectiveDict;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.project.elective.course.domain.ElectiveCourse;
+import com.ruoyi.project.elective.course.service.IElectiveCourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.project.elective.record.mapper.ElectiveApplyRecordMapper;
@@ -19,6 +22,8 @@ import com.ruoyi.project.elective.record.service.IElectiveApplyRecordService;
 public class ElectiveApplyRecordServiceImpl implements IElectiveApplyRecordService {
     @Autowired
     private ElectiveApplyRecordMapper electiveApplyRecordMapper;
+    @Autowired
+    private IElectiveCourseService courseService;
 
     /**
      * 查询apply
@@ -50,7 +55,13 @@ public class ElectiveApplyRecordServiceImpl implements IElectiveApplyRecordServi
      */
     @Override
     public int insertElectiveApplyRecord(ElectiveApplyRecord electiveApplyRecord) {
-        electiveApplyRecord.setCreateTime(DateUtils.getNowDate());
+        // 更新课程和课程状态
+//        ElectiveCourse course = electiveApplyRecord.getCourse();
+//        course.setStatus(ElectiveDict.COURSE_STATUS_APPLYING);
+//        courseService.updateElectiveCourse(course);
+//        electiveApplyRecord.setCourseId(course.getId());
+//        electiveApplyRecord.setTeacherId(course.getTeacherId());
+        electiveApplyRecord.preInsert();
         return electiveApplyRecordMapper.insertElectiveApplyRecord(electiveApplyRecord);
     }
 

@@ -82,3 +82,11 @@ export function listCoursePlainList() {
     method: 'get'
   })
 }
+
+export function reApply(data) {
+  return request({
+    url: '/elective/course/reApply',
+    method: 'post',
+    data: data
+  })
+}

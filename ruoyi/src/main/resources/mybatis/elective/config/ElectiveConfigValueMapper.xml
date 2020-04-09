@@ -26,7 +26,7 @@
         <where>
             template_id = #{templateId}
             <if test="label != null  and label != ''">and label like concat('%', #{label}, '%')</if>
-            order by sort asc
+            order by convert(`label` using gbk) asc
         </where>
     </select>
 

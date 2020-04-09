@@ -32,7 +32,7 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="编号" align="center" prop="id" />
       <el-table-column label="内容" align="center" prop="label" />
-      <el-table-column label="排序" align="center" prop="sort" />
+      <!-- <el-table-column label="排序" align="center" prop="sort" /> -->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['config:value:edit']">修改</el-button>
@@ -56,9 +56,9 @@
         <el-form-item label="内容" prop="label">
           <el-input v-model="form.label" placeholder="请输入内容" />
         </el-form-item>
-        <el-form-item label="显示排序" prop="sort">
+        <!-- <el-form-item label="显示排序" prop="sort">
           <el-input-number v-model="form.sort" controls-position="right" :min="0" />
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -126,11 +126,11 @@
             message: "内容不能为空",
             trigger: "blur"
           }],
-          sort: [{
-            required: true,
-            message: "显示排序不能为空",
-            trigger: "change"
-          }]
+          // sort: [{
+          //   required: true,
+          //   message: "显示排序不能为空",
+          //   trigger: "change"
+          // }]
         }
       };
     },

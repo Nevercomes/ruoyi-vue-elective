@@ -65,4 +65,11 @@ public interface IElectiveCourseService {
      * @return
      */
     List<ElectiveCourse> selectPlainList(ElectiveCourse electiveCourse);
+
+    /**
+     * 重新申请课程
+     * @param electiveCourse
+     * @return
+     */
+    int reApply(ElectiveCourse electiveCourse);
 }

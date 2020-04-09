@@ -21,10 +21,10 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
           v-hasPermi="['elective:apply:remove', 'sys:role:teacher']">删除</el-button>
-      </el-col>
+      </el-col> -->
       <el-col :span="1.5">
         <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport" v-hasPermi="['elective:apply:export', 'sys:role:teacher']">导出</el-button>
       </el-col>
@@ -50,7 +50,9 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit-outline" @click="handleCheck(scope.row)" v-hasPermi="['elective:check:add']">审核</el-button>
-          <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['elective:apply:remove']">删除</el-button>
+          <!-- <el-button v-if="scope.row.status == 2" size="mini" type="text" icon="el-icon-circle-plus-outline" @click="handleReApply(scope.row)"
+            v-hasPermi="['elective:apply:add']">重申</el-button> -->
+          <!-- <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['elective:apply:remove']">删除</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -133,8 +135,9 @@
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="success" @click="submitCheckForm('1')">通 过</el-button>
-        <el-button type="danger" @click="submitCheckForm('2')">退 回</el-button>
+        <el-button v-if="dialogType == 'REAPPLY'" type="primary" @click="submitReApplyForm">确 定</el-button>
+        <el-button v-if="dialogType == 'CHECK'" type="success" @click="submitCheckForm('1')">通 过</el-button>
+        <el-button v-if="dialogType == ''" type="danger" @click="submitCheckForm('2')">退 回</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -225,7 +228,8 @@
             message: "上课教师不能为空",
             trigger: "blur"
           }]
-        }
+        },
+        dialogType: 'CHECK'
       };
     },
     beforeRouteEnter(to, from, next) {
@@ -338,6 +342,7 @@
       /** 审核按钮操作 */
       handleCheck(row) {
         this.reset()
+        this.dialogType = 'CHECK'
         const courseId = row.courseId
         this.form.applyId = row.id
         this.form.courseId = courseId
@@ -345,6 +350,18 @@
           this.form.course = response.data;
           this.open = true;
           this.title = "审核课程";
+        });
+      },
+      handleReApply(row) {
+        this.reset()
+        this.dialogType = 'REAPPLY'
+        const courseId = row.courseId
+        this.form.applyId = row.id
+        this.form.courseId = courseId
+        getCourse(courseId).then(response => {
+          this.form.course = response.data;
+          this.open = true;
+          this.title = "重新申请课程";
         });
       },
       /** 提交按钮 */
@@ -384,6 +401,21 @@
             addCheck(this.form).then(response => {
               if (response.code === 200) {
                 this.msgSuccess(text + "成功");
+                this.open = false;
+                this.getList();
+              } else {
+                this.msgError(response.msg);
+              }
+            });
+          }
+        });
+      },
+      submitReApplyForm() {
+        this.$refs["form"].validate(valid => {
+          if (valid) {
+            addApply(this.form).then(response => {
+              if (response.code === 200) {
+                this.msgSuccess("重新申请成功");
                 this.open = false;
                 this.getList();
               } else {

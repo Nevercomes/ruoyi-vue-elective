@@ -69,7 +69,8 @@
         </if>
         <!-- 数据范围过滤 -->
         ${dataScope}
-        order by d.parent_id, d.order_num asc
+        <!--order by d.parent_id, d.order_num asc-->
+        order by d.parent_id, convert(d.dept_name using gbk) asc
     </select>
 
     <select id="selectDeptListByRoleId" parameterType="Long" resultType="Integer">
@@ -82,7 +83,8 @@
               and d.dept_id not in (select d.parent_id
                                     from sys_dept d inner join sys_role_dept rd
                                             on d.dept_id = rd.dept_id and rd.role_id = #{roleId})
-        order by d.parent_id, d.order_num
+        <!--order by d.parent_id, d.order_num-->
+        order by d.parent_id, convert(d.dept_name using gbk) asc
     </select>
 
     <select id="selectDeptById" parameterType="Long" resultMap="SysDeptResult">

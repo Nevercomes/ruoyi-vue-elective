@@ -72,3 +72,10 @@ export function listClazz() {
 		method: 'get'
 	})
 }
+
+export function getClazz(id) {
+  return request({
+    url: '/elective/clazz/' + id,
+    method: 'get'
+  })
+}

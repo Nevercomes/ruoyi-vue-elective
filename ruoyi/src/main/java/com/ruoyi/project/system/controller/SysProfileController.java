@@ -2,6 +2,9 @@ package com.ruoyi.project.system.controller;
 
 import java.io.IOException;
 
+import com.ruoyi.project.elective.student.domain.ElectiveStudent;
+import com.ruoyi.project.elective.student.mapper.ElectiveStudentMapper;
+import com.ruoyi.project.system.domain.SysDept;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +34,8 @@ public class SysProfileController extends BaseController {
 
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private ElectiveStudentMapper studentMapper;
 
     /**
      * 个人信息
@@ -42,7 +47,15 @@ public class SysProfileController extends BaseController {
             user = userService.selectUserById(userId);
         } else {
             LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
-            user = loginUser.getUser();
+            // update profile 后loginUser内的user不会被刷新，所以这里使用数据库的user
+            user = userService.selectUserById(loginUser.getUser().getUserId());
+            ElectiveStudent studentId = studentMapper.selectStudentByUserId(user.getUserId());
+            if (studentId != null) {
+                ElectiveStudent student =  studentMapper.selectElectiveStudentById(studentId.getId());
+                SysDept dept =  user.getDept();
+                dept.setDeptName(student.getClassName());
+                user.setDept(dept);
+            }
         }
         AjaxResult ajax = AjaxResult.success(user);
         ajax.put("roleGroup", userService.selectUserRoleGroup(user.getUserName()));

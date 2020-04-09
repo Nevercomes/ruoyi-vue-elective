@@ -2,6 +2,7 @@ package com.ruoyi.project.elective.record.domain;
 
 import com.ruoyi.framework.aspectj.lang.annotation.Excel;
 import com.ruoyi.framework.web.domain.BaseEntity;
+import com.ruoyi.project.elective.course.domain.ElectiveCourse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -42,5 +43,7 @@ public class ElectiveApplyRecord extends BaseEntity {
      */
     @Excel(name = "申请状态", readConverterExp = "0=申请中,1=已通过,2=退回")
     private String status;
+
+    private ElectiveCourse course;
 
 }

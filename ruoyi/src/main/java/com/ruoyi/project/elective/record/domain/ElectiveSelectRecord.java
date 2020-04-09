@@ -53,6 +53,18 @@ public class ElectiveSelectRecord extends BaseEntity {
     private Date createTime;
 
     /**
+     * 学生电话
+     */
+    @Excel(name = "电话")
+    private String studentPhone;
+
+    /**
+     * 学生性别
+     */
+    @Excel(name = "性别", readConverterExp = "0=男,1=女,2=未知")
+    private String studentSex;
+
+    /**
      * 对应的开放选课
      */
     private Long openId;

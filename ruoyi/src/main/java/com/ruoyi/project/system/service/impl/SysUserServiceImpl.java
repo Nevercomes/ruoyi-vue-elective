@@ -3,6 +3,7 @@ package com.ruoyi.project.system.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ruoyi.framework.security.LoginUser;
 import com.ruoyi.project.elective.student.domain.ElectiveStudent;
 import com.ruoyi.project.elective.student.mapper.ElectiveStudentMapper;
 import com.ruoyi.project.elective.teacher.domain.ElectiveTeacher;
@@ -269,7 +270,6 @@ public class SysUserServiceImpl implements ISysUserService {
             student.setName(user.getNickName());
             studentMapper.updateElectiveStudent(student);
         }
-        // 或学生姓名
         return userMapper.updateUser(user);
     }
 

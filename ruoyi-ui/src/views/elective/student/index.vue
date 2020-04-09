@@ -124,21 +124,26 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="性别">
+            <el-form-item label="性别" prop="sex">
               <el-select v-model="form.sex" placeholder="请选择性别">
                 <el-option v-for="dict in sexOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="状态">
+            <el-form-item label="电话" prop="phonenumber">
+              <el-input v-model="form.phonenumber" placeholder="请输入电话号码" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="状态" prop="status">
               <el-radio-group v-model="form.status">
                 <el-radio v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictValue">{{dict.dictLabel}}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="备注">
+            <el-form-item label="备注" prop="remark">
               <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
             </el-form-item>
           </el-col>
@@ -215,6 +220,9 @@
     treeselect
   } from "@/api/system/dept";
   import {
+    getClazz
+  } from '@/api/elective/clazz/clazz.js'
+  import {
     listCanSelect,
     addSelect
   } from "@/api/elective/record/select"
@@ -230,6 +238,21 @@
       Treeselect
     },
     data() {
+      var checkClazz = (rule, value, callback) => {
+        if (!value) {
+          return callback(new Error('班级不能为空'));
+        } else {
+          try {
+            getClazz(value).then(res => {
+              const type = res.data.type
+              if (type == '3') return callback()
+              else return callback(new Error('选择必须为班级'))
+            })
+          } catch (e) {
+            return callback(new Error('选择必须为班级'));
+          }
+        }
+      };
       return {
         // 遮罩层
         loading: true,
@@ -307,13 +330,19 @@
             trigger: "blur"
           }],
           deptId: [{
-            required: true,
-            message: "班级不能为空",
-            trigger: "blur"
+            validator: checkClazz,
+            trigger: 'blur'
+          }, {
+            required: true
           }],
           password: [{
             required: true,
             message: "登录密码不能为空",
+            trigger: "blur"
+          }],
+          phonenumber: [{
+            pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+            message: "请输入正确的手机号码",
             trigger: "blur"
           }]
         },
@@ -337,7 +366,8 @@
             required: true,
             message: "课程不能为空"
           }
-        }
+        },
+        checkClazz: checkClazz
       };
     },
     watch: {
@@ -429,7 +459,8 @@
           password: undefined,
           sex: undefined,
           status: "0",
-          remark: undefined
+          remark: undefined,
+          phonenumber: undefined
         };
         this.resetForm("form");
       },
@@ -458,7 +489,7 @@
       },
       // 多选框选中数据
       handleSelectionChange(selection) {
-        this.ids = selection.map(item => item.userId);
+        this.ids = selection.map(item => item.id);
         this.single = selection.length != 1;
         this.multiple = !selection.length;
       },

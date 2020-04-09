@@ -3,6 +3,7 @@ package com.ruoyi.project.elective.course.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ruoyi.common.constant.ElectiveDict;
 import com.ruoyi.common.exception.CustomException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.project.elective.course.domain.ElectiveCoursePeople;
@@ -183,6 +184,24 @@ public class ElectiveCourseServiceImpl implements IElectiveCourseService {
     @Override
     public List<ElectiveCourse> selectPlainList(ElectiveCourse electiveCourse) {
         return electiveCourseMapper.selectPlainList(electiveCourse);
+    }
+
+
+    /**
+     * 重新申请课程
+     * @param electiveCourse
+     * @return
+     */
+    @Override
+    @Transactional
+    public int reApply(ElectiveCourse electiveCourse) {
+        // 插入申请记录
+        ElectiveApplyRecord applyRecord = new ElectiveApplyRecord();
+        applyRecord.setCourseId(electiveCourse.getId());
+        applyRecord.setTeacherId(electiveCourse.getTeacherId());
+        applyRecordService.insertElectiveApplyRecord(applyRecord);
+        electiveCourse.setStatus(ElectiveDict.COURSE_STATUS_APPLYING);
+        return this.updateElectiveCourse(electiveCourse);
     }
 
     private List<ElectiveCoursePeople> getUpdate(List<ElectiveCoursePeople> peopleNew, List<ElectiveCoursePeople> peopleOld) {

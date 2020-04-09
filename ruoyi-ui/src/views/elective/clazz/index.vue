@@ -17,7 +17,7 @@
 
     <el-table v-loading="loading" :data="deptList" row-key="deptId" default-expand-all :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
       <el-table-column prop="deptName" label="名称" width="200"></el-table-column>
-      <el-table-column prop="orderNum" label="排序" width="200"></el-table-column>
+      <!-- <el-table-column prop="orderNum" label="排序" width="200"></el-table-column> -->
       <el-table-column prop="status" label="状态" :formatter="statusFormat" width="100"></el-table-column>
       <el-table-column label="创建时间" align="center" prop="createTime" width="200">
         <template slot-scope="scope">
@@ -62,11 +62,11 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <!-- <el-col :span="12">
             <el-form-item label="显示排序" prop="orderNum">
               <el-input-number v-model="form.orderNum" controls-position="right" :min="0" />
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="12">
             <el-form-item label="状态">
               <el-radio-group v-model="form.status">
@@ -141,11 +141,11 @@
             message: "名称不能为空",
             trigger: "blur"
           }],
-          orderNum: [{
-            required: true,
-            message: "显示顺序不能为空",
-            trigger: "blur"
-          }],
+          // orderNum: [{
+          //   required: true,
+          //   message: "显示顺序不能为空",
+          //   trigger: "blur"
+          // }],
           type: [{
             required: true,
             message: "类型不能为空",

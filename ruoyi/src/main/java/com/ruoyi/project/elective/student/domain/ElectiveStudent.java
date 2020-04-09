@@ -80,6 +80,12 @@ public class ElectiveStudent extends BaseEntity {
     @Excel(name = "班级")
     private String className;
 
+    /**
+     * 电话号码
+     */
+    @Excel(name = "手机号码")
+    private String phonenumber;
+
 
 
 }

@@ -43,7 +43,7 @@
             <if test="type != null  and type != ''">and type = #{type}</if>
             <if test="status != null  and status != ''">and status = #{status}</if>
             <!--<if test="schoolId != null ">and school_id = #{schoolId}</if>-->
-            order by sort asc
+            order by convert(`name` using gbk) asc
         </where>
     </select>
 
@@ -57,7 +57,7 @@
         where type = #{type}
         and (school_id = #{schoolId} or school_id = 0)
         and status = '0'
-        order by sort asc
+        order by convert(`name` using gbk) asc
         limit 1
     </select>
 

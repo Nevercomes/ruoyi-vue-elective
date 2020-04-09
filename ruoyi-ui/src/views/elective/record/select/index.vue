@@ -58,6 +58,8 @@
           </router-link>
         </template>
       </el-table-column>
+      <el-table-column label="手机" align="center" prop="studentPhone" />
+      <el-table-column label="性别" align="center" prop="studentSex" :formatter="sexFormat" />
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -147,6 +149,8 @@
         clazzOptions: [],
         // 年级列表
         gradeOptions: [],
+        // 性别字典
+        sexOptions: [],
         // 选课列表
         openOptions: [],
         // 查询参数
@@ -210,6 +214,9 @@
       listOpen().then(response => {
         this.openOptions = response.rows
       })
+      this.getDicts("sys_user_sex").then(response => {
+        this.sexOptions = response.data;
+      });
     },
     methods: {
       /** 查询select列表 */
@@ -252,6 +259,9 @@
       handleQuery() {
         this.queryParams.pageNum = 1;
         this.getList();
+      },
+      sexFormat(row, column) {
+        return this.selectDictLabel(this.sexOptions, row.studentSex);
       },
       /** 重置按钮操作 */
       resetQuery() {

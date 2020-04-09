@@ -166,7 +166,7 @@
   .title {
     margin: 10px auto 20px auto;
     text-align: center;
-    color: #707070;
+    // color: #707070;
     font-family: '华文隶书';
     font-size: 20px;
   }
@@ -233,6 +233,7 @@
     margin: 0px auto;
     font-size: 18px;
     font-weight: bold;
+    color: #707070;
     font-family: '华文隶书';
   }
 </style>

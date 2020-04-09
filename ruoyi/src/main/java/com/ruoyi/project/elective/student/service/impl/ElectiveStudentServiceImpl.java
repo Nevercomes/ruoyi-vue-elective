@@ -91,6 +91,7 @@ public class ElectiveStudentServiceImpl implements IElectiveStudentService {
         newUser.setPassword(SecurityUtils.encryptPassword(electiveStudent.getPassword()));
         newUser.setRemark(electiveStudent.getRemark());
         newUser.setSex(electiveStudent.getSex());
+        newUser.setPhonenumber(electiveStudent.getPhonenumber());
         newUser.preInsert();
         sysUserMapper.insertUser(newUser);
         // 建立关联的角色
@@ -129,6 +130,7 @@ public class ElectiveStudentServiceImpl implements IElectiveStudentService {
         user.setNickName(electiveStudent.getName());
         user.setRemark(electiveStudent.getRemark());
         user.setSex(electiveStudent.getSex());
+        user.setPhonenumber(electiveStudent.getPhonenumber());
         user.preUpdate();
         // 更新学生
         electiveStudent.preUpdate();

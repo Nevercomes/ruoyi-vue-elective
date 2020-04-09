@@ -9,8 +9,7 @@ public class ElectiveDict {
     /**
      * 模板类型-学期
      */
-    public static final String CONFIG_TEMPLATE_SEMESTER =
-            "1";
+    public static final String CONFIG_TEMPLATE_SEMESTER = "1";
     /**
      * 模板类型-星期
      */
@@ -40,5 +39,10 @@ public class ElectiveDict {
      * 课程状态-已通过
      */
     public static final String COURSE_STATUS_PASSING = "1";
+
+    /**
+     * 课程状态-申请中
+     */
+    public static final String COURSE_STATUS_APPLYING = "0";
 
 }
