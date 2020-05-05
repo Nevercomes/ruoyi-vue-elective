@@ -47,10 +47,10 @@
       <!-- <el-col :span="1.5">
         <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate" v-hasPermi="['elective:course:edit']">修改</el-button>
       </el-col> -->
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
           v-hasPermi="['elective:course:remove']">删除</el-button>
-      </el-col>
+      </el-col> -->
       <el-col :span="1.5">
         <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport" v-hasPermi="['elective:course:export']">导出</el-button>
       </el-col>
@@ -86,7 +86,7 @@
             v-hasPermi="['elective:course:edit']">修改</el-button>
           <el-button v-if="scope.row.status == 1" size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
             v-hasPermi="['sys:role:staff']">修改</el-button>
-          <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['elective:course:remove']">删除</el-button>
+          <el-button v-if="scope.row.status != 1" size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['elective:course:remove']">删除</el-button>
           <el-button v-if="scope.row.status == 1" size="mini" type="text" icon="el-icon-circle-plus-outline" @click="handleReAdd(scope.row)"
             v-hasPermi="['elective:course:add']">续开</el-button>
           <el-button v-if="scope.row.status == 2" size="mini" type="text" icon="el-icon-circle-plus-outline" @click="handleReApply(scope.row)"

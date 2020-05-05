@@ -68,14 +68,20 @@
         // 弹出层标题
         title: "修改头像",
         options: {
-          img: store.getters.avatar, //裁剪图片的地址
+          img: this.user.avatar ? process.env.VUE_APP_BASE_API + this.user.avatar : this.dflAvatar, //裁剪图片的地址
           autoCrop: true, // 是否默认生成截图框
           autoCropWidth: 200, // 默认生成截图框宽度
           autoCropHeight: 200, // 默认生成截图框高度
           fixedBox: true // 固定截图框大小 不允许改变
         },
+        dflAvatar: require("@/assets/image/avatar.jpeg"),
         previews: {}
       };
+    },
+    watch: {
+      user: function() {
+        this.options.img = this.user.avatar ? process.env.VUE_APP_BASE_API + this.user.avatar : this.dflAvatar
+      }
     },
     methods: {
       // 编辑头像
@@ -114,6 +120,7 @@
         this.$refs.cropper.getCropBlob(data => {
           let formData = new FormData();
           formData.append("avatarfile", data);
+          formData.append("userId", this.user.userId)
           uploadAvatar(formData).then(response => {
             if (response.code === 200) {
               this.open = false;

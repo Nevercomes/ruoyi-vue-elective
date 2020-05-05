@@ -30,7 +30,7 @@
           <el-divider></el-divider>
           <div class="card-body">
             <el-row class="card-item">
-              <el-col :span="5" :xs="6" class="mw-label"><span class="item-label">选课人数</span></el-col>
+              <el-col :span="5" :xs="6" class="mw-label"><span class="item-label">选课信息</span></el-col>
               <el-col :span="18" :xs="18">
                 <el-row>
                   <el-col :span="8" class="align-center"><span class="item-label-nomargin">年级</span></el-col>

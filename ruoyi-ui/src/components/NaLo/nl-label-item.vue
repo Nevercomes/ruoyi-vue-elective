@@ -36,6 +36,7 @@
 
   .label-item_value {
     width: calc(100% - 71px);
+    word-wrap: break-word;
     /* flex-grow: 1; */
   }
 
