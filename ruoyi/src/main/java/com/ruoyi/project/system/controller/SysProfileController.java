@@ -69,6 +69,8 @@ public class SysProfileController extends BaseController {
     @Log(title = "个人信息", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult updateProfile(@RequestBody SysUser user) {
+        // 将avatar置空 不进行更新
+        user.setAvatar(null);
         return toAjax(userService.updateUserProfile(user));
     }
 
@@ -94,8 +96,8 @@ public class SysProfileController extends BaseController {
      * 头像上传
      */
     @Log(title = "用户头像", businessType = BusinessType.UPDATE)
-    @PostMapping(value = {"/avatar", "/avatar/{userId}"})
-    public AjaxResult avatar(@RequestParam("avatarfile") MultipartFile file, @PathVariable(value = "userId", required = false) Long userId) throws IOException {
+    @PostMapping(value = {"/avatar"})
+    public AjaxResult avatar(@RequestParam("avatarfile") MultipartFile file, @RequestParam(value = "userId", required = false) Long userId) throws IOException {
         if (!file.isEmpty()) {
             SysUser user = new SysUser();
             if (userId != null) {
@@ -110,9 +112,12 @@ public class SysProfileController extends BaseController {
                 AjaxResult ajax = AjaxResult.success();
                 ajax.put("imgUrl", avatar);
                 user.setAvatar(avatar);
-                LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
-                loginUser.setUser(user);
-                tokenService.setLoginUser(loginUser);
+                // 表示当前用户登录
+                if (user.getUserName().equals(SecurityUtils.getUsername())) {
+                    LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
+                    loginUser.setUser(user);
+                    tokenService.setLoginUser(loginUser);
+                }
                 return ajax;
             }
         }
