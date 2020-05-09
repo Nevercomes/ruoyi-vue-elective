@@ -66,10 +66,12 @@
         from elective_teacher t
         where t.id = c.teacher_id) as teacher_name
         from elective_course_people a
-        inner join elective_course c on c.id = a.course_id
+        inner join elective_course c on c.id = a.course_id 
         left join sys_dept d on d.dept_id = a.grade_id
         <where>
             c.school_id = #{schoolId}
+            <!-- 被退回的课程不显示在统计 -->
+            and c.status = '1'
             <if test="semesterId != null">
                 and c.semester_id = #{semesterId}
             </if>
