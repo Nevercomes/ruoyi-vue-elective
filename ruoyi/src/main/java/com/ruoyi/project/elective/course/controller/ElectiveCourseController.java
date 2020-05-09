@@ -90,8 +90,14 @@ public class ElectiveCourseController extends BaseController {
             for (ElectiveCourse course : list) {
                 List<ElectiveCoursePeople> peopleList = course.getPeopleList();
                 for (ElectiveCoursePeople people : peopleList) {
+                    // 对年级是否符合进行判断
                     if (people.getGradeId().equals(student.getGradeId())) {
-                        course.setCanSelect(true);
+                        course.setCanSelect("1")
+                        // 年级符合的基础上判断是否还有剩余
+                        // TODO 两个数据字典化一下
+                        if((people.getInitNum() - people.getSelectNum()) <= 0) {
+                            course.setCanSelect("2")
+                        }
                     }
                 }
             }
