@@ -50,4 +50,13 @@ public class ElectiveDict {
      */
     public static final String COURSE_STATUS_DENY = "2";
 
+    /**
+     * 课程选课可选状态-可以选择
+     */
+    public static final String COURSE_CAN_SELECT = "1";
+
+    /**
+     * 课程选课可选状态-对应年级无余量
+     */
+    public static final String COURSE_SELECT_NO_LEFT = "2";
 }

@@ -106,8 +106,9 @@
         </div>
         <el-divider></el-divider>
         <el-row class="card-footer" justify="end">
-          <el-button v-if="item.canSelect" class="card-footer-button" type="primary" @click="handleSelectCourse(item)"
+          <el-button v-if="item.canSelect == '1'" class="card-footer-button" type="primary" @click="handleSelectCourse(item)"
             v-hasPermi="['elective:select:course:add']">我要选课</el-button>
+          <el-button v-else-if="item.canSelect == '2'" :disabled="true" class="card-footer-button" type="primary" v-hasPermi="['elective:select:course:add']">无余量</el-button>
           <el-button v-else :disabled="true" class="card-footer-button" type="primary" v-hasPermi="['elective:select:course:add']">年级不符</el-button>
         </el-row>
       </el-card>
@@ -428,6 +429,10 @@
     float: left;
     font-size: 14px;
     color: #606266;
+  }
+
+  .course-card:nth-child(3n+1) {
+    clear: left;
   }
 
   .card-item {
