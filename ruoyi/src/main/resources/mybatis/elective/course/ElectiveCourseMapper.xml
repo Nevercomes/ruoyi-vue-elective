@@ -95,7 +95,16 @@
                 and (select parent_id from sys_dept where sys_dept.dept_id =
                 (select s.dept_id from elective_student s where s.id = #{loginStudentId}) )
                 in
-                (select p.grade_id from elective_course_people p where p.course_id = a.id )
+                <!-- 添加人数的限制 -->
+                (select p.grade_id from elective_course_people p where p.course_id = a.id and (p.init_num - (select count(1)
+             from elective_select_record sr
+             where
+                 sr.course_id = p.course_id and sr.student_id in (select id
+                                                                from elective_student s
+                                                                where s.dept_id in (select d.dept_id
+                                                                                    from sys_dept d
+                                                                                    where d.parent_id =
+                                                                                          grade_id))) > 0) )
             </if>
         </where>
     </select>

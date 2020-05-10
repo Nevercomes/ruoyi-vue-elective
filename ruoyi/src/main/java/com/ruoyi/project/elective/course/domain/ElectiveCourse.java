@@ -107,7 +107,7 @@ public class ElectiveCourse extends BaseEntity {
     /**
      * 学生是否可选的标记
      */
-    private boolean canSelect;
+    private String canSelect;
 
     public String getEnrollPeo() {
         IElectiveClazzService clazzService = SpringUtils.getBean(IElectiveClazzService.class);
