@@ -57,8 +57,8 @@
         from elective_open_select
         where school_id = #{schoolId}
               and status = '1'
-              and open_time &lt; current_date()
-              and close_time &gt; current_date()
+              and open_time &lt; current_time()
+              and close_time &gt; current_time()
         order by id desc
         limit 1
     </select>
@@ -67,8 +67,8 @@
         <include refid="selectElectiveOpenSelectVo"/>
         where school_id = #{schoolId}
         and status = '1'
-        and open_time &lt; current_date()
-        and close_time &gt; current_date()
+        and open_time &lt; current_time()
+        and close_time &gt; current_time()
         order by id desc
     </select>
 

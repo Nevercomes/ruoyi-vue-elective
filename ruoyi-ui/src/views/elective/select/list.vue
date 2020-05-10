@@ -58,8 +58,8 @@
         <el-divider></el-divider>
         <div class="card-body">
           <el-row class="card-item">
-            <el-col :span="5"><span class="item-label">选课信息</span></el-col>
-            <el-col :span="19">
+            <el-col class="laebl-item_label"><span class="item-label-nomargin">选课信息</span></el-col>
+            <el-col class="label-item_value">
               <el-row>
                 <el-col :span="8" class="align-center"><span class="item-label-nomargin">年级</span></el-col>
                 <el-col :span="8" class="align-center"><span class="item-label-nomargin">可选</span></el-col>
@@ -77,28 +77,31 @@
             </el-col>
           </el-row>
           <el-row class="card-item">
-            <el-col :span="5">
+            <!-- <el-col :span="5">
               <span class="item-label">课程简介</span>
             </el-col>
             <el-col :span="19">
               <span class="item-value">{{item.intro}}</span>
-            </el-col>
+            </el-col> -->
+            <nl-label-item :label="'课程简介'" :value="item.intro"></nl-label-item>
           </el-row>
           <el-row class="card-item">
-            <el-col :span="5">
+            <!-- <el-col :span="5">
               <span class="item-label">学习目标</span>
             </el-col>
             <el-col :span="19">
               <span class="item-value">{{item.objective}}</span>
-            </el-col>
+            </el-col> -->
+            <nl-label-item :label="'学习目标'" :value="item.objective"></nl-label-item>
           </el-row>
           <el-row class="card-item">
-            <el-col :span="5">
+            <!-- <el-col :span="5">
               <span class="item-label">特别说明</span>
             </el-col>
             <el-col :span="19">
               <span class="item-value">{{item.specialNote}}</span>
-            </el-col>
+            </el-col> -->
+            <nl-label-item :label="'特别说明'" :value="item.specialNote"></nl-label-item>
           </el-row>
         </div>
         <el-divider></el-divider>
@@ -173,9 +176,13 @@
   } from "@/api/elective/record/select"
 
   import defaultAvatar from "@/assets/image/profile.jpg"
+  import NlLabelItem from '@/components/NaLo/nl-label-item.vue'
 
   export default {
     name: "StudentSelect",
+    components: {
+      NlLabelItem
+    },
     data() {
       return {
         // 遮罩层
@@ -340,7 +347,7 @@
       handleSelectCourse(row) {
         // 弹出特别说明的限制关闭时间的弹窗(dialog模拟)
         this.course = row
-        if(row.specialNote && row.noteTime && row.noteTime > 0) {
+        if (row.specialNote && row.noteTime && row.noteTime > 0) {
           this.open = true
           this.title = '特别说明'
           this.countZero = false
@@ -348,7 +355,7 @@
           let timer = setInterval(() => {
             time = time - 1
             this.countdown = time + 's确定'
-            if(time == 0) {
+            if (time == 0) {
               this.countdown = '确定'
               this.countZero = true
               clearInterval(timer)
@@ -358,7 +365,7 @@
           this.selectCourse()
         }
       },
-      selectCourse() { 
+      selectCourse() {
         this.open = false
         let that = this
         let hint = "亲爱的同学，感谢你选择本课！请你再次确认你的身体条件等是否符合本课要求等信息。若你一旦选择，本学期内将无法作任何调整。"
@@ -464,4 +471,19 @@
   .forbid-select {
     opacity: 0.5;
   }
+
+  .laebl-item_label {
+    color: #515a6e;
+    font-weight: bold;
+    width: 56px;
+    margin-right: 15px;
+    text-align: right;
+  }
+
+  .label-item_value {
+    width: calc(100% - 71px);
+    word-wrap: break-word;
+    /* flex-grow: 1; */
+  }
+
 </style>

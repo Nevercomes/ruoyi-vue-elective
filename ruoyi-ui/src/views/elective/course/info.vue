@@ -30,8 +30,8 @@
           <el-divider></el-divider>
           <div class="card-body">
             <el-row class="card-item">
-              <el-col :span="5" :xs="6" class="mw-label"><span class="item-label">选课信息</span></el-col>
-              <el-col :span="18" :xs="18">
+              <el-col class="label-item_label"><span class="item-label-nomargin">选课信息</span></el-col>
+              <el-col class="label-item_value">
                 <el-row>
                   <el-col :span="8" class="align-center"><span class="item-label-nomargin">年级</span></el-col>
                   <el-col :span="8" class="align-center"><span class="item-label-nomargin">可选</span></el-col>
@@ -262,4 +262,19 @@
   .mw-label {
     min-width: 56px;
   }
+
+  .laebl-item_label {
+    color: #515a6e;
+    font-weight: bold;
+    width: 56px;
+    margin-right: 15px;
+    text-align: right;
+  }
+
+  .label-item_value {
+    width: calc(100% - 71px);
+    word-wrap: break-word;
+    /* flex-grow: 1; */
+  }
+
 </style>

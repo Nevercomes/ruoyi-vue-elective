@@ -40,8 +40,8 @@
           <el-divider></el-divider>
           <div class="card-body">
             <el-row class="card-item">
-              <el-col :span="6"><span class="item-label">选课信息</span></el-col>
-              <el-col :span="18">
+              <el-col class="label-item_label"><span class="item-label-nomargin">选课信息</span></el-col>
+              <el-col class="label-item_value">
                 <el-row>
                   <el-col :span="8" class="align-center"><span class="item-label-nomargin">年级</span></el-col>
                   <el-col :span="8" class="align-center"><span class="item-label-nomargin">可选</span></el-col>
@@ -59,28 +59,13 @@
               </el-col>
             </el-row>
             <el-row class="card-item">
-              <el-col :span="6">
-                <span class="item-label">课程简介</span>
-              </el-col>
-              <el-col :span="18">
-                <span class="item-value">{{item.intro}}</span>
-              </el-col>
+              <nl-label-item :label="'课程简介'" :value="item.intro"></nl-label-item>
             </el-row>
             <el-row class="card-item">
-              <el-col :span="6">
-                <span class="item-label">学习目标</span>
-              </el-col>
-              <el-col :span="18">
-                <span class="item-value">{{item.objective}}</span>
-              </el-col>
+              <nl-label-item :label="'学习目标'" :value="item.objective"></nl-label-item>
             </el-row>
             <el-row class="card-item">
-              <el-col :span="6">
-                <span class="item-label">特别说明</span>
-              </el-col>
-              <el-col :span="18">
-                <span class="item-value">{{item.specialNote}}</span>
-              </el-col>
+              <nl-label-item :label="'特别说明'" :value="item.specialNote"></nl-label-item>
             </el-row>
           </div>
           <el-divider></el-divider>
@@ -126,9 +111,13 @@
   } from 'mint-ui'
 
   import defaultAvatar from "@/assets/image/profile.jpg"
+  import NlLabelItem from "@/components/NaLo/nl-label-item.vue"
 
   export default {
     name: "MobileSelectCourse",
+    components: {
+      NlLabelItem
+    },
     data() {
       return {
         // 底部数据是否全部加载
@@ -382,4 +371,19 @@
   .forbid-select {
     opacity: 0.5;
   }
+
+  .laebl-item_label {
+    color: #515a6e;
+    font-weight: bold;
+    width: 56px;
+    margin-right: 15px;
+    text-align: right;
+  }
+
+  .label-item_value {
+    width: calc(100% - 71px);
+    word-wrap: break-word;
+    /* flex-grow: 1; */
+  }
+
 </style>

@@ -17,20 +17,20 @@
 
     <sql id="selectElectiveCoursePeopleVo">
         select
-            id,
-            course_id,
-            grade_id,
+            a.id,
+            a.course_id,
+            a.grade_id,
             (select count(1)
              from elective_select_record sr
              where
-                 sr.course_id = course_id and sr.student_id in (select id
+                 sr.course_id = a.course_id and sr.student_id in (select id
                                                                 from elective_student s
                                                                 where s.dept_id in (select d.dept_id
                                                                                     from sys_dept d
                                                                                     where d.parent_id =
-                                                                                          grade_id))) as select_num,
+                                                                                          a.grade_id))) as select_num,
             init_num
-        from elective_course_people
+        from elective_course_people a
     </sql>
 
     <select id="selectElectiveCoursePeopleList" parameterType="ElectiveCoursePeople"
