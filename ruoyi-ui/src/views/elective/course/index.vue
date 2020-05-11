@@ -201,7 +201,7 @@
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="primary" @click="submitForm" :loading="submitLoading">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -259,6 +259,8 @@
       return {
         // 遮罩层
         loading: true,
+        // 表单提交加载
+        submitLoading: false,
         // 选中数组
         ids: [],
         // 非单个禁用
@@ -481,8 +483,10 @@
       submitForm: function() {
         this.$refs["form"].validate(valid => {
           if (valid) {
+            this.submitLoading = true
             if (this.form.reApply) {
               reApply(this.form).then(res => {
+                this.submitLoading = false
                 if (res.code === 200) {
                   this.msgSuccess("重新申请成功");
                   this.open = false;
@@ -493,6 +497,7 @@
               })
             } else if (this.form.id != undefined) {
               updateCourse(this.form).then(response => {
+                this.submitLoading = false
                 if (response.code === 200) {
                   this.msgSuccess("修改成功");
                   this.open = false;
@@ -503,6 +508,7 @@
               });
             } else {
               addCourse(this.form).then(response => {
+                this.submitLoading = false
                 if (response.code === 200) {
                   this.msgSuccess("新增成功");
                   this.open = false;
