@@ -80,6 +80,9 @@
     listClazz,
     listGrade
   } from "@/api/elective/clazz/clazz"
+  import {
+    inTime
+  } from '@/utils/semester.js'
 
   export default {
     name: "Statistic",
@@ -131,9 +134,21 @@
       } else next()
     },
     created() {
-      this.getList();
       listSemester().then(response => {
         this.semesterOptions = response.data;
+        // 按名字处理学年学期（就很离谱）
+        // forEach无法通过break终止循环
+        for(let i in this.semesterOptions) {
+          const s = this.semesterOptions[i]
+          if(inTime(s.label)) {
+            this.querySemesterId = s.id
+            this.queryParams.semesterId = s.id
+            break;
+          }
+        }
+        this.getList();
+      }).catch(() => {
+        this.getList()
       });
       listGrade().then(response => {
         this.gradeOptions = response.data

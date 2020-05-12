@@ -3,12 +3,12 @@
  */
 export function formatDate(cellValue) {
   if (cellValue == null || cellValue == "") return "";
-  var date = new Date(cellValue) 
+  var date = new Date(cellValue)
   var year = date.getFullYear()
   var month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
-  var day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate() 
-  var hours = date.getHours() < 10 ? '0' + date.getHours() : date.getHours() 
-  var minutes = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes() 
+  var day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
+  var hours = date.getHours() < 10 ? '0' + date.getHours() : date.getHours()
+  var minutes = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
   var seconds = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
   return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds
 }
@@ -130,12 +130,12 @@ export function param2Obj(url) {
   }
   return JSON.parse(
     '{"' +
-      decodeURIComponent(search)
-        .replace(/"/g, '\\"')
-        .replace(/&/g, '","')
-        .replace(/=/g, '":"')
-        .replace(/\+/g, ' ') +
-      '"}'
+    decodeURIComponent(search)
+    .replace(/"/g, '\\"')
+    .replace(/&/g, '","')
+    .replace(/=/g, '":"')
+    .replace(/\+/g, ' ') +
+    '"}'
   )
 }
 
@@ -314,4 +314,39 @@ export function removeClass(ele, cls) {
     const reg = new RegExp('(\\s|^)' + cls + '(\\s|$)')
     ele.className = ele.className.replace(reg, ' ')
   }
+}
+
+
+/**
+ * 通过label解析获得三个值
+ * @param {string} label
+ * return [] (year1, year2, half)
+ */
+export function parseSemester(label) {
+  try {
+    let arr = []
+    // 2020-2021学年度上期
+    const year1 = label.substring(0, 4)
+    const year2 = label.substring(5, 9)
+    arr['year1'] = year1
+    arr['year2'] = year2
+    arr['half'] = label.indexOf('上') != -1 ? '上期' : '下期'
+    return arr
+  } catch (e) {
+    return []
+  }
+}
+
+export function getSemesterTime(year1, year2, half) {
+  // 下期必然是2-7月
+  // 上期必然是8月到来年1月
+  let time = []
+  if(half == '下期') {
+    time.push(year2 + '.2')
+    time.push(year2 + '.7')
+  } else {
+    time.push(year1 + '.8')
+    time.push(year2 + '.1')
+  }
+  return time
 }

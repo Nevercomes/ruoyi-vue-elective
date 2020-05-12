@@ -45,7 +45,39 @@
       @pagination="getList" />
 
     <!-- 添加或修改配置模板下内容的label与value对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px">
+
+    <el-dialog v-if="isSemester" :title="title" :visible.sync="open" width="500px">
+      <el-form ref="semesterForm" :model="form" :rules="semesterRules" label-width="80px">
+        <el-form-item label="模板编号" prop="templateId">
+          <el-input v-model="form.templateId" :disabled="true" />
+        </el-form-item>
+        <el-form-item label="模板名" prop="templateName">
+          <el-input :value="templateFormat(templateOptions, form.templateId)" :disabled="true" />
+        </el-form-item>
+        <el-form-item label="学年度" prop="year1">
+          <el-row :gutter="10">
+            <el-col :span="10"><el-input v-model="form.year1" placeholder="请输入学年"/></el-col>
+            <el-col :span="2"> - </el-col>
+            <el-col :span="10"><el-input v-model="form.year2" placeholder="请输入学年" /></el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item label="上下期" prop="half">
+          <el-select v-model="form.half" placeholder="请选择上下期">
+            <el-option value="上期" label="上期"></el-option>
+            <el-option value="下期" label="下期"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="semesterTime" label="对应时间">
+          <el-input :value="semesterTime" disabled></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitSemesterForm">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog v-else :title="title" :visible.sync="open" width="500px">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="模板编号" prop="templateId">
           <el-input v-model="form.templateId" :disabled="true" />
@@ -65,6 +97,7 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+
   </div>
 </template>
 
@@ -81,9 +114,22 @@
   import {
     listTemplate
   } from "@/api/elective/config/template.js"
+  import {
+    parseSemester,
+    getSemesterTime
+  } from '@/utils/index.js'
 
   export default {
     name: "Value",
+    computed: {
+      semesterTime: function() {
+        if(this.form.year1 && this.form.year2 && this.form.half) {
+          let time = getSemesterTime(this.form.year1, this.form.year2, this.form.half)
+          return time.join('-')
+        }
+        return undefined
+      }
+    },
     data() {
       return {
         // 遮罩层
@@ -114,6 +160,8 @@
         },
         // 表单参数
         form: {},
+        // 表征是否为学期
+        isSemester: false,
         // 表单校验
         rules: {
           templateId: [{
@@ -131,8 +179,42 @@
           //   message: "显示排序不能为空",
           //   trigger: "change"
           // }]
+        },
+        semesterRules: {
+          templateId: [{
+            required: true,
+            message: "模板不能为空",
+            trigger: ["blur"]
+          }],
+          year1: [{
+            required: true,
+            message: "学年不能为空",
+            trigger: ["blur"]
+          }],
+          year2: [{
+            required: true,
+            message: "学年不能为空",
+            trigger: ["blur"]
+          }],
+          half: [{
+            required: true,
+            message: "学期不能为空",
+            trigger: ["blur"]
+          }]
         }
       };
+    },
+    watch: {
+      'queryParams.templateId': {
+        handler: function(newVal, oldVal) {
+          try {
+            this.isSemester = this.templateFormat(this.templateOptions, newVal).indexOf('学期') != -1
+          } catch (e) {
+            this.isSemester = false
+          }
+        },
+        deep: true
+      }
     },
     created() {
       const templateId = this.$route.params && this.$route.params.templateId;
@@ -154,6 +236,10 @@
       getTemplateList() {
         listTemplate().then(response => {
           this.templateOptions = response.rows;
+          const templateId = this.$route.params && this.$route.params.templateId;
+          // 使watch刷新
+          this.queryParams.templateId = undefined
+          this.queryParams.templateId = templateId ? Number(templateId) : undefined
         })
       },
       templateFormat(list, id) {
@@ -177,9 +263,13 @@
           id: undefined,
           label: undefined,
           templateId: undefined,
-          sort: 0
+          sort: 0,
+          year1: undefined,
+          year2: undefined,
+          half: undefined
         };
         this.resetForm("form");
+        this.resetForm("semesterForm")
       },
       /** 搜索按钮操作 */
       handleQuery() {
@@ -210,9 +300,46 @@
         const id = row.id || this.ids
         getValue(id).then(response => {
           this.form = response.data;
+          // if(this.isSemester) {
+          //   let semList = parseSemester(this.form.label)
+          //   this.form.year1 = semList['year1']
+          //   this.form.year2 = semList['year2']
+          //   this.form.half = semList['half']
+          // }
+          console.log(this.form)
           this.open = true;
           this.title = "修改配置模板内容";
         });
+      },
+      submitSemesterForm: function() {
+        this.$refs["semesterForm"].validate(valid => {
+          if (valid) {
+            let label = this.form.year1 + '-' + this.form.year2
+            label = label + '学年度' + this.form.half
+            this.form.label = label
+            if (this.form.id != undefined) {
+              updateValue(this.form).then(response => {
+                if (response.code === 200) {
+                  this.msgSuccess("修改成功");
+                  this.open = false;
+                  this.getList();
+                } else {
+                  this.msgError(response.msg);
+                }
+              });
+            } else {
+              addValue(this.form).then(response => {
+                if (response.code === 200) {
+                  this.msgSuccess("新增成功");
+                  this.open = false;
+                  this.getList();
+                } else {
+                  this.msgError(response.msg);
+                }
+              });
+            }
+          }
+        })
       },
       /** 提交按钮 */
       submitForm: function() {
