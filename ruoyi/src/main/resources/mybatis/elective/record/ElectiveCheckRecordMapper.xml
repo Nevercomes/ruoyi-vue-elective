@@ -44,6 +44,7 @@
             <if test="courseId != null ">and a.course_id = #{courseId}</if>
             <if test="applyId != null ">and a.apply_id = #{applyId}</if>
             <if test="result != null  and result != ''">and a.result = #{result}</if>
+            <if test="semesterId != null">and c.semester_id = #{semesterId}</if>
         </where>
     </select>
 

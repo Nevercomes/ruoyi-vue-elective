@@ -46,6 +46,11 @@ public class ElectiveCheckRecord extends BaseEntity {
     @Excel(name = "申请教师")
     private String teacherName;
 
+    /**
+     * 课程学期
+     */
+    private Long semesterId;
+
     private ElectiveCourse course;
 
 }
