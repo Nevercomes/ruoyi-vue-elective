@@ -1,6 +1,11 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
+      <el-form-item label="学年学期" prop="semesterId">
+        <el-select v-model="queryParams.semesterId" placeholder="请选择学年学期" clearable size="small">
+          <el-option v-for="item in semesterOptions" :key="item.id" :label="item.label" :value="item.id" />
+        </el-select>
+      </el-form-item>
       <el-form-item label="课程名称" prop="courseName">
         <el-input v-model="queryParams.courseName" placeholder="请输入课程名称" clearable size="small" @keyup.enter.native="handleQuery" />
       </el-form-item>
@@ -91,6 +96,14 @@
     updateCheck,
     exportCheck
   } from "@/api/elective/record/check";
+  import {
+    listSemester,
+    listClassTime,
+    listInUse
+  } from "@/api/elective/config/value"
+  import {
+    inTime
+  } from '@/utils/semester.js'
 
   export default {
     name: "Check",
@@ -114,12 +127,15 @@
         open: false,
         // 审核结果字典
         resultOptions: [],
+        // 异步加载的默认参数，学期
+        querySemesterId: undefined,
         // 查询参数
         queryParams: {
           pageNum: 1,
           pageSize: 10,
           courseName: undefined,
-          result: undefined
+          result: undefined,
+          semesterId: this.querySemesterId
         },
         // 表单参数
         form: {},
@@ -144,7 +160,22 @@
       };
     },
     created() {
-      this.getList();
+      listSemester().then(response => {
+        this.semesterOptions = response.data;
+        // 按名字处理学年学期（就很离谱）
+        // forEach无法通过break终止循环
+        for(let i in this.semesterOptions) {
+          const s = this.semesterOptions[i]
+          if(inTime(s.label)) {
+            this.querySemesterId = s.id
+            this.queryParams.semesterId = s.id
+            break;
+          }
+        }
+        this.getList();
+      }).catch(() => {
+        this.getList()
+      });
       this.getDicts("elective_check_result").then(response => {
         this.resultOptions = response.data;
       });
