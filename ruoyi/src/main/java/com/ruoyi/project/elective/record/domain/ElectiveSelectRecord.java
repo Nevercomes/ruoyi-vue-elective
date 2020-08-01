@@ -74,4 +74,9 @@ public class ElectiveSelectRecord extends BaseEntity {
      */
     private Long gradeId;
 
+    /**
+     * 用于查询班级的选课记录
+     */
+    private Long clazzId;
+
 }

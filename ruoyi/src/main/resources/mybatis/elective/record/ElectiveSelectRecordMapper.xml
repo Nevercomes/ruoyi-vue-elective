@@ -78,6 +78,9 @@
             <if test="gradeId != null">
                 and (select parent_id from sys_dept where sys_dept.dept_id = s.dept_id) = #{gradeId}
             </if>
+            <if test="clazzId != null">
+                and s.dept_id = #{clazzId}
+            </if>
         </where>
     </select>
 

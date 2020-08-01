@@ -104,6 +104,9 @@
   import {
     inTime
   } from '@/utils/semester.js'
+  import {
+    listOpen
+  } from '@/api/elective/open/open.js'
 
   export default {
     name: "Check",
@@ -160,19 +163,32 @@
       };
     },
     created() {
+      // 获取当前开放选课的学期
       listSemester().then(response => {
         this.semesterOptions = response.data;
         // 按名字处理学年学期（就很离谱）
         // forEach无法通过break终止循环
-        for(let i in this.semesterOptions) {
+        for (let i in this.semesterOptions) {
           const s = this.semesterOptions[i]
-          if(inTime(s.label)) {
+          if (inTime(s.label)) {
             this.querySemesterId = s.id
             this.queryParams.semesterId = s.id
             break;
           }
         }
-        this.getList();
+        // 如果存在开放选课则更新学期
+        listOpen({
+        	status: '1'
+        }).then(res => {
+          if (res.rows.length > 0) {
+            const open = res.rows[0]
+            this.querySemesterId = open.semesterId
+            this.queryParams.semesterId = open.semesterId
+          }
+          this.getList()
+        }).catch(() => {
+          this.getList()
+        });
       }).catch(() => {
         this.getList()
       });

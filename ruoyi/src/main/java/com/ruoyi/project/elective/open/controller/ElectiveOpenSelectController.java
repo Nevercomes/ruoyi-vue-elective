@@ -2,6 +2,7 @@ package com.ruoyi.project.elective.open.controller;
 
 import java.util.List;
 
+import com.ruoyi.common.constant.ElectiveDict;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,13 +46,14 @@ public class ElectiveOpenSelectController extends BaseController {
     }
 
     /**
-     * 查询开放选课列表
+     * 查询作为默认显示的开放选课学期
      */
     @PreAuthorize("@ss.hasPermi('elective:open:list')")
-    @GetMapping("/student")
-    public TableDataInfo listStudentOpen(ElectiveOpenSelect electiveOpenSelect) {
+    @GetMapping("/valid")
+    public TableDataInfo listValidOpen(ElectiveOpenSelect electiveOpenSelect) {
         startPage();
-        List<ElectiveOpenSelect> list = electiveOpenSelectService.selectStudentOpen(electiveOpenSelect);
+        electiveOpenSelect.setStatus("1");
+        List<ElectiveOpenSelect> list = electiveOpenSelectService.selectElectiveOpenSelectList(electiveOpenSelect);
         return getDataTable(list);
     }
 
