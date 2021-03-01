@@ -58,8 +58,10 @@
         codeUrl: "",
         cookiePassword: "",
         loginForm: {
-          username: "xinqiao-admin",
-          password: "adminxinqiao",
+          // username: "xinqiao-admin",
+          // password: "adminxinqiao",
+          username: "",
+          password: "",
           rememberMe: false,
           code: "",
           uuid: ""
