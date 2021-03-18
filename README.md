@@ -1,8 +1,8 @@
 #### 介绍
 
-基于ruoyi-vue开发的sass选课系统
+基于ruoyi-vue开发的选课信息管理系统
 
-项目完成进度：85%
+项目完成进度：95%
 
 框架项目源地址：https://gitee.com/y_project/RuoYi-Vue.git
 
