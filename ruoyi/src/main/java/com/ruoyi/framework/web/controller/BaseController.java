@@ -7,6 +7,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.InitBinder;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -24,6 +25,7 @@ import com.ruoyi.framework.web.page.TableSupport;
  *
  * @author ruoyi
  */
+//@CrossOrigin(origins = "https://xinqiao.nevercome.net", maxAge = 3600)
 public class BaseController {
     protected final Logger logger = LoggerFactory.getLogger(BaseController.class);
 

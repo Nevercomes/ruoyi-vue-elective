@@ -17,8 +17,10 @@ axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 const service = axios.create({
   // axios中请求配置有baseURL选项，表示请求URL公共部分
   // baseURL: process.env.VUE_APP_BASE_API,
-  // baseURL: process.env.NODE_ENV === 'production' ? 'http://www.haitun158.com/xinqiao/' : process.env.VUE_APP_BASE_API,
-  baseURL: process.env.NODE_ENV === 'production' ? 'http://www.haitun158.com/xinqiao_back/' : process.env.VUE_APP_BASE_API,
+  // baseURL: process.env.NODE_ENV === 'production' ? 'http://localhost:8080/xinqiao_back/' : process.env.VUE_APP_BASE_API,
+  // baseURL: process.env.NODE_ENV === 'production' ? 'http://www.haitun158.com/xinqiao_back/' : process.env.VUE_APP_BASE_API,
+  baseURL: process.env.NODE_ENV === 'production' ? 'https://xinqiaoapi.nevercome.net/' : process.env.VUE_APP_BASE_API,
+  // baseURL: process.env.NODE_ENV === 'production' ? 'http://haitun158.natapp1.cc/' : process.env.VUE_APP_BASE_API,
   // 超时
   timeout: 10000
 })
